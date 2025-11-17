@@ -21,14 +21,7 @@
             user-select: none;
         }
 
-        html {
-            width: 100%;
-            height: 100%;
-            position: fixed;
-            overflow: hidden;
-        }
-
-        body {
+        html, body {
             width: 100%;
             height: 100%;
             position: fixed;
@@ -197,7 +190,7 @@
             100% { transform: scaleX(-1) translateY(0); }
         }
 
-        /* OSTACOLI */
+        /* OSTACOLI - STESSA ALTEZZA DEL GALLO! */
         .obstacle {
             position: absolute;
             bottom: 15vh;
@@ -643,7 +636,7 @@
     <script>
         'use strict';
         
-        console.log('🎮 Gioco caricato');
+        console.log('🎮 Rooster Runner caricato');
         
         // Previeni comportamenti indesiderati
         document.addEventListener('gesturestart', e => e.preventDefault());
@@ -729,12 +722,23 @@
             }
         }
 
-        // ========== SUONI ==========
+        // ========== SUONI - ATTIVAZIONE GARANTITA ==========
+        function initAudioContext() {
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                console.log('🔊 AudioContext creato');
+            }
+            // Resume se sospeso (importante per iOS/Safari)
+            if (audioContext.state === 'suspended') {
+                audioContext.resume().then(() => {
+                    console.log('🔊 AudioContext resumed');
+                });
+            }
+        }
+
         function playSound(type) {
             try {
-                if (!audioContext) {
-                    audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                }
+                initAudioContext();
                 
                 const oscillator = audioContext.createOscillator();
                 const gainNode = audioContext.createGain();
@@ -746,47 +750,52 @@
                     case 'jump':
                         oscillator.frequency.setValueAtTime(220, audioContext.currentTime);
                         oscillator.frequency.exponentialRampToValueAtTime(660, audioContext.currentTime + 0.14);
-                        gainNode.gain.setValueAtTime(0.22, audioContext.currentTime);
+                        gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
                         gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.14);
                         oscillator.start();
                         oscillator.stop(audioContext.currentTime + 0.14);
+                        console.log('🔊 Jump sound');
                         break;
                         
                     case 'hit':
                         oscillator.type = 'sawtooth';
                         oscillator.frequency.setValueAtTime(400, audioContext.currentTime);
                         oscillator.frequency.exponentialRampToValueAtTime(50, audioContext.currentTime + 0.28);
-                        gainNode.gain.setValueAtTime(0.32, audioContext.currentTime);
+                        gainNode.gain.setValueAtTime(0.4, audioContext.currentTime);
                         gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.28);
                         oscillator.start();
                         oscillator.stop(audioContext.currentTime + 0.28);
+                        console.log('🔊 Hit sound');
                         break;
                         
                     case 'score':
                         oscillator.frequency.setValueAtTime(880, audioContext.currentTime);
-                        gainNode.gain.setValueAtTime(0.14, audioContext.currentTime);
+                        gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
                         gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.08);
                         oscillator.start();
                         oscillator.stop(audioContext.currentTime + 0.08);
+                        console.log('🔊 Score sound');
                         break;
                         
                     case 'gameOver':
                         oscillator.frequency.setValueAtTime(440, audioContext.currentTime);
                         oscillator.frequency.exponentialRampToValueAtTime(110, audioContext.currentTime + 0.48);
-                        gainNode.gain.setValueAtTime(0.28, audioContext.currentTime);
+                        gainNode.gain.setValueAtTime(0.35, audioContext.currentTime);
                         gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.48);
                         oscillator.start();
                         oscillator.stop(audioContext.currentTime + 0.48);
+                        console.log('🔊 GameOver sound');
                         break;
                 }
             } catch (error) {
-                console.log('Audio non disponibile');
+                console.log('❌ Audio error:', error);
             }
         }
 
-        // ========== INIZIALIZZA AUDIO ==========
+        // ========== INIZIALIZZA AUDIO MICROFONO ==========
         async function initAudio() {
             try {
+                initAudioContext();
                 statusElement.textContent = '🎤 Attivazione...';
                 console.log('🎤 Richiesta microfono...');
                 
@@ -798,7 +807,6 @@
                     } 
                 });
                 
-                audioContext = new (window.AudioContext || window.webkitAudioContext)();
                 analyser = audioContext.createAnalyser();
                 analyser.fftSize = 512;
                 analyser.smoothingTimeConstant = 0.3;
@@ -944,7 +952,12 @@
 
         // ========== PERDI VITA ==========
         function loseLife() {
-            if (invincible || !gameActive) return;
+            if (invincible || !gameActive) {
+                console.log('❌ Danno bloccato - invincibile');
+                return;
+            }
+            
+            console.log(`💔 Vita persa! Rimanenti: ${lives - 1}`);
             
             invincible = true;
             lives--;
@@ -979,6 +992,7 @@
                     clearInterval(blinkInterval);
                     rooster.style.opacity = '1';
                     invincible = false;
+                    console.log('✅ Invincibilità terminata');
                 }
             }, 150);
         }
@@ -1005,10 +1019,13 @@
 
                 const obstacleRect = obstacle.getBoundingClientRect();
 
-                // COLLISIONE
-                if (gameActive && !invincible && !obstacle.hit) {
-                    const marginH = vwToPx(2.5);
-                    const marginV = vhToPx(2.5);
+                // ===== COLLISIONE RIGOROSA - HITBOX STRETTE =====
+                if (gameActive && !invincible && !obstacle.hit && 
+                    obstacleRect.right > 0 && obstacleRect.left < window.innerWidth) {
+                    
+                    // Margini STRETTI = collisioni PRECISE!
+                    const marginH = 15; // Margine orizzontale ridotto
+                    const marginV = 15; // Margine verticale ridotto
                     
                     const collision = !(
                         roosterRect.right - marginH < obstacleRect.left + marginH ||
@@ -1018,13 +1035,16 @@
                     );
                     
                     if (collision) {
+                        console.log('💥 COLLISIONE! Devi saltare!');
                         obstacle.hit = true;
+                        obstacle.style.filter = 'brightness(2)';
                         loseLife();
                     }
                 }
 
                 // PUNTEGGIO
-                if (!obstacle.passedRooster && obstacleRect.right < roosterRect.left - vwToPx(10)) {
+                const safeDistance = vwToPx(12);
+                if (!obstacle.passedRooster && obstacleRect.right < roosterRect.left - safeDistance) {
                     obstacle.passedRooster = true;
                 }
                 
@@ -1035,6 +1055,7 @@
                     score += points;
                     scoreElement.textContent = score;
                     playSound('score');
+                    console.log(`🎯 +${points} punti!`);
                 }
 
                 // RIMUOVI
@@ -1069,6 +1090,9 @@
             if (gameActive) return;
             
             console.log('🚀 GIOCO AVVIATO');
+            
+            // ATTIVA AUDIO CONTEXT
+            initAudioContext();
             
             gameActive = true;
             gamePaused = false;
@@ -1135,13 +1159,14 @@
             gameOverScreen.classList.remove('hidden');
         }
 
-        // ========== EVENT LISTENERS - FIX MOBILE ==========
+        // ========== EVENT LISTENERS ==========
         
         // TOUCH per i pulsanti
         startBtn.addEventListener('touchstart', async (e) => {
             e.preventDefault();
             e.stopPropagation();
-            console.log('👆 START button touched');
+            console.log('👆 START touched');
+            initAudioContext(); // Attiva audio
             startBtn.style.transform = 'scale(0.95)';
             await initAudio();
             setTimeout(() => startGame(), 200);
@@ -1155,7 +1180,8 @@
         testBtn.addEventListener('touchstart', (e) => {
             e.preventDefault();
             e.stopPropagation();
-            console.log('👆 TEST button touched');
+            console.log('👆 TEST touched');
+            initAudioContext(); // Attiva audio
             testBtn.style.transform = 'scale(0.95)';
             statusElement.textContent = '✅ Tocca per saltare!';
             usingVoice = false;
@@ -1170,7 +1196,8 @@
         restartBtn.addEventListener('touchstart', (e) => {
             e.preventDefault();
             e.stopPropagation();
-            console.log('👆 RESTART button touched');
+            console.log('👆 RESTART touched');
+            initAudioContext(); // Attiva audio
             restartBtn.style.transform = 'scale(0.95)';
             if (usingVoice && isListening) {
                 monitorVoice();
@@ -1186,22 +1213,25 @@
         // CLICK per desktop
         startBtn.addEventListener('click', async (e) => {
             e.preventDefault();
-            console.log('🖱️ START button clicked');
+            console.log('🖱️ START clicked');
+            initAudioContext();
             await initAudio();
             setTimeout(() => startGame(), 200);
         });
 
         testBtn.addEventListener('click', (e) => {
             e.preventDefault();
-            console.log('🖱️ TEST button clicked');
-            statusElement.textContent = '✅ Usa touch o spazio!';
+            console.log('🖱️ TEST clicked');
+            initAudioContext();
+            statusElement.textContent = '✅ Usa spazio o click!';
             usingVoice = false;
             startGame();
         });
 
         restartBtn.addEventListener('click', (e) => {
             e.preventDefault();
-            console.log('🖱️ RESTART button clicked');
+            console.log('🖱️ RESTART clicked');
+            initAudioContext();
             if (usingVoice && isListening) {
                 monitorVoice();
             }
@@ -1219,15 +1249,13 @@
             }
         });
 
-        // TOUCH sul game container (per saltare)
+        // TOUCH sul game container
         gameContainer.addEventListener('touchstart', (e) => {
             if (gameActive && !gamePaused) {
                 const target = e.target;
-                // Salta solo se tocchi il game container, non i pulsanti
                 if (target === gameContainer || target.classList.contains('obstacle') || 
-                    target === rooster || target === ground) {
+                    target === rooster || target.id === 'ground') {
                     e.preventDefault();
-                    console.log('👆 Jump!');
                     jump();
                 }
             }
