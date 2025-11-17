@@ -15,7 +15,7 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
+            -webkit-tap-highlight-color: rgba(0,0,0,0);
             -webkit-touch-callout: none;
             -webkit-user-select: none;
             user-select: none;
@@ -125,7 +125,7 @@
             to { transform: translateX(-150vw); }
         }
 
-        /* MONTAGNE - ALTE */
+        /* MONTAGNE */
         .mountain {
             position: absolute;
             bottom: 30vh;
@@ -456,15 +456,23 @@
             width: 100%;
             max-width: 70vw;
             z-index: 1000;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
             touch-action: manipulation;
         }
 
         button:active {
-            transform: scale(0.98);
+            transform: scale(0.95);
+            box-shadow: 0 0.5vh 1vh rgba(74, 144, 226, 0.6);
         }
 
         button.secondary {
             background: linear-gradient(135deg, #51cf66 0%, #40c057 100%);
+            box-shadow: 0 1vh 2vh rgba(81, 207, 102, 0.4);
+        }
+
+        button.secondary:active {
+            box-shadow: 0 0.5vh 1vh rgba(81, 207, 102, 0.6);
         }
 
         #finalScore {
@@ -635,7 +643,9 @@
     <script>
         'use strict';
         
-        // Previeni zoom e comportamenti indesiderati
+        console.log('🎮 Gioco caricato');
+        
+        // Previeni comportamenti indesiderati
         document.addEventListener('gesturestart', e => e.preventDefault());
         document.addEventListener('gesturechange', e => e.preventDefault());
         document.addEventListener('gestureend', e => e.preventDefault());
@@ -673,7 +683,6 @@
         let obstacles = [];
         let gameLoopId = null;
         let obstacleIntervalId = null;
-        let difficultyIntervalId = null;
         let speedMultiplier = 1;
         let invincible = false;
         let usingVoice = false;
@@ -688,9 +697,9 @@
         let voiceCheckId = null;
 
         // ========== COSTANTI ==========
-        const JUMP_HEIGHT_VH = 35; // 35vh
+        const JUMP_HEIGHT_VH = 35;
         const JUMP_DURATION = 680;
-        const BASE_OBSTACLE_SPEED = 0.5; // vw per frame
+        const BASE_OBSTACLE_SPEED = 0.5;
         const BASE_OBSTACLE_INTERVAL = 1650;
         const VOICE_THRESHOLD = 30;
         const INVINCIBLE_TIME = 1500;
@@ -698,7 +707,6 @@
         const DIFFICULTY_INCREASE_RATE = 500;
         const JUMP_COOLDOWN = 280;
 
-        // Calcola dimensioni in pixel
         function vhToPx(vh) {
             return (vh * window.innerHeight) / 100;
         }
@@ -780,6 +788,7 @@
         async function initAudio() {
             try {
                 statusElement.textContent = '🎤 Attivazione...';
+                console.log('🎤 Richiesta microfono...');
                 
                 const stream = await navigator.mediaDevices.getUserMedia({ 
                     audio: {
@@ -803,10 +812,12 @@
                 usingVoice = true;
                 voiceIndicator.classList.add('listening');
                 statusElement.textContent = '✅ Microfono Attivo!';
+                console.log('✅ Microfono attivo');
                 
                 monitorVoice();
                 return true;
             } catch (error) {
+                console.log('❌ Microfono negato:', error);
                 statusElement.textContent = '❌ Usa touch!';
                 usingVoice = false;
                 return false;
@@ -1026,7 +1037,7 @@
                     playSound('score');
                 }
 
-                // RIMUOVI OSTACOLO
+                // RIMUOVI
                 if (newRight > window.innerWidth + vwToPx(15)) {
                     obstacle.remove();
                     obstacles.splice(i, 1);
@@ -1057,7 +1068,7 @@
         function startGame() {
             if (gameActive) return;
             
-            console.log('🎮 START');
+            console.log('🚀 GIOCO AVVIATO');
             
             gameActive = true;
             gamePaused = false;
@@ -1075,7 +1086,6 @@
             
             if (gameLoopId) cancelAnimationFrame(gameLoopId);
             if (obstacleIntervalId) clearInterval(obstacleIntervalId);
-            if (difficultyIntervalId) clearInterval(difficultyIntervalId);
             
             rooster.style.bottom = vhToPx(15) + 'px';
             rooster.style.opacity = '1';
@@ -1101,6 +1111,8 @@
 
         // ========== FINE GIOCO ==========
         function endGame() {
+            console.log('💀 GAME OVER');
+            
             gameActive = false;
             gamePaused = false;
             rooster.classList.remove('running');
@@ -1109,7 +1121,6 @@
             
             if (gameLoopId) cancelAnimationFrame(gameLoopId);
             if (obstacleIntervalId) clearInterval(obstacleIntervalId);
-            if (difficultyIntervalId) clearInterval(difficultyIntervalId);
             
             if (score > highScore) {
                 highScore = score;
@@ -1124,25 +1135,73 @@
             gameOverScreen.classList.remove('hidden');
         }
 
-        // ========== EVENT LISTENERS ==========
-        startBtn.addEventListener('click', async (e) => {
+        // ========== EVENT LISTENERS - FIX MOBILE ==========
+        
+        // TOUCH per i pulsanti
+        startBtn.addEventListener('touchstart', async (e) => {
             e.preventDefault();
             e.stopPropagation();
+            console.log('👆 START button touched');
+            startBtn.style.transform = 'scale(0.95)';
             await initAudio();
-            setTimeout(() => startGame(), 300);
+            setTimeout(() => startGame(), 200);
+        }, { passive: false });
+
+        startBtn.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            startBtn.style.transform = 'scale(1)';
+        }, { passive: false });
+
+        testBtn.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('👆 TEST button touched');
+            testBtn.style.transform = 'scale(0.95)';
+            statusElement.textContent = '✅ Tocca per saltare!';
+            usingVoice = false;
+            setTimeout(() => startGame(), 200);
+        }, { passive: false });
+
+        testBtn.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            testBtn.style.transform = 'scale(1)';
+        }, { passive: false });
+
+        restartBtn.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('👆 RESTART button touched');
+            restartBtn.style.transform = 'scale(0.95)';
+            if (usingVoice && isListening) {
+                monitorVoice();
+            }
+            setTimeout(() => startGame(), 200);
+        }, { passive: false });
+
+        restartBtn.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            restartBtn.style.transform = 'scale(1)';
+        }, { passive: false });
+
+        // CLICK per desktop
+        startBtn.addEventListener('click', async (e) => {
+            e.preventDefault();
+            console.log('🖱️ START button clicked');
+            await initAudio();
+            setTimeout(() => startGame(), 200);
         });
 
         testBtn.addEventListener('click', (e) => {
             e.preventDefault();
-            e.stopPropagation();
-            statusElement.textContent = '✅ Tocca per saltare!';
+            console.log('🖱️ TEST button clicked');
+            statusElement.textContent = '✅ Usa touch o spazio!';
             usingVoice = false;
             startGame();
         });
 
         restartBtn.addEventListener('click', (e) => {
             e.preventDefault();
-            e.stopPropagation();
+            console.log('🖱️ RESTART button clicked');
             if (usingVoice && isListening) {
                 monitorVoice();
             }
@@ -1160,37 +1219,39 @@
             }
         });
 
-        // TOUCH
-        let touchStartTime = 0;
-        
+        // TOUCH sul game container (per saltare)
         gameContainer.addEventListener('touchstart', (e) => {
-            touchStartTime = Date.now();
-            if (gameActive && !gamePaused && e.target === gameContainer) {
-                e.preventDefault();
-                jump();
+            if (gameActive && !gamePaused) {
+                const target = e.target;
+                // Salta solo se tocchi il game container, non i pulsanti
+                if (target === gameContainer || target.classList.contains('obstacle') || 
+                    target === rooster || target === ground) {
+                    e.preventDefault();
+                    console.log('👆 Jump!');
+                    jump();
+                }
             }
         }, { passive: false });
 
-        gameContainer.addEventListener('touchend', (e) => {
-            e.preventDefault();
-        }, { passive: false });
-
-        // CLICK
+        // CLICK sul game container
         gameContainer.addEventListener('click', (e) => {
-            if (gameActive && !gamePaused && e.target === gameContainer) {
-                jump();
+            if (gameActive && !gamePaused) {
+                const target = e.target;
+                if (target !== startBtn && target !== testBtn && target !== restartBtn) {
+                    jump();
+                }
             }
         });
 
         // INIZIALIZZA
         window.addEventListener('load', () => {
+            console.log('✅ Pagina caricata');
             initGrass();
             if (highScore > 0) {
                 statusElement.textContent = `🏆 Record: ${highScore}`;
             }
         });
 
-        // Resize
         window.addEventListener('resize', () => {
             if (!gameActive) initGrass();
         });
