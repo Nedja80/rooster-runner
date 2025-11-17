@@ -2,10 +2,12 @@
 <html lang="it">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="mobile-web-app-capable" content="yes">
-    <title>🐓 Rooster Runner - Gioco Professionale</title>
+    <meta name="theme-color" content="#1e3c72">
+    <title>🐓 Rooster Runner</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Poppins:wght@400;600;700;800&display=swap');
         
@@ -22,31 +24,25 @@
         html, body {
             width: 100%;
             height: 100%;
-            overflow: hidden;
             position: fixed;
+            overflow: hidden;
+            font-family: 'Poppins', sans-serif;
+            background: #000;
             touch-action: none;
             overscroll-behavior: none;
-        }
-
-        body {
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #7e22ce 100%);
-            display: flex;
-            justify-content: center;
-            align-items: center;
         }
 
         #gameWrapper {
             width: 100vw;
             height: 100vh;
-            height: 100dvh; /* Dynamic viewport height per mobile */
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            height: 100dvh;
             position: fixed;
             top: 0;
             left: 0;
-            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #7e22ce 100%);
         }
 
         #gameContainer {
@@ -55,15 +51,12 @@
             height: 100%;
             background: linear-gradient(to bottom, 
                 #87CEEB 0%, 
-                #B0E0E6 30%,
-                #F0F8FF 60%, 
-                #90EE90 60%,
+                #B0E0E6 25%,
+                #E0F6FF 45%, 
+                #90EE90 45%,
                 #228B22 100%
             );
             overflow: hidden;
-            box-shadow: 
-                0 30px 80px rgba(0,0,0,0.5),
-                inset 0 -10px 30px rgba(0,0,0,0.2);
             image-rendering: -webkit-optimize-contrast;
             image-rendering: crisp-edges;
         }
@@ -73,72 +66,73 @@
             position: absolute;
             top: 40px;
             right: 80px;
-            width: 80px;
-            height: 80px;
+            width: 70px;
+            height: 70px;
             background: radial-gradient(circle, #FFD700 0%, #FFA500 100%);
             border-radius: 50%;
-            box-shadow: 0 0 60px rgba(255, 215, 0, 0.8);
+            box-shadow: 0 0 50px rgba(255, 215, 0, 0.7);
             animation: sunGlow 3s ease-in-out infinite;
             z-index: 5;
         }
 
         @keyframes sunGlow {
-            0%, 100% { box-shadow: 0 0 60px rgba(255, 215, 0, 0.8); }
-            50% { box-shadow: 0 0 100px rgba(255, 215, 0, 1); }
+            0%, 100% { box-shadow: 0 0 50px rgba(255, 215, 0, 0.7); }
+            50% { box-shadow: 0 0 80px rgba(255, 215, 0, 1); }
         }
 
-        /* NUVOLE */
+        /* NUVOLE - PIÙ ALTE */
         .cloud {
             position: absolute;
-            font-size: 50px;
-            opacity: 0.8;
+            font-size: 45px;
+            opacity: 0.75;
             z-index: 10;
         }
 
         .cloud1 {
             top: 80px;
-            left: 10%;
-            animation: cloudMove1 30s linear infinite;
+            left: 15%;
+            animation: cloudMove1 35s linear infinite;
         }
 
         .cloud2 {
-            top: 120px;
-            left: 50%;
-            animation: cloudMove2 40s linear infinite;
+            top: 130px;
+            left: 60%;
+            animation: cloudMove2 45s linear infinite;
         }
 
         .cloud3 {
             top: 60px;
-            right: 20%;
-            animation: cloudMove3 35s linear infinite;
+            right: 25%;
+            animation: cloudMove3 40s linear infinite;
         }
 
         @keyframes cloudMove1 {
             from { transform: translateX(0); }
-            to { transform: translateX(-1500px); }
+            to { transform: translateX(-1800px); }
         }
 
         @keyframes cloudMove2 {
             from { transform: translateX(0); }
-            to { transform: translateX(-1500px); }
+            to { transform: translateX(-1800px); }
         }
 
         @keyframes cloudMove3 {
             from { transform: translateX(0); }
-            to { transform: translateX(-1500px); }
+            to { transform: translateX(-1800px); }
         }
 
-        /* MONTAGNE */
+        /* MONTAGNE - MOLTO PIÙ IN ALTO! */
         .mountain {
             position: absolute;
-            bottom: 150px;
-            font-size: 180px;
-            opacity: 0.4;
+            bottom: 280px; /* ALZATE DA 130px A 280px! */
+            font-size: 200px;
+            opacity: 0.35;
             z-index: 5;
+            filter: drop-shadow(0 5px 15px rgba(0,0,0,0.2));
         }
 
         .mountain1 {
-            left: 10%;
+            left: 8%;
         }
 
         .mountain2 {
@@ -146,10 +140,25 @@
         }
 
         .mountain3 {
-            right: 15%;
+            right: 12%;
         }
 
-        /* TERRENO - Altezza fissa responsive */
+        /* Responsive montagne */
+        @media (max-width: 1200px) {
+            .mountain {
+                bottom: 240px;
+                font-size: 160px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .mountain {
+                bottom: 200px;
+                font-size: 120px;
+            }
+        }
+
+        /* TERRENO */
         #ground {
             position: absolute;
             bottom: 0;
@@ -165,18 +174,6 @@
             z-index: 20;
         }
 
-        @media (min-width: 768px) {
-            #ground {
-                height: 150px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            #ground {
-                height: 100px;
-            }
-        }
-
         /* ERBA */
         .grass-container {
             position: absolute;
@@ -187,22 +184,10 @@
             z-index: 25;
         }
 
-        @media (min-width: 768px) {
-            .grass-container {
-                bottom: 145px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .grass-container {
-                bottom: 95px;
-            }
-        }
-
         .grass {
             position: absolute;
             bottom: 0;
-            font-size: 30px;
+            font-size: 28px;
             animation: grassMove 3s linear infinite;
         }
 
@@ -211,12 +196,12 @@
             to { transform: translateX(-100px); }
         }
 
-        /* GALLO - Dimensioni e posizione ottimizzate */
+        /* GALLO - POSIZIONE FISSA SUL TERRENO */
         #rooster {
             position: absolute;
-            bottom: 120px;
-            left: 100px;
-            font-size: 70px;
+            bottom: 120px; /* SUL TERRENO */
+            left: 120px;
+            font-size: 80px;
             z-index: 50;
             filter: drop-shadow(5px 8px 12px rgba(0,0,0,0.5));
             transition: none;
@@ -224,22 +209,6 @@
             display: flex;
             align-items: flex-end;
             justify-content: center;
-        }
-
-        @media (min-width: 768px) {
-            #rooster {
-                font-size: 90px;
-                bottom: 150px;
-                left: 150px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            #rooster {
-                font-size: 55px;
-                bottom: 100px;
-                left: 80px;
-            }
         }
 
         #rooster.running {
@@ -252,11 +221,11 @@
             100% { transform: scaleX(-1) translateY(0px); }
         }
 
-        /* OSTACOLI - Stessa altezza del gallo */
+        /* OSTACOLI - STESSA ALTEZZA DEL GALLO */
         .obstacle {
             position: absolute;
-            bottom: 120px;
-            font-size: 60px;
+            bottom: 120px; /* STESSA ALTEZZA DEL GALLO! */
+            font-size: 65px;
             filter: drop-shadow(3px 5px 8px rgba(0,0,0,0.4));
             z-index: 40;
             display: flex;
@@ -265,61 +234,35 @@
             will-change: transform;
         }
 
-        @media (min-width: 768px) {
-            .obstacle {
-                font-size: 70px;
-                bottom: 150px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .obstacle {
-                font-size: 50px;
-                bottom: 100px;
-            }
-        }
-
         /* HUD */
         #hud {
             position: absolute;
             top: 0;
             left: 0;
             right: 0;
-            padding: 15px 20px;
+            padding: 20px 30px;
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
             z-index: 100;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.4) 0%, transparent 100%);
-        }
-
-        @media (min-width: 768px) {
-            #hud {
-                padding: 25px 35px;
-            }
+            background: linear-gradient(to bottom, rgba(0,0,0,0.35) 0%, transparent 100%);
         }
 
         #scorePanel {
             background: linear-gradient(135deg, 
-                rgba(255,255,255,0.98) 0%, 
-                rgba(240,240,250,0.98) 100%);
-            padding: 15px 25px;
-            border-radius: 18px;
+                rgba(255,255,255,0.96) 0%, 
+                rgba(240,240,250,0.96) 100%);
+            padding: 18px 30px;
+            border-radius: 20px;
             box-shadow: 
-                0 10px 30px rgba(0,0,0,0.4),
+                0 10px 30px rgba(0,0,0,0.35),
                 inset 0 1px 0 rgba(255,255,255,1),
-                0 0 20px rgba(102, 126, 234, 0.3);
+                0 0 25px rgba(102, 126, 234, 0.3);
             border: 2px solid rgba(255,255,255,0.6);
         }
 
-        @media (min-width: 768px) {
-            #scorePanel {
-                padding: 22px 35px;
-            }
-        }
-
         #scorePanel h3 {
-            font-size: 10px;
+            font-size: 11px;
             color: #888;
             margin-bottom: 6px;
             font-weight: 600;
@@ -327,15 +270,8 @@
             letter-spacing: 1.5px;
         }
 
-        @media (min-width: 768px) {
-            #scorePanel h3 {
-                font-size: 14px;
-                margin-bottom: 8px;
-            }
-        }
-
         #score {
-            font-size: 32px;
+            font-size: 40px;
             font-weight: 800;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             -webkit-background-clip: text;
@@ -343,47 +279,27 @@
             background-clip: text;
             font-family: 'Press Start 2P', cursive;
             filter: drop-shadow(0 2px 4px rgba(102, 126, 234, 0.3));
-            transition: transform 0.3s ease, filter 0.3s ease;
-        }
-
-        @media (min-width: 768px) {
-            #score {
-                font-size: 48px;
-            }
         }
 
         #livesPanel {
             display: flex;
-            gap: 8px;
+            gap: 10px;
             background: linear-gradient(135deg, 
-                rgba(255,255,255,0.98) 0%, 
-                rgba(250,240,240,0.98) 100%);
-            padding: 15px 20px;
-            border-radius: 18px;
+                rgba(255,255,255,0.96) 0%, 
+                rgba(250,240,240,0.96) 100%);
+            padding: 18px 25px;
+            border-radius: 20px;
             box-shadow: 
-                0 10px 30px rgba(0,0,0,0.4),
+                0 10px 30px rgba(0,0,0,0.35),
                 inset 0 1px 0 rgba(255,255,255,1),
-                0 0 20px rgba(255, 107, 107, 0.3);
+                0 0 25px rgba(255, 107, 107, 0.3);
             border: 2px solid rgba(255,255,255,0.6);
         }
 
-        @media (min-width: 768px) {
-            #livesPanel {
-                padding: 22px 30px;
-                gap: 12px;
-            }
-        }
-
         .heart {
-            font-size: 28px;
+            font-size: 30px;
             transition: all 0.4s;
             filter: drop-shadow(0 3px 5px rgba(0,0,0,0.3));
-        }
-
-        @media (min-width: 768px) {
-            .heart {
-                font-size: 35px;
-            }
         }
 
         .heart.lost {
@@ -395,42 +311,27 @@
         /* INDICATORE VELOCITÀ */
         #speedIndicator {
             position: absolute;
-            top: 80px;
-            left: 20px;
-            background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,240,240,0.95) 100%);
-            padding: 12px 20px;
-            border-radius: 15px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+            top: 95px;
+            left: 30px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.94) 0%, rgba(255,240,240,0.94) 100%);
+            padding: 14px 22px;
+            border-radius: 16px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3), 0 0 20px rgba(255,107,107,0.2);
             border: 2px solid rgba(255,255,255,0.5);
             z-index: 100;
         }
 
-        @media (min-width: 768px) {
-            #speedIndicator {
-                top: 120px;
-                left: 35px;
-                padding: 15px 25px;
-            }
-        }
-
         #speedIndicator div:first-child {
-            font-size: 9px;
+            font-size: 10px;
             color: #888;
             font-weight: 600;
             text-transform: uppercase;
-            letter-spacing: 1.5px;
+            letter-spacing: 1.2px;
             margin-bottom: 4px;
         }
 
-        @media (min-width: 768px) {
-            #speedIndicator div:first-child {
-                font-size: 11px;
-                margin-bottom: 5px;
-            }
-        }
-
         #speedValue {
-            font-size: 22px;
+            font-size: 24px;
             font-weight: 800;
             background: linear-gradient(135deg, #f77062 0%, #fe5196 100%);
             -webkit-background-clip: text;
@@ -438,57 +339,41 @@
             font-family: 'Press Start 2P', cursive;
         }
 
-        @media (min-width: 768px) {
-            #speedValue {
-                font-size: 28px;
-            }
-        }
-
         /* INDICATORE VOCALE */
         #voiceIndicator {
             position: absolute;
-            bottom: 30px;
-            right: 30px;
-            width: 70px;
-            height: 70px;
+            bottom: 35px;
+            right: 35px;
+            width: 75px;
+            height: 75px;
             border-radius: 50%;
             background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 36px;
+            font-size: 38px;
             box-shadow: 
-                0 12px 35px rgba(238, 90, 111, 0.6),
-                0 0 30px rgba(255, 107, 107, 0.4),
+                0 12px 30px rgba(238, 90, 111, 0.55),
+                0 0 25px rgba(255, 107, 107, 0.4),
                 inset 0 2px 0 rgba(255,255,255,0.3);
             z-index: 100;
             transition: all 0.3s;
-            border: 4px solid rgba(255,255,255,0.5);
+            border: 3px solid rgba(255,255,255,0.5);
             cursor: pointer;
             animation: voiceGlow 2s ease-in-out infinite;
-        }
-
-        @media (min-width: 768px) {
-            #voiceIndicator {
-                bottom: 40px;
-                right: 40px;
-                width: 85px;
-                height: 85px;
-                font-size: 42px;
-            }
         }
 
         @keyframes voiceGlow {
             0%, 100% {
                 box-shadow: 
-                    0 12px 35px rgba(238, 90, 111, 0.6),
-                    0 0 30px rgba(255, 107, 107, 0.4),
+                    0 12px 30px rgba(238, 90, 111, 0.55),
+                    0 0 25px rgba(255, 107, 107, 0.4),
                     inset 0 2px 0 rgba(255,255,255,0.3);
             }
             50% {
                 box-shadow: 
-                    0 12px 35px rgba(238, 90, 111, 0.8),
-                    0 0 50px rgba(255, 107, 107, 0.8),
+                    0 12px 35px rgba(238, 90, 111, 0.75),
+                    0 0 45px rgba(255, 107, 107, 0.7),
                     inset 0 2px 0 rgba(255,255,255,0.3);
             }
         }
@@ -496,9 +381,9 @@
         #voiceIndicator.active {
             background: linear-gradient(135deg, #51cf66 0%, #40c057 100%);
             box-shadow: 
-                0 12px 40px rgba(81, 207, 102, 0.8),
-                0 0 50px rgba(81, 207, 102, 0.9);
-            transform: scale(1.2);
+                0 12px 38px rgba(81, 207, 102, 0.75),
+                0 0 45px rgba(81, 207, 102, 0.85);
+            transform: scale(1.18);
         }
 
         #voiceIndicator.listening::before {
@@ -507,7 +392,7 @@
             width: 100%;
             height: 100%;
             border-radius: 50%;
-            border: 4px solid rgba(81, 207, 102, 0.8);
+            border: 3px solid rgba(81, 207, 102, 0.75);
             animation: voiceRipple 2s ease-out infinite;
         }
 
@@ -517,7 +402,7 @@
                 opacity: 1;
             }
             100% {
-                transform: scale(1.8);
+                transform: scale(1.75);
                 opacity: 0;
             }
         }
@@ -530,25 +415,25 @@
             width: 100%;
             height: 100%;
             background: 
-                radial-gradient(circle at 20% 50%, rgba(102, 126, 234, 0.3) 0%, transparent 50%),
-                radial-gradient(circle at 80% 80%, rgba(118, 75, 162, 0.3) 0%, transparent 50%),
-                radial-gradient(circle at 40% 90%, rgba(81, 207, 102, 0.2) 0%, transparent 50%),
-                rgba(0, 0, 0, 0.94);
+                radial-gradient(circle at 20% 50%, rgba(102, 126, 234, 0.28) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(118, 75, 162, 0.28) 0%, transparent 50%),
+                rgba(0, 0, 0, 0.93);
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             z-index: 200;
-            backdrop-filter: blur(15px);
-            animation: screenFadeIn 0.5s ease-out;
+            backdrop-filter: blur(14px);
+            animation: screenFadeIn 0.45s ease-out;
             overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
             padding: 20px;
         }
 
         @keyframes screenFadeIn {
             from {
                 opacity: 0;
-                transform: scale(0.95);
+                transform: scale(0.96);
             }
             to {
                 opacity: 1;
@@ -558,12 +443,12 @@
 
         .screen h1 {
             color: white;
-            font-size: 42px;
+            font-size: 52px;
             font-weight: 800;
             margin-bottom: 15px;
             text-shadow: 
-                0 5px 25px rgba(0,0,0,0.6),
-                0 0 60px rgba(255,215,0,0.3);
+                0 5px 25px rgba(0,0,0,0.55),
+                0 0 50px rgba(255,215,0,0.35);
             letter-spacing: 3px;
             font-family: 'Press Start 2P', cursive;
             text-align: center;
@@ -576,171 +461,97 @@
             background-size: 200% auto;
         }
 
-        @media (min-width: 768px) {
-            .screen h1 {
-                font-size: 72px;
-                margin-bottom: 20px;
-            }
-        }
-
         @keyframes titleShine {
-            0%, 100% {
-                background-position: 0% 50%;
-            }
-            50% {
-                background-position: 100% 50%;
-            }
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
         }
 
         .screen h1 .rooster-emoji {
             display: inline-block;
             animation: roosterBounce 1.2s ease-in-out infinite;
-            font-size: 48px;
-        }
-
-        @media (min-width: 768px) {
-            .screen h1 .rooster-emoji {
-                font-size: 75px;
-            }
+            font-size: 58px;
         }
 
         @keyframes roosterBounce {
             0%, 100% { transform: translateY(0) rotate(-5deg); }
-            50% { transform: translateY(-15px) rotate(5deg); }
+            50% { transform: translateY(-14px) rotate(5deg); }
         }
 
         .subtitle {
-            color: rgba(255,255,255,0.95);
-            font-size: 16px;
-            margin-bottom: 20px;
+            color: rgba(255,255,255,0.94);
+            font-size: 18px;
+            margin-bottom: 22px;
             font-weight: 600;
             text-shadow: 0 2px 10px rgba(0,0,0,0.5);
             text-align: center;
-            padding: 0 10px;
-        }
-
-        @media (min-width: 768px) {
-            .subtitle {
-                font-size: 22px;
-                margin-bottom: 30px;
-            }
+            padding: 0 15px;
         }
 
         #instructions {
             background: linear-gradient(135deg, 
-                rgba(255, 255, 255, 0.15) 0%, 
+                rgba(255, 255, 255, 0.14) 0%, 
                 rgba(255, 255, 255, 0.08) 100%);
-            padding: 20px 25px;
-            border-radius: 20px;
-            margin: 0 10px 20px 10px;
-            max-width: 800px;
+            padding: 25px 35px;
+            border-radius: 22px;
+            margin: 0 10px 25px 10px;
+            max-width: 750px;
             width: calc(100% - 20px);
-            backdrop-filter: blur(30px);
-            border: 2px solid rgba(255,255,255,0.3);
+            backdrop-filter: blur(28px);
+            border: 2px solid rgba(255,255,255,0.28);
             box-shadow: 
-                0 15px 50px rgba(0,0,0,0.4),
-                inset 0 1px 0 rgba(255,255,255,0.4);
-        }
-
-        @media (min-width: 768px) {
-            #instructions {
-                padding: 35px 50px;
-                margin: 0 20px 30px 20px;
-            }
+                0 15px 45px rgba(0,0,0,0.35),
+                inset 0 1px 0 rgba(255,255,255,0.35);
         }
 
         #instructions p {
             color: white;
-            font-size: 14px;
-            margin: 12px 0;
-            line-height: 1.5;
+            font-size: 16px;
+            margin: 13px 0;
+            line-height: 1.55;
             text-shadow: 0 2px 8px rgba(0,0,0,0.5);
-        }
-
-        @media (min-width: 768px) {
-            #instructions p {
-                font-size: 18px;
-                margin: 16px 0;
-                line-height: 1.6;
-            }
         }
 
         #instructions p strong {
             color: #ffd43b;
             font-weight: 800;
-            font-size: 16px;
+            font-size: 18px;
             text-shadow: 0 0 10px rgba(255, 212, 59, 0.6);
-        }
-
-        @media (min-width: 768px) {
-            #instructions p strong {
-                font-size: 20px;
-            }
         }
 
         .button-group {
             display: flex;
-            gap: 15px;
+            gap: 18px;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            margin-top: 20px;
+            margin-top: 25px;
             width: 100%;
-            max-width: 500px;
-            padding: 0 10px;
-        }
-
-        @media (min-width: 768px) {
-            .button-group {
-                gap: 25px;
-                margin-top: 30px;
-                max-width: 700px;
-            }
+            max-width: 550px;
+            padding: 0 15px;
         }
 
         button {
-            padding: 18px 40px;
-            font-size: 20px;
+            padding: 20px 45px;
+            font-size: 22px;
             font-weight: 900;
             font-family: 'Poppins', sans-serif;
             background: linear-gradient(135deg, #4A90E2 0%, #357ABD 100%);
             color: white;
             border: none;
-            border-radius: 15px;
+            border-radius: 16px;
             cursor: pointer;
             box-shadow: 
                 0 8px 20px rgba(74, 144, 226, 0.4),
-                0 0 0 3px rgba(255,255,255,0.3),
-                inset 0 2px 0 rgba(255,255,255,0.3);
-            transition: all 0.3s ease;
+                0 0 0 3px rgba(255,255,255,0.28),
+                inset 0 2px 0 rgba(255,255,255,0.28);
+            transition: all 0.28s ease;
             text-transform: uppercase;
             letter-spacing: 1.5px;
             position: relative;
             overflow: visible;
             width: 100%;
-            max-width: 350px;
+            max-width: 380px;
             z-index: 1000;
-        }
-
-        @media (min-width: 768px) {
-            button {
-                padding: 25px 60px;
-                font-size: 28px;
-                max-width: 400px;
-            }
-        }
-
-        button::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.3);
-            transform: translate(-50%, -50%);
-            transition: width 0.5s, height 0.5s;
         }
 
         button:active {
@@ -751,54 +562,33 @@
             background: linear-gradient(135deg, #51cf66 0%, #40c057 100%);
             box-shadow: 
                 0 8px 20px rgba(81, 207, 102, 0.4),
-                0 0 0 3px rgba(255,255,255,0.3),
-                inset 0 2px 0 rgba(255,255,255,0.3);
+                0 0 0 3px rgba(255,255,255,0.28),
+                inset 0 2px 0 rgba(255,255,255,0.28);
         }
 
         #finalScore {
             color: #ffd43b;
-            font-size: 42px;
+            font-size: 48px;
             font-weight: 800;
-            margin: 20px 0;
-            text-shadow: 0 5px 25px rgba(255, 212, 59, 0.6);
+            margin: 25px 0;
+            text-shadow: 0 5px 25px rgba(255, 212, 59, 0.65);
             font-family: 'Press Start 2P', cursive;
         }
 
-        @media (min-width: 768px) {
-            #finalScore {
-                font-size: 56px;
-                margin: 30px 0;
-            }
-        }
-
         #highScore {
-            color: rgba(255,255,255,0.8);
-            font-size: 18px;
-            margin-bottom: 20px;
-        }
-
-        @media (min-width: 768px) {
-            #highScore {
-                font-size: 24px;
-                margin-bottom: 25px;
-            }
+            color: rgba(255,255,255,0.82);
+            font-size: 20px;
+            margin-bottom: 22px;
         }
 
         #status {
             color: #ffd43b;
-            font-size: 14px;
-            margin-top: 15px;
+            font-size: 16px;
+            margin-top: 18px;
             min-height: 25px;
             font-weight: 700;
             text-align: center;
-            padding: 0 10px;
-        }
-
-        @media (min-width: 768px) {
-            #status {
-                font-size: 18px;
-                margin-top: 25px;
-            }
+            padding: 0 15px;
         }
 
         .hidden {
@@ -819,22 +609,16 @@
         }
 
         .damage {
-            animation: damageEffect 0.6s ease-in-out;
+            animation: damageEffect 0.55s ease-in-out;
         }
 
-        /* PARTICELLE SALTO */
+        /* PARTICELLE */
         .particle {
             position: absolute;
-            font-size: 20px;
+            font-size: 22px;
             pointer-events: none;
             z-index: 35;
-            animation: particleRise 1.2s ease-out forwards;
-        }
-
-        @media (min-width: 768px) {
-            .particle {
-                font-size: 25px;
-            }
+            animation: particleRise 1.1s ease-out forwards;
         }
 
         @keyframes particleRise {
@@ -844,7 +628,7 @@
             }
             100% {
                 opacity: 0;
-                transform: translateY(-80px) scale(0.3) rotate(360deg);
+                transform: translateY(-75px) scale(0.3) rotate(360deg);
             }
         }
 
@@ -855,28 +639,21 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.85);
+            background: rgba(0, 0, 0, 0.86);
             z-index: 150;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(12px);
         }
 
         #pauseOverlay h2 {
             color: white;
-            font-size: 42px;
+            font-size: 52px;
             font-family: 'Press Start 2P', cursive;
-            margin-bottom: 30px;
-            text-shadow: 0 5px 25px rgba(255, 215, 0, 0.6);
-        }
-
-        @media (min-width: 768px) {
-            #pauseOverlay h2 {
-                font-size: 64px;
-                margin-bottom: 40px;
-            }
+            margin-bottom: 35px;
+            text-shadow: 0 5px 25px rgba(255, 215, 0, 0.65);
         }
 
         /* SCINTILLE */
@@ -886,7 +663,7 @@
                 opacity: 1;
             }
             100% {
-                transform: translate(-50%, -50%) scale(3) rotate(180deg);
+                transform: translate(-50%, -50%) scale(2.8) rotate(180deg);
                 opacity: 0;
             }
         }
@@ -897,36 +674,89 @@
             height: 20px;
             pointer-events: none;
             z-index: 2000;
-            animation: sparkle 0.8s ease-out forwards;
+            animation: sparkle 0.75s ease-out forwards;
         }
 
-        /* DEBUG INFO */
-        #debugInfo {
-            position: absolute;
-            bottom: 15px;
-            left: 15px;
-            background: rgba(0, 0, 0, 0.8);
-            color: #0f0;
-            padding: 8px 12px;
-            border-radius: 8px;
-            font-family: 'Courier New', monospace;
-            font-size: 11px;
-            z-index: 150;
-            display: none;
-            line-height: 1.5;
-        }
-
-        @media (min-width: 768px) {
-            #debugInfo {
-                bottom: 20px;
-                left: 20px;
-                padding: 10px 15px;
-                font-size: 12px;
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .sun {
+                top: 30px;
+                right: 60px;
+                width: 55px;
+                height: 55px;
             }
-        }
-
-        #debugInfo.show {
-            display: block;
+            
+            #rooster {
+                font-size: 60px;
+                left: 90px;
+            }
+            
+            .obstacle {
+                font-size: 50px;
+            }
+            
+            #hud {
+                padding: 15px 20px;
+            }
+            
+            #scorePanel {
+                padding: 14px 22px;
+            }
+            
+            #score {
+                font-size: 32px;
+            }
+            
+            .heart {
+                font-size: 24px;
+            }
+            
+            #speedIndicator {
+                top: 80px;
+                left: 20px;
+                padding: 11px 18px;
+            }
+            
+            #speedValue {
+                font-size: 20px;
+            }
+            
+            #voiceIndicator {
+                width: 62px;
+                height: 62px;
+                font-size: 32px;
+                bottom: 28px;
+                right: 28px;
+            }
+            
+            .screen h1 {
+                font-size: 38px;
+            }
+            
+            .screen h1 .rooster-emoji {
+                font-size: 44px;
+            }
+            
+            .subtitle {
+                font-size: 15px;
+            }
+            
+            #instructions {
+                padding: 20px 28px;
+            }
+            
+            #instructions p {
+                font-size: 14px;
+            }
+            
+            #instructions p strong {
+                font-size: 16px;
+            }
+            
+            button {
+                padding: 17px 38px;
+                font-size: 19px;
+            }
         }
     </style>
 </head>
@@ -973,15 +803,6 @@
             <!-- Terreno -->
             <div id="ground"></div>
 
-            <!-- Debug Info -->
-            <div id="debugInfo">
-                <div>🎮 DEBUG MODE</div>
-                <div id="debugLives">Vite: 3</div>
-                <div id="debugInvincible">Invincibile: NO</div>
-                <div id="debugObstacles">Ostacoli: 0</div>
-                <div id="debugLastAction">Ultima azione: -</div>
-            </div>
-
             <!-- Schermata Pausa -->
             <div id="pauseOverlay" class="hidden">
                 <h2>⏸️ PAUSA</h2>
@@ -1024,6 +845,11 @@
     </div>
 
     <script>
+        // Previeni zoom e gesture
+        document.addEventListener('gesturestart', e => e.preventDefault());
+        document.addEventListener('gesturechange', e => e.preventDefault());
+        document.addEventListener('gestureend', e => e.preventDefault());
+        
         // ========== ELEMENTI DOM ==========
         const rooster = document.getElementById('rooster');
         const gameContainer = document.getElementById('gameContainer');
@@ -1040,11 +866,6 @@
         const highScoreElement = document.getElementById('highScore');
         const statusElement = document.getElementById('status');
         const grassContainer = document.getElementById('grassContainer');
-        const debugInfo = document.getElementById('debugInfo');
-        const debugLives = document.getElementById('debugLives');
-        const debugInvincible = document.getElementById('debugInvincible');
-        const debugObstacles = document.getElementById('debugObstacles');
-        const debugLastAction = document.getElementById('debugLastAction');
         const hearts = [
             document.getElementById('heart1'),
             document.getElementById('heart2'),
@@ -1066,7 +887,7 @@
         let invincible = false;
         let usingVoice = false;
         let lastJumpTime = 0;
-        const JUMP_COOLDOWN = 300;
+        const JUMP_COOLDOWN = 280;
         
         // ========== AUDIO ==========
         let audioContext = null;
@@ -1076,14 +897,14 @@
         let isListening = false;
         let voiceCheckId = null;
 
-        // ========== COSTANTI OTTIMIZZATE ==========
-        const JUMP_HEIGHT = 250; // AUMENTATO DA 180 A 250 - Salto molto più alto!
-        const JUMP_DURATION = 700;
-        const BASE_OBSTACLE_SPEED = 8;
-        const BASE_OBSTACLE_INTERVAL = 1600;
+        // ========== COSTANTI PERFETTE ==========
+        const JUMP_HEIGHT = 260; // Salto alto
+        const JUMP_DURATION = 680;
+        const BASE_OBSTACLE_SPEED = 7.5;
+        const BASE_OBSTACLE_INTERVAL = 1650;
         const VOICE_THRESHOLD = 30;
         const INVINCIBLE_TIME = 1500;
-        const MAX_SPEED_MULTIPLIER = 3.5;
+        const MAX_SPEED_MULTIPLIER = 3.3;
         const DIFFICULTY_INCREASE_RATE = 500;
 
         // ========== INIZIALIZZA ERBA ==========
@@ -1096,16 +917,6 @@
                 grass.style.left = (i * 30) + 'px';
                 grass.style.animationDelay = (i * 0.1) + 's';
                 grassContainer.appendChild(grass);
-            }
-        }
-
-        // ========== AGGIORNA DEBUG INFO ==========
-        function updateDebugInfo(action = null) {
-            if (debugLives) debugLives.textContent = `Vite: ${lives}`;
-            if (debugInvincible) debugInvincible.textContent = `Invincibile: ${invincible ? 'SÌ' : 'NO'}`;
-            if (debugObstacles) debugObstacles.textContent = `Ostacoli: ${obstacles.length}`;
-            if (action && debugLastAction) {
-                debugLastAction.textContent = `Ultima azione: ${action}`;
             }
         }
 
@@ -1125,27 +936,27 @@
                 switch(type) {
                     case 'jump':
                         oscillator.frequency.setValueAtTime(220, audioContext.currentTime);
-                        oscillator.frequency.exponentialRampToValueAtTime(660, audioContext.currentTime + 0.15);
-                        gainNode.gain.setValueAtTime(0.25, audioContext.currentTime);
-                        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.15);
+                        oscillator.frequency.exponentialRampToValueAtTime(660, audioContext.currentTime + 0.14);
+                        gainNode.gain.setValueAtTime(0.22, audioContext.currentTime);
+                        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.14);
                         oscillator.start(audioContext.currentTime);
-                        oscillator.stop(audioContext.currentTime + 0.15);
+                        oscillator.stop(audioContext.currentTime + 0.14);
                         break;
                         
                     case 'hit':
                         oscillator.type = 'sawtooth';
                         oscillator.frequency.setValueAtTime(400, audioContext.currentTime);
-                        oscillator.frequency.exponentialRampToValueAtTime(50, audioContext.currentTime + 0.3);
-                        gainNode.gain.setValueAtTime(0.35, audioContext.currentTime);
-                        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+                        oscillator.frequency.exponentialRampToValueAtTime(50, audioContext.currentTime + 0.28);
+                        gainNode.gain.setValueAtTime(0.32, audioContext.currentTime);
+                        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.28);
                         oscillator.start(audioContext.currentTime);
-                        oscillator.stop(audioContext.currentTime + 0.3);
+                        oscillator.stop(audioContext.currentTime + 0.28);
                         break;
                         
                     case 'score':
                         oscillator.frequency.setValueAtTime(880, audioContext.currentTime);
                         oscillator.frequency.setValueAtTime(1320, audioContext.currentTime + 0.05);
-                        gainNode.gain.setValueAtTime(0.15, audioContext.currentTime);
+                        gainNode.gain.setValueAtTime(0.14, audioContext.currentTime);
                         gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.08);
                         oscillator.start(audioContext.currentTime);
                         oscillator.stop(audioContext.currentTime + 0.08);
@@ -1153,15 +964,15 @@
                         
                     case 'gameOver':
                         oscillator.frequency.setValueAtTime(440, audioContext.currentTime);
-                        oscillator.frequency.exponentialRampToValueAtTime(110, audioContext.currentTime + 0.5);
-                        gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-                        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+                        oscillator.frequency.exponentialRampToValueAtTime(110, audioContext.currentTime + 0.48);
+                        gainNode.gain.setValueAtTime(0.28, audioContext.currentTime);
+                        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.48);
                         oscillator.start(audioContext.currentTime);
-                        oscillator.stop(audioContext.currentTime + 0.5);
+                        oscillator.stop(audioContext.currentTime + 0.48);
                         break;
                 }
             } catch (error) {
-                console.error('Errore riproduzione suono:', error);
+                console.error('Errore suono:', error);
             }
         }
 
@@ -1218,7 +1029,7 @@
             const average = sum / relevantRange;
 
             if (average > VOICE_THRESHOLD * 0.5) {
-                voiceIndicator.style.transform = `scale(${1 + (average / 255) * 0.3})`;
+                voiceIndicator.style.transform = `scale(${1 + (average / 255) * 0.28})`;
             } else {
                 voiceIndicator.style.transform = 'scale(1)';
             }
@@ -1235,7 +1046,7 @@
             voiceCheckId = requestAnimationFrame(monitorVoice);
         }
 
-        // ========== STOP VOICE MONITORING ==========
+        // ========== STOP VOICE ==========
         function stopVoiceMonitoring() {
             isListening = false;
             if (voiceCheckId) {
@@ -1247,7 +1058,7 @@
                     const tracks = microphone.mediaStream.getTracks();
                     tracks.forEach(track => track.stop());
                 } catch (error) {
-                    console.error('Errore stop microfono:', error);
+                    console.error('Errore stop mic:', error);
                 }
             }
         }
@@ -1263,10 +1074,10 @@
                     particle.classList.add('particle');
                     particle.textContent = particles[Math.floor(Math.random() * particles.length)];
                     
-                    const randomOffset = (Math.random() - 0.5) * 60;
+                    const randomOffset = (Math.random() - 0.5) * 55;
                     const roosterRect = rooster.getBoundingClientRect();
                     particle.style.left = (roosterRect.left + roosterRect.width / 2 + randomOffset) + 'px';
-                    particle.style.bottom = (parseInt(window.getComputedStyle(rooster).bottom) || 120) + 'px';
+                    particle.style.bottom = '120px';
                     
                     gameContainer.appendChild(particle);
                     
@@ -1274,12 +1085,12 @@
                         if (particle.parentNode) {
                             particle.remove();
                         }
-                    }, 1200);
-                }, i * 80);
+                    }, 1100);
+                }, i * 75);
             }
         }
 
-        // ========== FUNZIONE SALTO MIGLIORATA ==========
+        // ========== FUNZIONE SALTO ==========
         function jump() {
             if (isJumping || !gameActive || gamePaused) return;
             
@@ -1294,20 +1105,13 @@
             createParticles();
             playSound('jump');
             
-            // Calcola altezza di partenza in base alla media query
-            let startBottom = 120; // Default mobile
-            if (window.innerWidth >= 768) {
-                startBottom = 150; // Desktop/tablet
-            } else if (window.innerWidth <= 480) {
-                startBottom = 100; // Mobile piccolo
-            }
-            
+            const startBottom = 120;
             const jumpStart = Date.now();
 
             function animateJump() {
                 if (!gameActive || gamePaused) {
                     rooster.style.bottom = startBottom + 'px';
-                    rooster.style.transform = 'scaleX(-1) rotate(0deg) scale(1)';
+                    rooster.style.transform = 'scaleX(-1)';
                     isJumping = false;
                     rooster.classList.add('running');
                     voiceIndicator.classList.remove('active');
@@ -1321,8 +1125,8 @@
                     const jumpProgress = Math.sin(progress * Math.PI);
                     const currentBottom = startBottom + (JUMP_HEIGHT * jumpProgress);
                     
-                    const rotation = Math.sin(progress * Math.PI * 2) * 20;
-                    const scale = 1 + jumpProgress * 0.15;
+                    const rotation = Math.sin(progress * Math.PI * 2) * 19;
+                    const scale = 1 + jumpProgress * 0.14;
                     
                     rooster.style.bottom = currentBottom + 'px';
                     rooster.style.transform = `scaleX(-1) rotate(${rotation}deg) scale(${scale})`;
@@ -1330,7 +1134,7 @@
                     requestAnimationFrame(animateJump);
                 } else {
                     rooster.style.bottom = startBottom + 'px';
-                    rooster.style.transform = 'scaleX(-1) rotate(0deg) scale(1)';
+                    rooster.style.transform = 'scaleX(-1)';
                     isJumping = false;
                     if (gameActive && !gamePaused) {
                         rooster.classList.add('running');
@@ -1350,28 +1154,14 @@
             obstacle.classList.add('obstacle');
             
             const obstacleTypes = [
-                '🌵', '🌲', '🌳', '🌴', '🎋', '🎍', '🪵', '🍂', '🌿', '🪴',
-                '🪨', '💎', '⛰️', '🗿', '🏔️', '⛏️',
-                '🔥', '⚡', '☄️', '💥', '⚠️', '☢️', '🌪️',
-                '🧱', '🚧', '📦', '🛢️', '⚙️', '🔩', '🪓',
-                '🦔', '🐍', '🦂', '🕷️', '🐝', '🦇',
-                '💀', '☠️', '🦴', '🪦',
-                '⚔️', '🗡️', '🔱', '🪃', '💣', '🧨',
-                '🚫', '⛔', '🔴', '❌',
-                '❄️', '🌩️'
+                '🌵', '🌲', '🌳', '🌴', '🪵', '🪨', '💎', 
+                '🔥', '⚡', '💥', '⚠️', '☢️', 
+                '🧱', '🚧', '📦', '⚙️', 
+                '🦔', '🐍', '💀', '☠️'
             ];
             
             obstacle.textContent = obstacleTypes[Math.floor(Math.random() * obstacleTypes.length)];
-            obstacle.style.right = '-100px';
-            
-            // Calcola bottom in base alla media query (stessa del rooster)
-            let bottomPosition = 120;
-            if (window.innerWidth >= 768) {
-                bottomPosition = 150;
-            } else if (window.innerWidth <= 480) {
-                bottomPosition = 100;
-            }
-            obstacle.style.bottom = bottomPosition + 'px';
+            obstacle.style.right = '-90px';
             
             obstacle.scored = false;
             obstacle.hit = false;
@@ -1384,16 +1174,14 @@
         // ========== PERDI VITA ==========
         function loseLife() {
             if (invincible || !gameActive) {
-                console.log('❌ Danno bloccato - invincibile o gioco non attivo');
+                console.log('❌ Danno bloccato');
                 return;
             }
             
-            console.log(`💔 Vita persa! Vite rimanenti: ${lives - 1}`);
+            console.log(`💔 Vita persa! Rimanenti: ${lives - 1}`);
             
             invincible = true;
             lives--;
-            
-            updateDebugInfo(`💔 Vita persa! Rimanenti: ${lives}`);
             
             if (lives >= 0 && lives < hearts.length) {
                 hearts[lives].classList.add('lost');
@@ -1402,21 +1190,18 @@
             playSound('hit');
             rooster.classList.add('damage');
             setTimeout(() => {
-                if (rooster) {
-                    rooster.classList.remove('damage');
-                }
-            }, 600);
+                if (rooster) rooster.classList.remove('damage');
+            }, 550);
             
             if (lives <= 0) {
-                console.log('☠️ Game Over - nessuna vita rimasta');
+                console.log('☠️ Game Over');
                 invincible = false;
                 endGame();
                 return;
             }
             
-            console.log(`🛡️ Invincibilità attivata per ${INVINCIBLE_TIME}ms`);
             let blinkCount = 0;
-            const blinkDuration = 150;
+            const blinkDuration = 145;
             const totalBlinks = Math.floor(INVINCIBLE_TIME / blinkDuration);
             
             const blinkInterval = setInterval(() => {
@@ -1424,7 +1209,6 @@
                     clearInterval(blinkInterval);
                     rooster.style.opacity = '1';
                     invincible = false;
-                    updateDebugInfo('Invincibilità terminata');
                     return;
                 }
                 
@@ -1435,7 +1219,6 @@
                     clearInterval(blinkInterval);
                     rooster.style.opacity = '1';
                     invincible = false;
-                    updateDebugInfo('✅ Invincibilità terminata');
                     console.log('✅ Invincibilità terminata');
                 }
             }, blinkDuration);
@@ -1450,7 +1233,7 @@
             
             if (speedValueElement) {
                 speedValueElement.textContent = speedMultiplier.toFixed(1) + 'x';
-                if (speedMultiplier >= 2.5) {
+                if (speedMultiplier >= 2.4) {
                     speedValueElement.style.background = 'linear-gradient(135deg, #ff0000 0%, #ff6b6b 100%)';
                 } else if (speedMultiplier >= 1.5) {
                     speedValueElement.style.background = 'linear-gradient(135deg, #ff6b00 0%, #ffa500 100%)';
@@ -1460,8 +1243,6 @@
                 speedValueElement.style.webkitBackgroundClip = 'text';
                 speedValueElement.style.webkitTextFillColor = 'transparent';
             }
-            
-            updateDebugInfo();
 
             const roosterRect = rooster.getBoundingClientRect();
 
@@ -1475,7 +1256,7 @@
 
                 const obstacleRect = obstacle.getBoundingClientRect();
 
-                // SISTEMA COLLISIONE ULTRA-SICURO con hitbox più piccole
+                // COLLISIONE PRECISA
                 if (gameActive && 
                     !invincible && 
                     !obstacle.hit && 
@@ -1485,29 +1266,28 @@
                     const hasCollision = checkCollision(roosterRect, obstacleRect);
                     
                     if (hasCollision) {
-                        console.log('💥 COLLISIONE RILEVATA!');
+                        console.log('💥 COLLISIONE!');
                         obstacle.hit = true;
                         
                         obstacle.style.filter = 'brightness(2) drop-shadow(0 0 20px rgba(255,0,0,1))';
-                        obstacle.style.transform = 'scale(1.3)';
+                        obstacle.style.transform = 'scale(1.28)';
                         setTimeout(() => {
                             if (obstacle.parentNode) {
                                 obstacle.style.filter = 'drop-shadow(3px 5px 8px rgba(0,0,0,0.4))';
                                 obstacle.style.transform = 'scale(1)';
                             }
-                        }, 300);
+                        }, 280);
                         
                         loseLife();
                     }
                 }
 
-                // SISTEMA PUNTEGGIO
-                const safeDistance = 100;
+                // PUNTEGGIO
+                const safeDistance = 95;
                 
                 if (!obstacle.passedRooster && 
                     obstacleRect.right < roosterRect.left - safeDistance) {
                     obstacle.passedRooster = true;
-                    console.log('✅ Ostacolo passato completamente');
                 }
                 
                 if (obstacle.passedRooster && !obstacle.scored && !obstacle.hit) {
@@ -1522,39 +1302,17 @@
                     playSound('score');
                     
                     console.log(`🎯 +${totalPoints} punti!`);
-                    updateDebugInfo(`🎯 +${totalPoints} punti!`);
                     
-                    scoreElement.style.transform = 'scale(1.4)';
-                    scoreElement.style.filter = 'brightness(1.6) drop-shadow(0 0 20px rgba(102, 126, 234, 0.8))';
-                    
-                    if (bonusPoints > 0) {
-                        const bonusText = document.createElement('div');
-                        bonusText.textContent = `+${totalPoints}`;
-                        bonusText.style.position = 'absolute';
-                        bonusText.style.left = roosterRect.left + 'px';
-                        bonusText.style.top = (roosterRect.top - 30) + 'px';
-                        bonusText.style.fontSize = '28px';
-                        bonusText.style.fontWeight = 'bold';
-                        bonusText.style.color = '#ffd43b';
-                        bonusText.style.zIndex = '150';
-                        bonusText.style.pointerEvents = 'none';
-                        bonusText.style.animation = 'particleRise 1s ease-out forwards';
-                        bonusText.style.textShadow = '0 0 10px rgba(255, 212, 59, 1)';
-                        gameContainer.appendChild(bonusText);
-                        setTimeout(() => {
-                            if (bonusText.parentNode) {
-                                bonusText.remove();
-                            }
-                        }, 1000);
-                    }
+                    scoreElement.style.transform = 'scale(1.38)';
+                    scoreElement.style.filter = 'brightness(1.55) drop-shadow(0 0 20px rgba(102, 126, 234, 0.75))';
                     
                     setTimeout(() => {
                         scoreElement.style.transform = 'scale(1)';
                         scoreElement.style.filter = 'brightness(1)';
-                    }, 250);
+                    }, 235);
                 }
 
-                if (newRight > window.innerWidth + 150) {
+                if (newRight > window.innerWidth + 130) {
                     if (obstacle.parentNode) {
                         obstacle.remove();
                     }
@@ -1565,23 +1323,21 @@
             gameLoopId = requestAnimationFrame(gameLoop);
         }
 
-        // ========== COLLISIONE MIGLIORATA - Hitbox più precise ==========
+        // ========== COLLISIONE - HITBOX STRETTE ==========
         function checkCollision(roosterRect, obstacleRect) {
-            // Margini più stretti per collisioni più accurate
-            const marginHorizontal = 30; // Ridotto da 25 a 30 per essere più permissivi
-            const marginVertical = 30;
+            // Margini ridotti = collisioni più precise!
+            const marginH = 22; // Ridotto da 28 a 22
+            const marginV = 22; // Ridotto da 28 a 22
 
-            const collision = !(
-                roosterRect.right - marginHorizontal < obstacleRect.left + marginHorizontal ||
-                roosterRect.left + marginHorizontal > obstacleRect.right - marginHorizontal ||
-                roosterRect.bottom - marginVertical < obstacleRect.top + marginVertical ||
-                roosterRect.top + marginVertical > obstacleRect.bottom - marginVertical
+            return !(
+                roosterRect.right - marginH < obstacleRect.left + marginH ||
+                roosterRect.left + marginH > obstacleRect.right - marginH ||
+                roosterRect.bottom - marginV < obstacleRect.top + marginV ||
+                roosterRect.top + marginV > obstacleRect.bottom - marginV
             );
-
-            return collision;
         }
 
-        // ========== PAUSA GIOCO ==========
+        // ========== PAUSA ==========
         function togglePause() {
             if (!gameActive) return;
             
@@ -1607,7 +1363,7 @@
         function startGame() {
             if (gameActive) return;
             
-            console.log('=== INIZIO NUOVO GIOCO ===');
+            console.log('=== INIZIO GIOCO ===');
             
             gameActive = true;
             gamePaused = false;
@@ -1621,9 +1377,7 @@
             hearts.forEach(heart => heart.classList.remove('lost'));
             
             obstacles.forEach(obs => {
-                if (obs.parentNode) {
-                    obs.remove();
-                }
+                if (obs.parentNode) obs.remove();
             });
             obstacles = [];
             
@@ -1640,16 +1394,9 @@
                 difficultyIntervalId = null;
             }
             
-            // Reset posizione gallo in base alla media query
-            let startBottom = 120;
-            if (window.innerWidth >= 768) {
-                startBottom = 150;
-            } else if (window.innerWidth <= 480) {
-                startBottom = 100;
-            }
-            rooster.style.bottom = startBottom + 'px';
+            rooster.style.bottom = '120px';
             rooster.style.opacity = '1';
-            rooster.style.transform = 'scaleX(-1) rotate(0deg) scale(1)';
+            rooster.style.transform = 'scaleX(-1)';
             rooster.classList.add('running');
             
             startScreen.classList.add('hidden');
@@ -1675,7 +1422,7 @@
                         
                         const speedFactor = speedMultiplier;
                         const newInterval = Math.max(
-                            700,
+                            730,
                             BASE_OBSTACLE_INTERVAL / (1 + (speedFactor - 1) * 0.5)
                         );
                         
@@ -1691,13 +1438,12 @@
                             }
                         }, currentInterval);
                         
-                        console.log(`Difficoltà aumentata! Intervallo: ${currentInterval}ms, Velocità: ${speedMultiplier.toFixed(2)}x`);
-                        
+                        console.log(`Difficoltà: ${speedMultiplier.toFixed(2)}x`);
                     }, 10000);
                 }
             }, 1500);
             
-            console.log('Gioco iniziato - Buona fortuna!');
+            console.log('Gioco avviato!');
         }
 
         // ========== FINE GIOCO ==========
@@ -1729,7 +1475,7 @@
                 highScoreElement.style.fontSize = '28px';
             } else {
                 highScoreElement.textContent = '🏆 Record Personale: ' + highScore;
-                highScoreElement.style.color = 'rgba(255,255,255,0.8)';
+                highScoreElement.style.color = 'rgba(255,255,255,0.82)';
                 highScoreElement.style.fontSize = '20px';
             }
             
@@ -1737,19 +1483,19 @@
             gameOverScreen.classList.remove('hidden');
         }
 
-        // ========== CREA SCINTILLE ==========
+        // ========== SCINTILLE ==========
         function createSparkles(button) {
             const sparkleEmojis = ['✨', '⭐', '💫', '🌟', '⚡', '💥'];
             const rect = button.getBoundingClientRect();
             
-            for (let i = 0; i < 12; i++) {
+            for (let i = 0; i < 11; i++) {
                 setTimeout(() => {
                     const sparkle = document.createElement('div');
                     sparkle.classList.add('sparkle');
                     sparkle.textContent = sparkleEmojis[Math.floor(Math.random() * sparkleEmojis.length)];
                     
-                    const angle = (i / 12) * Math.PI * 2;
-                    const distance = 60 + Math.random() * 40;
+                    const angle = (i / 11) * Math.PI * 2;
+                    const distance = 55 + Math.random() * 38;
                     const x = rect.left + rect.width / 2 + Math.cos(angle) * distance;
                     const y = rect.top + rect.height / 2 + Math.sin(angle) * distance;
                     
@@ -1763,8 +1509,8 @@
                         if (sparkle.parentNode) {
                             sparkle.remove();
                         }
-                    }, 800);
-                }, i * 30);
+                    }, 750);
+                }, i * 28);
             }
         }
 
@@ -1773,13 +1519,13 @@
             e.preventDefault();
             createSparkles(startBtn);
             await initAudio();
-            setTimeout(() => startGame(), 600);
+            setTimeout(() => startGame(), 550);
         });
 
         testBtn.addEventListener('click', (e) => {
             e.preventDefault();
             createSparkles(testBtn);
-            statusElement.textContent = '⌨️ Usa BARRA SPAZIATRICE, TOCCA lo schermo, o premi P per pausa!';
+            statusElement.textContent = '⌨️ Usa BARRA SPAZIATRICE, TOUCH o P per pausa!';
             usingVoice = false;
             startGame();
         });
@@ -1807,63 +1553,49 @@
                 togglePause();
             } else if (e.code === 'Escape' || e.key === 'Escape') {
                 e.preventDefault();
-                if (gameActive) {
-                    togglePause();
-                }
-            } else if (e.code === 'KeyD' || e.key === 'd' || e.key === 'D') {
-                e.preventDefault();
-                if (debugInfo) {
-                    debugInfo.classList.toggle('show');
-                    console.log('Debug mode:', debugInfo.classList.contains('show') ? 'ON' : 'OFF');
-                }
+                if (gameActive) togglePause();
             }
         });
 
-        // TOUCH - PREVIENE ZOOM SU MOBILE
-        let touchStartTime = 0;
+        // TOUCH - OTTIMIZZATO
+        let lastTouchEnd = 0;
+        
         gameContainer.addEventListener('touchstart', (e) => {
-            touchStartTime = Date.now();
             if (gameActive && !gamePaused) {
                 e.preventDefault();
                 jump();
             }
         }, { passive: false });
 
-        // Previeni comportamenti di default che causano zoom
         gameContainer.addEventListener('touchend', (e) => {
             e.preventDefault();
+            const now = Date.now();
+            if (now - lastTouchEnd <= 280) {
+                e.preventDefault();
+            }
+            lastTouchEnd = now;
         }, { passive: false });
 
         gameContainer.addEventListener('touchmove', (e) => {
             e.preventDefault();
         }, { passive: false });
 
-        // Click (per desktop)
+        // Click desktop
         gameContainer.addEventListener('click', (e) => {
             if (gameActive && !gamePaused && e.target.tagName !== 'BUTTON') {
                 jump();
             }
         });
 
-        // Previeni doppio tap zoom
-        let lastTouchEnd = 0;
-        document.addEventListener('touchend', (e) => {
-            const now = Date.now();
-            if (now - lastTouchEnd <= 300) {
-                e.preventDefault();
-            }
-            lastTouchEnd = now;
+        // Previeni doppio click zoom
+        document.addEventListener('dblclick', (e) => {
+            e.preventDefault();
         }, { passive: false });
 
         // Cleanup
         window.addEventListener('beforeunload', () => {
             stopVoiceMonitoring();
         });
-
-        // Previeni scroll e refresh su mobile
-        document.body.addEventListener('touchmove', (e) => {
-            e.preventDefault();
-        }, { passive: false });
 
         // ========== INIZIALIZZA ==========
         initGrass();
