@@ -5,727 +5,2375 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#1e3c72">
-    <title>🐓 Rooster Runner Pro</title>
+    <title>🐓 Rooster Runner</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Poppins:wght@400;600;700;800&display=swap');
         
-        :root {
-            --primary-grad: linear-gradient(135deg, #4A90E2 0%, #357ABD 100%);
-            --secondary-grad: linear-gradient(135deg, #51cf66 0%, #40c057 100%);
-            --glass-bg: rgba(255, 255, 255, 0.15);
-            --glass-border: rgba(255, 255, 255, 0.25);
-            --text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: rgba(0,0,0,0);
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            user-select: none;
         }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; user-select: none; -webkit-user-select: none; }
 
         html, body {
-            width: 100%; height: 100%; position: fixed; overflow: hidden;
-            font-family: 'Poppins', sans-serif; background: #000;
+            width: 100%;
+            height: 100%;
+            position: fixed;
+            overflow: hidden;
+            font-family: 'Poppins', sans-serif;
+            background: #000;
+            touch-action: manipulation;
+            overscroll-behavior: none;
         }
 
-        /* SFONDO E ATMOSFERA */
+        body::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            box-shadow: inset 0 0 150px rgba(0,0,0,0.7);
+            pointer-events: none;
+            z-index: 999;
+        }
+
+        #gameWrapper {
+            width: 100vw;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #7e22ce 100%);
+        }
+
         #gameContainer {
-            position: relative; width: 100%; height: 100%;
-            background: linear-gradient(to bottom, #87CEEB 0%, #E0F6FF 50%, #228B22 100%);
-            transition: background 1s ease; overflow: hidden;
+            position: relative;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, 
+                #87CEEB 0%, 
+                #B0E0E6 25%,
+                #E0F6FF 45%, 
+                #90EE90 45%,
+                #228B22 100%
+            );
+            overflow: hidden;
+            transition: background 0.5s ease;
         }
 
         /* TEMI */
-        #gameContainer.theme-sunset { background: linear-gradient(to bottom, #FF6B6B, #FFD700 50%, #CD5C5C 100%); }
-        #gameContainer.theme-night { background: linear-gradient(to bottom, #0f2027, #2c5364 50%, #0f2f1f 100%); }
-        #gameContainer.theme-desert { background: linear-gradient(to bottom, #F4A460, #FFE4B5 50%, #8B7355 100%); }
-        #gameContainer.theme-ocean { background: linear-gradient(to bottom, #4A90E2, #85C1E9 50%, #2874A6 100%); }
-        #gameContainer.theme-candy { background: linear-gradient(to bottom, #FFB6C1, #FFE4E1 50%, #FF1493 100%); }
-
-        /* HUD & UI ELEMENTS */
-        #hud {
-            position: absolute; top: 0; left: 0; width: 100%; padding: 2vh 3vw;
-            display: flex; justify-content: space-between; z-index: 50;
-            pointer-events: none; /* Lascia cliccare sotto */
+        #gameContainer.theme-sunset {
+            background: linear-gradient(to bottom, 
+                #FF6B6B 0%, 
+                #FFA07A 25%,
+                #FFD700 45%, 
+                #FF8C00 45%,
+                #CD5C5C 100%
+            ) !important;
         }
 
-        .panel {
-            background: rgba(255,255,255,0.9); padding: 1vh 2vw; border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2); border: 2px solid rgba(255,255,255,0.8);
-            display: flex; flex-direction: column; align-items: center;
+        #gameContainer.theme-night {
+            background: linear-gradient(to bottom, 
+                #0f2027 0%, 
+                #203a43 25%,
+                #2c5364 45%, 
+                #1a4d2e 45%,
+                #0f2f1f 100%
+            ) !important;
         }
 
-        .panel-label { font-size: 1.2vh; color: #666; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
-        .panel-value { font-family: 'Press Start 2P', cursive; font-size: 2.5vh; background: -webkit-linear-gradient(#333, #000); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-top: 0.5vh; }
-
-        #livesPanel { flex-direction: row; gap: 5px; align-items: center; }
-        .heart { font-size: 3vh; transition: 0.3s; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.2)); }
-        .heart.lost { opacity: 0.3; transform: scale(0.8) grayscale(1); }
-
-        /* BUTTONS TOP RIGHT */
-        #topButtons {
-            position: absolute; top: 2vh; right: 3vw; display: flex; gap: 1.5vh; z-index: 60;
+        #gameContainer.theme-desert {
+            background: linear-gradient(to bottom, 
+                #F4A460 0%, 
+                #DEB887 25%,
+                #FFE4B5 45%, 
+                #D2B48C 45%,
+                #8B7355 100%
+            ) !important;
         }
 
-        .icon-btn {
-            width: 6vh; height: 6vh; border-radius: 12px;
-            background: rgba(255,255,255,0.9);
-            display: flex; justify-content: center; align-items: center;
-            font-size: 3vh; cursor: pointer;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2); border: 2px solid white;
-            transition: transform 0.1s, background 0.2s;
-            pointer-events: auto;
+        #gameContainer.theme-ocean {
+            background: linear-gradient(to bottom, 
+                #4A90E2 0%, 
+                #5DADE2 25%,
+                #85C1E9 45%, 
+                #3498DB 45%,
+                #2874A6 100%
+            ) !important;
         }
-        .icon-btn:active { transform: scale(0.9); }
-        .icon-btn.disabled { opacity: 0.5; pointer-events: none; filter: grayscale(1); }
 
-        /* GAME OBJECTS */
+        #gameContainer.theme-candy {
+            background: linear-gradient(to bottom, 
+                #FFB6C1 0%, 
+                #FFC0CB 25%,
+                #FFE4E1 45%, 
+                #FF69B4 45%,
+                #FF1493 100%
+            ) !important;
+        }
+
+        #whiteFlash {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: white;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 120;
+        }
+
+        #whiteFlash.active {
+            animation: flashEffect 0.3s ease-out;
+        }
+
+        @keyframes flashEffect {
+            0% { opacity: 0; }
+            50% { opacity: 0.9; }
+            100% { opacity: 0; }
+        }
+
+        @keyframes shake {
+            0% { transform: translate(1px, 1px) rotate(0deg); }
+            10% { transform: translate(-1px, -2px) rotate(-1deg); }
+            20% { transform: translate(-3px, 0px) rotate(1deg); }
+            30% { transform: translate(3px, 2px) rotate(0deg); }
+            40% { transform: translate(1px, -1px) rotate(1deg); }
+            50% { transform: translate(-1px, 2px) rotate(-1deg); }
+            60% { transform: translate(-3px, 1px) rotate(0deg); }
+            70% { transform: translate(3px, 1px) rotate(-1deg); }
+            80% { transform: translate(-1px, -1px) rotate(1deg); }
+            90% { transform: translate(1px, 2px) rotate(0deg); }
+            100% { transform: translate(1px, -2px) rotate(-1deg); }
+        }
+
+        .shake-effect {
+            animation: shake 0.5s;
+            animation-iteration-count: 1;
+        }
+
+        .sun {
+            position: absolute;
+            top: 5vh;
+            right: 10vw;
+            width: 8vmin;
+            height: 8vmin;
+            background: radial-gradient(circle, #FFD700 0%, #FFA500 100%);
+            border-radius: 50%;
+            box-shadow: 0 0 3vmin rgba(255, 215, 0, 0.7);
+            animation: sunGlow 3s ease-in-out infinite;
+            z-index: 5;
+            transition: all 3s ease;
+        }
+
+        @keyframes sunGlow {
+            0%, 100% { box-shadow: 0 0 3vmin rgba(255, 215, 0, 0.7); }
+            50% { box-shadow: 0 0 5vmin rgba(255, 215, 0, 1); }
+        }
+
+        .cloud {
+            position: absolute;
+            font-size: 5vmin;
+            opacity: 0.75;
+            z-index: 10;
+            transition: opacity 3s ease;
+        }
+
+        .cloud1 {
+            top: 8vh;
+            left: 15%;
+            animation: cloudMove1 35s linear infinite;
+        }
+
+        .cloud2 {
+            top: 15vh;
+            left: 60%;
+            animation: cloudMove2 45s linear infinite;
+        }
+
+        .cloud3 {
+            top: 6vh;
+            right: 25%;
+            animation: cloudMove3 40s linear infinite;
+        }
+
+        @keyframes cloudMove1 {
+            from { transform: translateX(0); }
+            to { transform: translateX(-150vw); }
+        }
+
+        @keyframes cloudMove2 {
+            from { transform: translateX(0); }
+            to { transform: translateX(-150vw); }
+        }
+
+        @keyframes cloudMove3 {
+            from { transform: translateX(0); }
+            to { transform: translateX(-150vw); }
+        }
+
+        .mountain {
+            position: absolute;
+            bottom: 30vh;
+            font-size: 20vmin;
+            opacity: 0.35;
+            z-index: 5;
+        }
+
+        .mountain1 { 
+            left: 8%; 
+            animation: mountainMove1 80s linear infinite;
+        }
+        .mountain2 { 
+            left: 40%; 
+            animation: mountainMove2 90s linear infinite;
+        }
+        .mountain3 { 
+            right: 12%; 
+            animation: mountainMove3 85s linear infinite;
+        }
+
+        @keyframes mountainMove1 {
+            from { transform: translateX(0); }
+            to { transform: translateX(-50vw); }
+        }
+
+        @keyframes mountainMove2 {
+            from { transform: translateX(0); }
+            to { transform: translateX(-50vw); }
+        }
+
+        @keyframes mountainMove3 {
+            from { transform: translateX(0); }
+            to { transform: translateX(-50vw); }
+        }
+
         #ground {
-            position: absolute; bottom: 0; width: 100%; height: 12vh;
-            background: linear-gradient(180deg, #5D4037 0%, #3E2723 100%);
-            border-top: 6px solid #8D6E63; z-index: 20;
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 15vh;
+            background: linear-gradient(to bottom, 
+                #8B4513 0%,
+                #654321 50%,
+                #3D2817 100%
+            );
+            border-top: 0.5vh solid #2F1810;
+            box-shadow: inset 0 2vh 4vh rgba(0,0,0,0.3);
+            z-index: 20;
         }
-        .grass-container { position: absolute; bottom: 11.5vh; width: 100%; z-index: 25; display: flex; }
-        .grass { font-size: 4vh; animation: moveGrass 2s linear infinite; position: absolute; bottom: 0; }
-        @keyframes moveGrass { from { transform: translateX(0); } to { transform: translateX(-10vw); } }
+
+        .grass-container {
+            position: absolute;
+            bottom: 14.5vh;
+            width: 100%;
+            height: 5vh;
+            overflow: hidden;
+            z-index: 25;
+        }
+
+        .grass {
+            position: absolute;
+            bottom: 0;
+            font-size: 4vmin;
+            animation: grassMove 3s linear infinite;
+        }
+
+        @keyframes grassMove {
+            from { transform: translateX(0); }
+            to { transform: translateX(-10vmin); }
+        }
 
         #rooster {
-            position: absolute; bottom: 12vh; left: 15vw; font-size: 9vh; z-index: 30;
-            filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.4));
-            transform-origin: center bottom; will-change: transform;
-        }
-        #rooster.running { animation: bounce 0.4s infinite alternate; }
-        @keyframes bounce { from { transform: scaleX(-1) translateY(0); } to { transform: scaleX(-1) translateY(-1vh); } }
-        
-        .obstacle, .powerup, .enemy { position: absolute; will-change: transform; z-index: 28; filter: drop-shadow(2px 4px 4px rgba(0,0,0,0.3)); font-size: 7vh; }
-        .enemy { bottom: 35vh; animation: fly 1s infinite alternate ease-in-out; }
-        @keyframes fly { from { transform: translateY(0); } to { transform: translateY(-2vh); } }
-
-        /* SCREENS (Start, Pause, GameOver) */
-        .screen {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85); backdrop-filter: blur(8px);
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            z-index: 100; transition: opacity 0.3s;
-        }
-        .screen.hidden { opacity: 0; pointer-events: none; }
-
-        h1 {
-            font-family: 'Press Start 2P', cursive; color: #FFD700;
-            font-size: 5vh; text-align: center; line-height: 1.5;
-            text-shadow: 4px 4px 0 #000; margin-bottom: 1vh;
-        }
-        
-        .subtitle { color: white; font-size: 2vh; margin-bottom: 4vh; opacity: 0.9; }
-
-        .btn-group { display: flex; flex-direction: column; gap: 2vh; width: 80%; max-width: 400px; }
-        
-        .main-btn {
-            background: var(--primary-grad); color: white; border: none;
-            padding: 2.5vh; border-radius: 1.5vh; font-size: 2.2vh; font-weight: 800;
-            font-family: 'Poppins', sans-serif; text-transform: uppercase; letter-spacing: 1px;
-            box-shadow: 0 6px 0 #2c5282; cursor: pointer; transition: transform 0.1s, box-shadow 0.1s;
-            display: flex; align-items: center; justify-content: center; gap: 10px;
-        }
-        .main-btn:active { transform: translateY(6px); box-shadow: 0 0 0 transparent; }
-        .main-btn.secondary { background: #555; box-shadow: 0 6px 0 #333; }
-        .main-btn.settings-trigger { background: #6c5ce7; box-shadow: 0 6px 0 #4834d4; }
-
-        /* SETTINGS MENU (OVERLAY) */
-        #settingsOverlay {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(10, 10, 10, 0.95); z-index: 300; /* Highest Priority */
-            display: flex; flex-direction: column; padding: 4vh 5vw;
-            overflow-y: auto; transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-        #settingsOverlay.active { transform: translateY(0); }
-
-        .settings-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4vh; }
-        .close-btn { background: rgba(255,255,255,0.2); width: 6vh; height: 6vh; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 3vh; color: white; cursor: pointer; }
-
-        .setting-group { margin-bottom: 4vh; }
-        .setting-title { color: #FFD700; font-size: 2.2vh; margin-bottom: 2vh; font-weight: 700; text-transform: uppercase; }
-        .grid-options { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 1.5vh; }
-        
-        .opt-btn {
-            background: rgba(255,255,255,0.1); border: 2px solid rgba(255,255,255,0.1);
-            border-radius: 12px; padding: 1.5vh; color: white; cursor: pointer; text-align: center;
-            transition: 0.2s;
-        }
-        .opt-btn.active { background: var(--primary-grad); border-color: white; transform: scale(1.05); }
-        .opt-btn .emoji { display: block; font-size: 4vh; margin-bottom: 0.5vh; }
-
-        /* COUNTDOWN */
-        #countdown {
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            font-size: 15vh; font-family: 'Press Start 2P', cursive; color: #fff;
-            text-shadow: 0 0 20px rgba(0,0,0,0.8); z-index: 150; pointer-events: none;
-            display: none;
+            position: absolute;
+            bottom: 15vh;
+            left: 15vw;
+            font-size: 10vmin;
+            z-index: 50;
+            filter: drop-shadow(0.5vmin 0.8vmin 1.2vmin rgba(0,0,0,0.5));
+            transform: scaleX(-1);
+            will-change: transform;
+            transition: transform 0.1s ease-out;
         }
 
-        /* NOTIFICATIONS */
-        .notif {
-            position: absolute; left: 50%; top: 30%; transform: translate(-50%, -50%) scale(0);
-            padding: 1.5vh 3vw; border-radius: 50px; color: white; font-weight: 800; font-family: 'Press Start 2P';
-            font-size: 2.5vh; z-index: 120; text-shadow: 0 2px 4px rgba(0,0,0,0.5); pointer-events: none;
+        #rooster.running {
+            animation: roosterWalk 0.3s steps(2) infinite;
         }
-        .notif.anim { animation: popFade 1.2s forwards; }
-        @keyframes popFade { 0% { transform: translate(-50%) scale(0); opacity: 0; } 20% { transform: translate(-50%) scale(1.2); opacity: 1; } 100% { transform: translate(-50%) scale(1); opacity: 0; top: 20%; } }
 
-        /* UTILS */
-        .shake { animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both; }
-        @keyframes shake { 10%, 90% { transform: translate3d(-2px, 0, 0); } 20%, 80% { transform: translate3d(4px, 0, 0); } 30%, 50%, 70% { transform: translate3d(-6px, 0, 0); } 40%, 60% { transform: translate3d(6px, 0, 0); } }
+        @keyframes roosterWalk {
+            0% { transform: scaleX(-1) translateY(0); }
+            50% { transform: scaleX(-1) translateY(-0.5vmin); }
+            100% { transform: scaleX(-1) translateY(0); }
+        }
+
+        .obstacle {
+            position: absolute;
+            bottom: 15vh;
+            font-size: 8vmin;
+            filter: drop-shadow(0.3vmin 0.5vmin 0.8vmin rgba(0,0,0,0.4));
+            z-index: 40;
+            will-change: transform;
+        }
+
+        .flying-enemy {
+            position: absolute;
+            bottom: 40vh;
+            font-size: 8vmin;
+            filter: drop-shadow(0.3vmin 0.5vmin 0.8vmin rgba(0,0,0,0.4));
+            z-index: 40;
+            will-change: transform;
+            animation: flyingBob 1.5s ease-in-out infinite;
+        }
+
+        @keyframes flyingBob {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-2vh); }
+        }
+
+        .powerup {
+            position: absolute;
+            bottom: 25vh;
+            font-size: 9vmin;
+            z-index: 40;
+            will-change: transform;
+            animation: powerupFloat 1.5s ease-in-out infinite;
+            filter: drop-shadow(0 0 1.5vmin rgba(255, 215, 0, 0.8));
+        }
+
+        @keyframes powerupFloat {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-2vh) rotate(15deg); }
+        }
+
+        #rooster.invincible {
+            animation: invinciblePulse 0.3s infinite;
+        }
+
+        @keyframes invinciblePulse {
+            0%, 100% { 
+                filter: drop-shadow(0 0 2vmin gold) brightness(1.3);
+            }
+            50% { 
+                filter: drop-shadow(0 0 3vmin orange) brightness(1.5);
+            }
+        }
+
+        .feather {
+            position: absolute;
+            font-size: 4vmin;
+            pointer-events: none;
+            z-index: 100;
+            will-change: transform, opacity;
+        }
+
+        .dust {
+            position: absolute;
+            font-size: 3vmin;
+            pointer-events: none;
+            z-index: 45;
+            opacity: 0.6;
+            animation: dustFade 0.8s ease-out forwards;
+        }
+
+        @keyframes dustFade {
+            0% { opacity: 0.6; transform: scale(0.5); }
+            100% { opacity: 0; transform: scale(1.5); }
+        }
+
+        #hud {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding: 2vh 3vw;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            z-index: 100;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.35) 0%, transparent 100%);
+        }
+
+        #scorePanel {
+            background: linear-gradient(135deg, 
+                rgba(255,255,255,0.96) 0%, 
+                rgba(240,240,250,0.96) 100%);
+            padding: 2vh 3vw;
+            border-radius: 2vh;
+            box-shadow: 0 1vh 3vh rgba(0,0,0,0.35);
+            border: 0.2vh solid rgba(255,255,255,0.6);
+        }
+
+        #scorePanel h3 {
+            font-size: 1.5vmin;
+            color: #888;
+            margin-bottom: 0.5vh;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.2vmin;
+        }
+
+        #score {
+            font-size: 5vmin;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-family: 'Press Start 2P', cursive;
+        }
+
+        #livesPanel {
+            display: flex;
+            gap: 1vw;
+            background: linear-gradient(135deg, 
+                rgba(255,255,255,0.96) 0%, 
+                rgba(250,240,240,0.96) 100%);
+            padding: 2vh 3vw;
+            border-radius: 2vh;
+            box-shadow: 0 1vh 3vh rgba(0,0,0,0.35);
+            border: 0.2vh solid rgba(255,255,255,0.6);
+        }
+
+        .heart {
+            font-size: 4vmin;
+            transition: all 0.4s;
+        }
+
+        .heart.lost {
+            opacity: 0.2;
+            filter: grayscale(100%);
+            transform: scale(0.7);
+        }
+
+        #speedIndicator {
+            position: absolute;
+            top: 12vh;
+            left: 3vw;
+            background: linear-gradient(135deg, rgba(255,255,255,0.94) 0%, rgba(255,240,240,0.94) 100%);
+            padding: 1.5vh 2.5vw;
+            border-radius: 1.5vh;
+            box-shadow: 0 1vh 2.5vh rgba(0,0,0,0.3);
+            border: 0.2vh solid rgba(255,255,255,0.5);
+            z-index: 100;
+        }
+
+        #speedIndicator div:first-child {
+            font-size: 1.3vmin;
+            color: #888;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 0.4vh;
+        }
+
+        #speedValue {
+            font-size: 3vmin;
+            font-weight: 800;
+            background: linear-gradient(135deg, #f77062 0%, #fe5196 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-family: 'Press Start 2P', cursive;
+        }
 
         #voiceIndicator {
-            position: absolute; bottom: 3vh; right: 3vw; width: 7vh; height: 7vh;
-            border-radius: 50%; background: #ff4757; color: white; display: flex;
-            align-items: center; justify-content: center; font-size: 3vh; border: 4px solid rgba(255,255,255,0.3);
-            z-index: 60; transition: transform 0.1s, background 0.3s;
+            position: absolute;
+            bottom: 4vh;
+            right: 4vw;
+            width: 9vmin;
+            height: 9vmin;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 5vmin;
+            box-shadow: 0 1.5vh 3vh rgba(238, 90, 111, 0.55);
+            z-index: 100;
+            border: 0.3vmin solid rgba(255,255,255,0.5);
+            animation: voiceGlow 2s ease-in-out infinite;
         }
-        #voiceIndicator.active { background: #2ed573; transform: scale(1.2); }
+
+        @keyframes voiceGlow {
+            0%, 100% { box-shadow: 0 1.5vh 3vh rgba(238, 90, 111, 0.55); }
+            50% { box-shadow: 0 1.5vh 4vh rgba(238, 90, 111, 0.75); }
+        }
+
+        #voiceIndicator.active {
+            background: linear-gradient(135deg, #51cf66 0%, #40c057 100%);
+            transform: scale(1.15);
+        }
+
+        #voiceIndicator.listening::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 0.3vmin solid rgba(81, 207, 102, 0.75);
+            animation: voiceRipple 2s ease-out infinite;
+        }
+
+        @keyframes voiceRipple {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(1.75); opacity: 0; }
+        }
+
+        /* BOTTONI SUPERIORI */
+        #topButtons {
+            position: absolute;
+            top: 12vh;
+            right: 3vw;
+            display: flex;
+            gap: 1.5vw;
+            z-index: 100;
+        }
+
+        .top-btn {
+            width: 8vmin;
+            height: 8vmin;
+            border-radius: 1.5vh;
+            background: linear-gradient(135deg, rgba(255,255,255,0.94) 0%, rgba(240,240,255,0.94) 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 4vmin;
+            box-shadow: 0 1vh 2.5vh rgba(0,0,0,0.3);
+            cursor: pointer;
+            border: 0.2vh solid rgba(255,255,255,0.5);
+            transition: transform 0.2s;
+        }
+
+        .top-btn:active {
+            transform: scale(0.9);
+        }
+
+        .top-btn.disabled {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        /* MENU IMPOSTAZIONI */
+        #settingsMenu {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 250;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 5vh 5vw;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        #settingsMenu h2 {
+            color: white;
+            font-size: 6vmin;
+            font-family: 'Press Start 2P', cursive;
+            margin-bottom: 4vh;
+            text-align: center;
+        }
+
+        .settings-section {
+            width: 100%;
+            max-width: 800px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+            border-radius: 2vh;
+            padding: 3vh 4vw;
+            margin-bottom: 3vh;
+            border: 0.2vh solid rgba(255,255,255,0.2);
+        }
+
+        .settings-section h3 {
+            color: #ffd43b;
+            font-size: 3vmin;
+            margin-bottom: 2vh;
+            font-weight: 700;
+        }
+
+        .option-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 2vh;
+        }
+
+        .option-btn {
+            padding: 2vh;
+            background: rgba(255,255,255,0.1);
+            border: 0.3vh solid rgba(255,255,255,0.3);
+            border-radius: 1.5vh;
+            color: white;
+            font-size: 2.5vmin;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .option-btn:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .option-btn.selected {
+            background: linear-gradient(135deg, #4A90E2, #357ABD);
+            border-color: #4A90E2;
+            transform: scale(1.05);
+        }
+
+        .option-btn .emoji {
+            font-size: 5vmin;
+            display: block;
+            margin-bottom: 1vh;
+        }
+
+        .close-settings {
+            position: absolute;
+            top: 3vh;
+            right: 3vw;
+            width: 8vmin;
+            height: 8vmin;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 5vmin;
+            cursor: pointer;
+            border: 0.2vh solid rgba(255,255,255,0.3);
+        }
+
+        .close-settings:active {
+            transform: scale(0.9);
+        }
+
+        .screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.93);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 200;
+            backdrop-filter: blur(1.5vh);
+            padding: 3vh 4vw;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .screen h1 {
+            color: white;
+            font-size: 6vmin;
+            font-weight: 800;
+            margin-bottom: 2vh;
+            text-shadow: 0 0.5vh 2vh rgba(0,0,0,0.55);
+            font-family: 'Press Start 2P', cursive;
+            text-align: center;
+            line-height: 1.3;
+            background: linear-gradient(45deg, #fff, #ffd700, #fff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: titleShine 3s ease-in-out infinite;
+            background-size: 200% auto;
+        }
+
+        @keyframes titleShine {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .screen h1 .rooster-emoji {
+            display: inline-block;
+            animation: roosterBounce 1.2s ease-in-out infinite;
+            font-size: 7vmin;
+        }
+
+        @keyframes roosterBounce {
+            0%, 100% { transform: translateY(0) rotate(-5deg); }
+            50% { transform: translateY(-1.5vh) rotate(5deg); }
+        }
+
+        .subtitle {
+            color: rgba(255,255,255,0.94);
+            font-size: 2.2vmin;
+            margin-bottom: 3vh;
+            font-weight: 600;
+            text-align: center;
+            padding: 0 3vw;
+        }
+
+        #instructions {
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.14) 0%, 
+                rgba(255, 255, 255, 0.08) 100%);
+            padding: 3vh 4vw;
+            border-radius: 2.5vh;
+            margin: 0 2vw 3vh 2vw;
+            max-width: 90vw;
+            backdrop-filter: blur(3vh);
+            border: 0.2vh solid rgba(255,255,255,0.28);
+        }
+
+        #instructions p {
+            color: white;
+            font-size: 2vmin;
+            margin: 1.5vh 0;
+            line-height: 1.55;
+        }
+
+        #instructions p strong {
+            color: #ffd43b;
+            font-weight: 800;
+            font-size: 2.3vmin;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 2vh;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 80vw;
+            margin-top: 3vh;
+        }
+
+        button {
+            padding: 2.5vh 6vw;
+            font-size: 2.8vmin;
+            font-weight: 900;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #4A90E2 0%, #357ABD 100%);
+            color: white;
+            border: none;
+            border-radius: 2vh;
+            box-shadow: 0 1vh 2vh rgba(74, 144, 226, 0.4);
+            text-transform: uppercase;
+            letter-spacing: 0.2vmin;
+            width: 100%;
+            max-width: 70vw;
+            z-index: 1000;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+        }
+
+        button:active {
+            transform: scale(0.95);
+            box-shadow: 0 0.5vh 1vh rgba(74, 144, 226, 0.6);
+        }
+
+        button.secondary {
+            background: linear-gradient(135deg, #51cf66 0%, #40c057 100%);
+            box-shadow: 0 1vh 2vh rgba(81, 207, 102, 0.4);
+        }
+
+        button.secondary:active {
+            box-shadow: 0 0.5vh 1vh rgba(81, 207, 102, 0.6);
+        }
+
+        #finalScore {
+            color: #ffd43b;
+            font-size: 6vmin;
+            font-weight: 800;
+            margin: 3vh 0;
+            font-family: 'Press Start 2P', cursive;
+        }
+
+        #highScore {
+            color: rgba(255,255,255,0.82);
+            font-size: 2.5vmin;
+            margin-bottom: 3vh;
+        }
+
+        #status {
+            color: #ffd43b;
+            font-size: 2vmin;
+            margin-top: 2vh;
+            min-height: 3vh;
+            font-weight: 700;
+            text-align: center;
+            padding: 0 3vw;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        @keyframes damageEffect {
+            0%, 100% { filter: drop-shadow(0.5vmin 0.8vmin 1.2vmin rgba(0,0,0,0.5)); }
+            25%, 75% { filter: drop-shadow(0 0 2.5vmin rgba(255,0,0,1)) brightness(1.5); }
+        }
+
+        .damage {
+            animation: damageEffect 0.55s ease-in-out;
+        }
+
+        .particle {
+            position: absolute;
+            font-size: 3vmin;
+            pointer-events: none;
+            z-index: 35;
+            animation: particleRise 1.1s ease-out forwards;
+        }
+
+        @keyframes particleRise {
+            0% {
+                opacity: 1;
+                transform: translateY(0) scale(1) rotate(0deg);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-10vh) scale(0.3) rotate(360deg);
+            }
+        }
+
+        #pauseOverlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.86);
+            z-index: 150;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #pauseOverlay h2 {
+            color: white;
+            font-size: 6vmin;
+            font-family: 'Press Start 2P', cursive;
+            margin-bottom: 4vh;
+        }
+
+        #powerupNotif {
+            position: absolute;
+            top: 20vh;
+            left: 50%;
+            transform: translateX(-50%) scale(0);
+            background: linear-gradient(135deg, gold, orange);
+            color: white;
+            padding: 2vh 4vw;
+            border-radius: 2vh;
+            font-size: 3vmin;
+            font-weight: 900;
+            z-index: 150;
+            box-shadow: 0 1vh 3vh rgba(255, 215, 0, 0.6);
+            text-align: center;
+            pointer-events: none;
+            font-family: 'Press Start 2P', cursive;
+        }
+
+        #powerupNotif.show {
+            animation: powerupNotifShow 2s ease-out forwards;
+        }
+
+        @keyframes powerupNotifShow {
+            0% { transform: translateX(-50%) scale(0) rotate(-10deg); opacity: 0; }
+            15% { transform: translateX(-50%) scale(1.2) rotate(5deg); opacity: 1; }
+            30% { transform: translateX(-50%) scale(1) rotate(0deg); }
+            70% { transform: translateX(-50%) scale(1) rotate(0deg); opacity: 1; }
+            100% { transform: translateX(-50%) scale(0) rotate(10deg); opacity: 0; }
+        }
+
+        #nearMissNotif {
+            position: absolute;
+            top: 30vh;
+            left: 50%;
+            transform: translateX(-50%) scale(0);
+            background: linear-gradient(135deg, #ff6b6b, #ee5a6f);
+            color: white;
+            padding: 1.5vh 3vw;
+            border-radius: 1.5vh;
+            font-size: 4vmin;
+            font-weight: 900;
+            z-index: 150;
+            box-shadow: 0 1vh 3vh rgba(255, 107, 107, 0.6);
+            text-align: center;
+            pointer-events: none;
+            font-family: 'Press Start 2P', cursive;
+        }
+
+        #nearMissNotif.show {
+            animation: nearMissShow 1s ease-out forwards;
+        }
+
+        @keyframes nearMissShow {
+            0% { transform: translateX(-50%) scale(0); opacity: 0; }
+            15% { transform: translateX(-50%) scale(1.3); opacity: 1; }
+            30% { transform: translateX(-50%) scale(1); }
+            70% { transform: translateX(-50%) scale(1); opacity: 1; }
+            100% { transform: translateX(-50%) scale(0); opacity: 0; }
+        }
     </style>
 </head>
 <body>
-
-    <div id="gameContainer" class="theme-default">
-        <div class="sun" style="position: absolute; top: 10vh; right: 10vw; font-size: 10vh; filter: drop-shadow(0 0 20px orange);">☀️</div>
-        <div class="cloud" style="position: absolute; top: 15vh; left: 10vw; font-size: 8vh; opacity: 0.8;">☁️</div>
-
-        <div id="hud">
-            <div class="panel">
-                <span class="panel-label" data-i18n="score">PUNTI</span>
-                <span class="panel-value" id="scoreVal">0</span>
+    <div id="gameWrapper">
+        <div id="gameContainer">
+            <div id="whiteFlash"></div>
+            
+            <div class="sun"></div>
+            <div class="cloud cloud1">☁️</div>
+            <div class="cloud cloud2">☁️</div>
+            <div class="cloud cloud3">☁️</div>
+            <div class="mountain mountain1">🏔️</div>
+            <div class="mountain mountain2">⛰️</div>
+            <div class="mountain mountain3">🏔️</div>
+            
+            <div id="hud">
+                <div id="scorePanel">
+                    <h3 data-i18n="score">Punteggio</h3>
+                    <div id="score">0</div>
+                </div>
+                <div id="livesPanel">
+                    <span class="heart" id="heart1">❤️</span>
+                    <span class="heart" id="heart2">❤️</span>
+                    <span class="heart" id="heart3">❤️</span>
+                </div>
             </div>
-            <div class="panel" id="livesPanel">
-                <span class="heart">❤️</span><span class="heart">❤️</span><span class="heart">❤️</span>
+            
+            <div id="speedIndicator">
+                <div data-i18n="speed">Velocità</div>
+                <div id="speedValue">1.0x</div>
             </div>
-        </div>
-
-        <div id="topButtons">
-            <div class="icon-btn" id="btnPause">⏸️</div>
-        </div>
-
-        <div id="rooster">🐓</div>
-        <div class="grass-container" id="grassRow"></div>
-        <div id="ground"></div>
-
-        <div id="voiceIndicator">🎤</div>
-        <div id="countdown">3</div>
-        <div class="notif" id="notifArea"></div>
-
-        <div id="startScreen" class="screen">
-            <h1>ROOSTER<br>RUNNER<br><span style="font-size:0.6em; color:white;">PRO</span></h1>
-            <p class="subtitle" data-i18n="subtitle">Il Gallo più Veloce del Web</p>
-            <div class="btn-group">
-                <button class="main-btn" id="btnStartMic">🎤 <span data-i18n="btn-mic">Gioca con Voce</span></button>
-                <button class="main-btn secondary" id="btnStartTap">👆 <span data-i18n="btn-touch">Gioca con Tocco</span></button>
-                <button class="main-btn settings-trigger" onclick="ui.openSettings()">⚙️ <span data-i18n="settings">Impostazioni</span></button>
+            
+            <div id="topButtons">
+                <div class="top-btn disabled" id="pauseBtn" title="Pause">⏸️</div>
+                <div class="top-btn" id="settingsBtn" title="Settings">⚙️</div>
+                <div class="top-btn" id="fullscreenBtn" title="Fullscreen">⛶</div>
             </div>
-        </div>
+            
+            <div id="voiceIndicator">🎤</div>
+            
+            <div id="powerupNotif"></div>
+            <div id="nearMissNotif"></div>
+            
+            <div id="rooster" class="running">🐓</div>
+            
+            <div class="grass-container" id="grassContainer"></div>
+            <div id="ground"></div>
 
-        <div id="pauseScreen" class="screen hidden" style="background: rgba(0,0,0,0.6);">
-            <h1><span data-i18n="pause">PAUSA</span></h1>
-            <div class="btn-group">
-                <button class="main-btn" id="btnResume">▶️ <span data-i18n="resume">Riprendi</span></button>
-                <button class="main-btn settings-trigger" onclick="ui.openSettings()">⚙️ <span data-i18n="settings">Impostazioni</span></button>
-                <button class="main-btn secondary" onclick="game.reset()">🏠 <span data-i18n="menu">Menu</span></button>
-            </div>
-        </div>
+            <!-- MENU IMPOSTAZIONI -->
+            <div id="settingsMenu" class="hidden">
+                <div class="close-settings">✕</div>
+                <h2 data-i18n="settings">⚙️ IMPOSTAZIONI</h2>
+                
+                <div class="settings-section">
+                    <h3 data-i18n="language">🌍 Lingua / Language</h3>
+                    <div class="option-grid" id="languageOptions">
+                        <div class="option-btn" data-lang="it">
+                            <span class="emoji">🇮🇹</span>
+                            Italiano
+                        </div>
+                        <div class="option-btn" data-lang="en">
+                            <span class="emoji">🇬🇧</span>
+                            English
+                        </div>
+                        <div class="option-btn" data-lang="zh">
+                            <span class="emoji">🇨🇳</span>
+                            中文
+                        </div>
+                        <div class="option-btn" data-lang="pt">
+                            <span class="emoji">🇵🇹</span>
+                            Português
+                        </div>
+                    </div>
+                </div>
 
-        <div id="gameOverScreen" class="screen hidden">
-            <h1 style="color: #ff4757">GAME OVER</h1>
-            <div style="font-size: 3vh; color: white; margin-bottom: 4vh; font-family: 'Press Start 2P'">
-                <div data-i18n="score">PUNTEGGIO</div>
-                <div id="finalScore" style="color: #FFD700; font-size: 6vh; margin-top: 1vh;">0</div>
-            </div>
-            <div class="btn-group">
-                <button class="main-btn" onclick="game.restart()">🔄 <span data-i18n="retry">Riprova</span></button>
-                <button class="main-btn secondary" onclick="game.reset()">🏠 <span data-i18n="menu">Menu</span></button>
-            </div>
-        </div>
+                <div class="settings-section">
+                    <h3 data-i18n="theme">🎨 Tema / Theme</h3>
+                    <div class="option-grid" id="themeOptions">
+                        <div class="option-btn" data-theme="default">
+                            <span class="emoji">🌤️</span>
+                            <span data-i18n="theme-day">Giorno</span>
+                        </div>
+                        <div class="option-btn" data-theme="sunset">
+                            <span class="emoji">🌅</span>
+                            <span data-i18n="theme-sunset">Tramonto</span>
+                        </div>
+                        <div class="option-btn" data-theme="night">
+                            <span class="emoji">🌙</span>
+                            <span data-i18n="theme-night">Notte</span>
+                        </div>
+                        <div class="option-btn" data-theme="desert">
+                            <span class="emoji">🏜️</span>
+                            <span data-i18n="theme-desert">Deserto</span>
+                        </div>
+                        <div class="option-btn" data-theme="ocean">
+                            <span class="emoji">🌊</span>
+                            <span data-i18n="theme-ocean">Oceano</span>
+                        </div>
+                        <div class="option-btn" data-theme="candy">
+                            <span class="emoji">🍬</span>
+                            <span data-i18n="theme-candy">Caramella</span>
+                        </div>
+                    </div>
+                </div>
 
-        <div id="settingsOverlay">
-            <div class="settings-header">
-                <h2 style="color:white; font-family: 'Poppins';"><span data-i18n="settings">Impostazioni</span></h2>
-                <div class="close-btn" onclick="ui.closeSettings()">✕</div>
-            </div>
-
-            <div class="setting-group">
-                <div class="setting-title">🌍 <span data-i18n="language">Lingua</span></div>
-                <div class="grid-options" id="optLang">
-                    <div class="opt-btn" onclick="settings.setLang('it')"><span class="emoji">🇮🇹</span>ITA</div>
-                    <div class="opt-btn" onclick="settings.setLang('en')"><span class="emoji">🇬🇧</span>ENG</div>
-                    <div class="opt-btn" onclick="settings.setLang('es')"><span class="emoji">🇪🇸</span>ESP</div>
+                <div class="settings-section">
+                    <h3 data-i18n="character">🐾 Personaggio / Character</h3>
+                    <div class="option-grid" id="characterOptions">
+                        <div class="option-btn" data-char="🐓">
+                            <span class="emoji">🐓</span>
+                            <span data-i18n="char-rooster">Gallo</span>
+                        </div>
+                        <div class="option-btn" data-char="🦆">
+                            <span class="emoji">🦆</span>
+                            <span data-i18n="char-duck">Papera</span>
+                        </div>
+                        <div class="option-btn" data-char="🐧">
+                            <span class="emoji">🐧</span>
+                            <span data-i18n="char-penguin">Pinguino</span>
+                        </div>
+                        <div class="option-btn" data-char="🦜">
+                            <span class="emoji">🦜</span>
+                            <span data-i18n="char-parrot">Pappagallo</span>
+                        </div>
+                        <div class="option-btn" data-char="🦅">
+                            <span class="emoji">🦅</span>
+                            <span data-i18n="char-eagle">Aquila</span>
+                        </div>
+                        <div class="option-btn" data-char="🦉">
+                            <span class="emoji">🦉</span>
+                            <span data-i18n="char-owl">Gufo</span>
+                        </div>
+                        <div class="option-btn" data-char="🐇">
+                            <span class="emoji">🐇</span>
+                            <span data-i18n="char-rabbit">Coniglio</span>
+                        </div>
+                        <div class="option-btn" data-char="🐿️">
+                            <span class="emoji">🐿️</span>
+                            <span data-i18n="char-squirrel">Scoiattolo</span>
+                        </div>
+                        <div class="option-btn" data-char="🦊">
+                            <span class="emoji">🦊</span>
+                            <span data-i18n="char-fox">Volpe</span>
+                        </div>
+                        <div class="option-btn" data-char="🐻">
+                            <span class="emoji">🐻</span>
+                            <span data-i18n="char-bear">Orso</span>
+                        </div>
+                        <div class="option-btn" data-char="🐼">
+                            <span class="emoji">🐼</span>
+                            <span data-i18n="char-panda">Panda</span>
+                        </div>
+                        <div class="option-btn" data-char="🦘">
+                            <span class="emoji">🦘</span>
+                            <span data-i18n="char-kangaroo">Canguro</span>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div class="setting-group">
-                <div class="setting-title">🎨 <span data-i18n="theme">Tema</span></div>
-                <div class="grid-options" id="optTheme">
-                    <div class="opt-btn" onclick="settings.setTheme('default')"><span class="emoji">🌤️</span>Day</div>
-                    <div class="opt-btn" onclick="settings.setTheme('sunset')"><span class="emoji">🌅</span>Sun</div>
-                    <div class="opt-btn" onclick="settings.setTheme('night')"><span class="emoji">🌙</span>Night</div>
-                    <div class="opt-btn" onclick="settings.setTheme('desert')"><span class="emoji">🏜️</span>Sand</div>
-                </div>
+            <div id="pauseOverlay" class="hidden">
+                <h2>⏸️ <span data-i18n="pause">PAUSA</span></h2>
+                <p class="subtitle" data-i18n="pause-hint">Premi ⏸️, P o ESC per continuare</p>
             </div>
 
-            <div class="setting-group">
-                <div class="setting-title">🐾 <span data-i18n="character">Personaggio</span></div>
-                <div class="grid-options" id="optChar">
-                    <div class="opt-btn" onclick="settings.setChar('🐓')"><span class="emoji">🐓</span></div>
-                    <div class="opt-btn" onclick="settings.setChar('🦆')"><span class="emoji">🦆</span></div>
-                    <div class="opt-btn" onclick="settings.setChar('🐧')"><span class="emoji">🐧</span></div>
-                    <div class="opt-btn" onclick="settings.setChar('🦖')"><span class="emoji">🦖</span></div>
+            <div id="startScreen" class="screen">
+                <h1>
+                    <span class="rooster-emoji" id="titleChar">🐓</span><br>
+                    <span data-i18n="title-line1">ROOSTER</span><br>
+                    <span data-i18n="title-line2">RUNNER</span>
+                </h1>
+                <p class="subtitle" data-i18n="subtitle">Il Gallo più Veloce del Mondo!</p>
+                <div id="instructions">
+                    <p><strong data-i18n="inst-voice">🎤 VOCE:</strong> <span data-i18n="inst-voice-desc">Fai rumore per saltare!</span></p>
+                    <p><strong data-i18n="inst-keyboard">⌨️ TASTIERA:</strong> <span data-i18n="inst-keyboard-desc">Premi SPAZIO, P per pausa</span></p>
+                    <p><strong data-i18n="inst-touch">📱 TOUCH:</strong> <span data-i18n="inst-touch-desc">Tocca per saltare</span></p>
+                    <p><strong data-i18n="inst-lives">❤️ 3 VITE:</strong> <span data-i18n="inst-lives-desc">Ogni collisione = -1 vita</span></p>
+                    <p><strong data-i18n="inst-powerup">🌽 MAIS:</strong> <span data-i18n="inst-powerup-desc">Recupera una vita!</span></p>
+                    <p><strong data-i18n="inst-flying">🦅 NEMICI:</strong> <span data-i18n="inst-flying-desc">Passa SOTTO!</span></p>
+                    <p><strong data-i18n="inst-near">🔥 NEAR MISS:</strong> <span data-i18n="inst-near-desc">Salta ultimo istante = +20!</span></p>
+                </div>
+                <div class="button-group">
+                    <button id="startBtn" data-i18n="btn-mic">🎤 GIOCA CON MICROFONO</button>
+                    <button id="testBtn" class="secondary" data-i18n="btn-no-mic">⌨️ GIOCA SENZA MICROFONO</button>
+                </div>
+                <p id="status"></p>
+            </div>
+
+            <div id="gameOverScreen" class="screen hidden">
+                <h1 data-i18n="game-over">💥 GAME OVER 💥</h1>
+                <div id="finalScore">0</div>
+                <p id="highScore"></p>
+                <p class="subtitle" data-i18n="game-over-msg">Il gallo ha perso tutte le vite!</p>
+                <div class="button-group">
+                    <button id="restartBtn" data-i18n="btn-restart">🔄 RIPROVA</button>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        /**
-         * ROOSTER RUNNER PRO - Optimized Logic
-         * Features: State Machine, Delta Time Physics, AudioContext API, LocalStorage
-         */
-
-        // --- CONFIG & STATE ---
-        const CONFIG = {
-            gravity: 0.15,
-            jumpForce: 2.8,
-            speedBase: 0.8,
-            speedMax: 2.5,
-            obsInterval: 120, // Frames roughly
-            micThreshold: 25
-        };
-
-        const STATE = {
-            screen: 'START', // START, GAME, PAUSE, GAMEOVER
-            isPlaying: false,
-            isPaused: false,
-            score: 0,
-            lives: 3,
-            speed: 1,
-            frame: 0,
-            lastTime: 0,
-            micActive: false,
-            invincible: false
-        };
-
-        const TRANSLATIONS = {
-            it: { subtitle: "Corri Gallo Corri!", "btn-mic": "VOCE", "btn-touch": "TOCCO", score: "PUNTI", pause: "PAUSA", resume: "RIPRENDI", settings: "IMPOSTAZIONI", menu: "MENU", retry: "RIPROVA", theme: "TEMA", language: "LINGUA", character: "PERSONAGGIO" },
-            en: { subtitle: "Run Rooster Run!", "btn-mic": "VOICE", "btn-touch": "TOUCH", score: "SCORE", pause: "PAUSED", resume: "RESUME", settings: "SETTINGS", menu: "MENU", retry: "RETRY", theme: "THEME", language: "LANGUAGE", character: "CHARACTER" },
-            es: { subtitle: "¡Corre Gallo Corre!", "btn-mic": "VOZ", "btn-touch": "TOQUE", score: "PUNTOS", pause: "PAUSA", resume: "CONTINUAR", settings: "AJUSTES", menu: "MENU", retry: "REINTENTAR", theme: "TEMA", language: "IDIOMA", character: "PERSONAJE" }
-        };
-
-        // --- ELEMENTS ---
-        const $ = (id) => document.getElementById(id);
-        const els = {
-            container: $('gameContainer'),
-            rooster: $('rooster'),
-            score: $('scoreVal'),
-            finalScore: $('finalScore'),
-            lives: $('livesPanel'),
-            screens: {
-                start: $('startScreen'),
-                pause: $('pauseScreen'),
-                over: $('gameOverScreen'),
-                settings: $('settingsOverlay')
+        'use strict';
+        
+        // ========== TRADUZIONI ==========
+        const translations = {
+            it: {
+                score: "Punteggio",
+                speed: "Velocità",
+                settings: "⚙️ IMPOSTAZIONI",
+                language: "🌍 Lingua",
+                theme: "🎨 Tema",
+                character: "🐾 Personaggio",
+                "theme-day": "Giorno",
+                "theme-sunset": "Tramonto",
+                "theme-night": "Notte",
+                "theme-desert": "Deserto",
+                "theme-ocean": "Oceano",
+                "theme-candy": "Caramella",
+                "char-rooster": "Gallo",
+                "char-duck": "Papera",
+                "char-penguin": "Pinguino",
+                "char-parrot": "Pappagallo",
+                "char-eagle": "Aquila",
+                "char-owl": "Gufo",
+                "char-rabbit": "Coniglio",
+                "char-squirrel": "Scoiattolo",
+                "char-fox": "Volpe",
+                "char-bear": "Orso",
+                "char-panda": "Panda",
+                "char-kangaroo": "Canguro",
+                pause: "PAUSA",
+                "pause-hint": "Premi ⏸️, P o ESC per continuare",
+                "title-line1": "ROOSTER",
+                "title-line2": "RUNNER",
+                subtitle: "Il Gallo più Veloce del Mondo!",
+                "inst-voice": "🎤 VOCE:",
+                "inst-voice-desc": "Fai rumore per saltare!",
+                "inst-keyboard": "⌨️ TASTIERA:",
+                "inst-keyboard-desc": "Premi SPAZIO, P per pausa",
+                "inst-touch": "📱 TOUCH:",
+                "inst-touch-desc": "Tocca per saltare",
+                "inst-lives": "❤️ 3 VITE:",
+                "inst-lives-desc": "Ogni collisione = -1 vita",
+                "inst-powerup": "🌽 MAIS:",
+                "inst-powerup-desc": "Recupera una vita!",
+                "inst-flying": "🦅 NEMICI:",
+                "inst-flying-desc": "Passa SOTTO!",
+                "inst-near": "🔥 NEAR MISS:",
+                "inst-near-desc": "Salta ultimo istante = +20!",
+                "btn-mic": "🎤 GIOCA CON MICROFONO",
+                "btn-no-mic": "⌨️ GIOCA SENZA MICROFONO",
+                "game-over": "💥 GAME OVER 💥",
+                "game-over-msg": "Hai perso tutte le vite!",
+                "btn-restart": "🔄 RIPROVA"
             },
-            grass: $('grassRow'),
-            voiceInd: $('voiceIndicator'),
-            countdown: $('countdown'),
-            notif: $('notifArea')
+            en: {
+                score: "Score",
+                speed: "Speed",
+                settings: "⚙️ SETTINGS",
+                language: "🌍 Language",
+                theme: "🎨 Theme",
+                character: "🐾 Character",
+                "theme-day": "Day",
+                "theme-sunset": "Sunset",
+                "theme-night": "Night",
+                "theme-desert": "Desert",
+                "theme-ocean": "Ocean",
+                "theme-candy": "Candy",
+                "char-rooster": "Rooster",
+                "char-duck": "Duck",
+                "char-penguin": "Penguin",
+                "char-parrot": "Parrot",
+                "char-eagle": "Eagle",
+                "char-owl": "Owl",
+                "char-rabbit": "Rabbit",
+                "char-squirrel": "Squirrel",
+                "char-fox": "Fox",
+                "char-bear": "Bear",
+                "char-panda": "Panda",
+                "char-kangaroo": "Kangaroo",
+                pause: "PAUSE",
+                "pause-hint": "Press ⏸️, P or ESC to continue",
+                "title-line1": "ROOSTER",
+                "title-line2": "RUNNER",
+                subtitle: "The Fastest Rooster in the World!",
+                "inst-voice": "🎤 VOICE:",
+                "inst-voice-desc": "Make noise to jump!",
+                "inst-keyboard": "⌨️ KEYBOARD:",
+                "inst-keyboard-desc": "Press SPACE, P to pause",
+                "inst-touch": "📱 TOUCH:",
+                "inst-touch-desc": "Tap to jump",
+                "inst-lives": "❤️ 3 LIVES:",
+                "inst-lives-desc": "Each collision = -1 life",
+                "inst-powerup": "🌽 CORN:",
+                "inst-powerup-desc": "Recover a life!",
+                "inst-flying": "🦅 ENEMIES:",
+                "inst-flying-desc": "Pass UNDER!",
+                "inst-near": "🔥 NEAR MISS:",
+                "inst-near-desc": "Jump last second = +20!",
+                "btn-mic": "🎤 PLAY WITH MIC",
+                "btn-no-mic": "⌨️ PLAY WITHOUT MIC",
+                "game-over": "💥 GAME OVER 💥",
+                "game-over-msg": "You lost all lives!",
+                "btn-restart": "🔄 RETRY"
+            },
+            zh: {
+                score: "分数",
+                speed: "速度",
+                settings: "⚙️ 设置",
+                language: "🌍 语言",
+                theme: "🎨 主题",
+                character: "🐾 角色",
+                "theme-day": "白天",
+                "theme-sunset": "日落",
+                "theme-night": "夜晚",
+                "theme-desert": "沙漠",
+                "theme-ocean": "海洋",
+                "theme-candy": "糖果",
+                "char-rooster": "公鸡",
+                "char-duck": "鸭子",
+                "char-penguin": "企鹅",
+                "char-parrot": "鹦鹉",
+                "char-eagle": "老鹰",
+                "char-owl": "猫头鹰",
+                "char-rabbit": "兔子",
+                "char-squirrel": "松鼠",
+                "char-fox": "狐狸",
+                "char-bear": "熊",
+                "char-panda": "熊猫",
+                "char-kangaroo": "袋鼠",
+                pause: "暂停",
+                "pause-hint": "按⏸️、P或ESC继续",
+                "title-line1": "公鸡",
+                "title-line2": "跑酷",
+                subtitle: "世界上最快的公鸡！",
+                "inst-voice": "🎤 语音:",
+                "inst-voice-desc": "发出声音跳跃！",
+                "inst-keyboard": "⌨️ 键盘:",
+                "inst-keyboard-desc": "按空格键，P暂停",
+                "inst-touch": "📱 触摸:",
+                "inst-touch-desc": "点击跳跃",
+                "inst-lives": "❤️ 3条命:",
+                "inst-lives-desc": "每次碰撞 = -1条命",
+                "inst-powerup": "🌽 玉米:",
+                "inst-powerup-desc": "恢复一条命！",
+                "inst-flying": "🦅 敌人:",
+                "inst-flying-desc": "从下面通过！",
+                "inst-near": "🔥 险过:",
+                "inst-near-desc": "最后一刻跳 = +20！",
+                "btn-mic": "🎤 使用麦克风玩",
+                "btn-no-mic": "⌨️ 不用麦克风玩",
+                "game-over": "💥 游戏结束 💥",
+                "game-over-msg": "你失去了所有生命！",
+                "btn-restart": "🔄 重试"
+            },
+            pt: {
+                score: "Pontuação",
+                speed: "Velocidade",
+                settings: "⚙️ CONFIGURAÇÕES",
+                language: "🌍 Idioma",
+                theme: "🎨 Tema",
+                character: "🐾 Personagem",
+                "theme-day": "Dia",
+                "theme-sunset": "Pôr do Sol",
+                "theme-night": "Noite",
+                "theme-desert": "Deserto",
+                "theme-ocean": "Oceano",
+                "theme-candy": "Doce",
+                "char-rooster": "Galo",
+                "char-duck": "Pato",
+                "char-penguin": "Pinguim",
+                "char-parrot": "Papagaio",
+                "char-eagle": "Águia",
+                "char-owl": "Coruja",
+                "char-rabbit": "Coelho",
+                "char-squirrel": "Esquilo",
+                "char-fox": "Raposa",
+                "char-bear": "Urso",
+                "char-panda": "Panda",
+                "char-kangaroo": "Canguru",
+                pause: "PAUSA",
+                "pause-hint": "Pressione ⏸️, P ou ESC para continuar",
+                "title-line1": "GALO",
+                "title-line2": "CORREDOR",
+                subtitle: "O Galo Mais Rápido do Mundo!",
+                "inst-voice": "🎤 VOZ:",
+                "inst-voice-desc": "Faça barulho para pular!",
+                "inst-keyboard": "⌨️ TECLADO:",
+                "inst-keyboard-desc": "Pressione ESPAÇO, P para pausar",
+                "inst-touch": "📱 TOQUE:",
+                "inst-touch-desc": "Toque para pular",
+                "inst-lives": "❤️ 3 VIDAS:",
+                "inst-lives-desc": "Cada colisão = -1 vida",
+                "inst-powerup": "🌽 MILHO:",
+                "inst-powerup-desc": "Recupere uma vida!",
+                "inst-flying": "🦅 INIMIGOS:",
+                "inst-flying-desc": "Passe POR BAIXO!",
+                "inst-near": "🔥 QUASE:",
+                "inst-near-desc": "Pule no último segundo = +20!",
+                "btn-mic": "🎤 JOGAR COM MICROFONE",
+                "btn-no-mic": "⌨️ JOGAR SEM MICROFONE",
+                "game-over": "💥 FIM DE JOGO 💥",
+                "game-over-msg": "Você perdeu todas as vidas!",
+                "btn-restart": "🔄 TENTAR NOVAMENTE"
+            }
         };
 
-        // --- AUDIO ENGINE (Professional Synth) ---
-        const audio = {
-            ctx: null,
-            init: () => {
-                if (!audio.ctx) audio.ctx = new (window.AudioContext || window.webkitAudioContext)();
-            },
-            play: (type) => {
-                if (!audio.ctx) return;
-                const osc = audio.ctx.createOscillator();
-                const gain = audio.ctx.createGain();
-                osc.connect(gain);
-                gain.connect(audio.ctx.destination);
+        let currentLang = localStorage.getItem('gameLang') || 'it';
+        let currentTheme = localStorage.getItem('gameTheme') || 'default';
+        let currentChar = localStorage.getItem('gameChar') || '🐓';
 
-                const now = audio.ctx.currentTime;
-                
-                if (type === 'jump') {
-                    osc.frequency.setValueAtTime(300, now);
-                    osc.frequency.exponentialRampToValueAtTime(600, now + 0.1);
-                    gain.gain.setValueAtTime(0.3, now);
-                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
-                    osc.start(now); osc.stop(now + 0.15);
-                } else if (type === 'hit') {
-                    osc.type = 'sawtooth';
-                    osc.frequency.setValueAtTime(150, now);
-                    osc.frequency.exponentialRampToValueAtTime(40, now + 0.3);
-                    gain.gain.setValueAtTime(0.4, now);
-                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
-                    osc.start(now); osc.stop(now + 0.3);
-                } else if (type === 'coin') {
-                    osc.type = 'sine';
-                    osc.frequency.setValueAtTime(1200, now);
-                    osc.frequency.setValueAtTime(1800, now + 0.05);
-                    gain.gain.setValueAtTime(0.2, now);
-                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
-                    osc.start(now); osc.stop(now + 0.1);
+        function applyTranslations() {
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (translations[currentLang] && translations[currentLang][key]) {
+                    el.textContent = translations[currentLang][key];
                 }
-            }
-        };
-
-        // --- SETTINGS MANAGER ---
-        const settings = {
-            data: { lang: 'it', theme: 'default', char: '🐓' },
-            load: () => {
-                const saved = localStorage.getItem('rr_settings');
-                if (saved) settings.data = JSON.parse(saved);
-                settings.apply();
-            },
-            save: () => {
-                localStorage.setItem('rr_settings', JSON.stringify(settings.data));
-            },
-            setLang: (l) => { settings.data.lang = l; settings.apply(); settings.save(); },
-            setTheme: (t) => { settings.data.theme = t; settings.apply(); settings.save(); },
-            setChar: (c) => { settings.data.char = c; settings.apply(); settings.save(); },
-            apply: () => {
-                // UI Update
-                document.querySelectorAll('[data-i18n]').forEach(el => {
-                    const key = el.getAttribute('data-i18n');
-                    if (TRANSLATIONS[settings.data.lang][key]) el.textContent = TRANSLATIONS[settings.data.lang][key];
-                });
-                els.container.className = `theme-${settings.data.theme}`;
-                els.rooster.textContent = settings.data.char;
-
-                // Active states in menu
-                document.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('active'));
-                // Simple logic to highlight active buttons (could be optimized)
-                // Leaving simple for single file readability
-            }
-        };
-
-        // --- GAME LOOP & PHYSICS ---
-        const game = {
-            raf: null,
-            entities: [],
-            roosterY: 0,
-            velocity: 0,
+            });
             
-            start: (micMode) => {
-                audio.init();
-                STATE.micActive = micMode;
-                els.voiceInd.style.display = micMode ? 'flex' : 'none';
-                if (micMode) mic.start();
-                
-                game.resetStats();
-                ui.showScreen(null); // Hide all
-                ui.countdown(() => {
-                    STATE.isPlaying = true;
-                    STATE.lastTime = performance.now();
-                    game.loop();
-                });
-            },
+            document.getElementById('titleChar').textContent = currentChar;
+            document.getElementById('rooster').textContent = currentChar;
+        }
 
-            resetStats: () => {
-                STATE.score = 0;
-                STATE.lives = 3;
-                STATE.speed = CONFIG.speedBase;
-                STATE.invincible = false;
-                game.entities.forEach(e => e.el.remove());
-                game.entities = [];
-                game.roosterY = 0;
-                game.velocity = 0;
-                game.updateLives();
-            },
-
-            reset: () => {
-                cancelAnimationFrame(game.raf);
-                STATE.isPlaying = false;
-                STATE.isPaused = false;
-                ui.showScreen('start');
-                game.entities.forEach(e => e.el.remove());
-                game.entities = [];
-            },
-
-            restart: () => {
-                game.start(STATE.micActive);
-            },
-
-            pause: () => {
-                if (!STATE.isPlaying) return;
-                STATE.isPaused = !STATE.isPaused;
-                if (STATE.isPaused) {
-                    cancelAnimationFrame(game.raf);
-                    ui.showScreen('pause');
-                } else {
-                    ui.showScreen(null);
-                    ui.countdown(() => {
-                        STATE.lastTime = performance.now();
-                        game.loop();
-                    });
-                }
-            },
-
-            jump: () => {
-                if (game.roosterY <= 0) { // Only jump if on ground
-                    game.velocity = CONFIG.jumpForce;
-                    audio.play('jump');
-                    els.rooster.classList.remove('running');
-                }
-            },
-
-            hit: () => {
-                if (STATE.invincible) return;
-                STATE.lives--;
-                STATE.invincible = true;
-                audio.play('hit');
-                game.updateLives();
-                
-                // Shake effect
-                els.container.classList.add('shake');
-                setTimeout(() => els.container.classList.remove('shake'), 500);
-
-                els.rooster.style.opacity = 0.5;
-                setTimeout(() => { STATE.invincible = false; els.rooster.style.opacity = 1; }, 1500);
-
-                if (STATE.lives <= 0) game.over();
-            },
-
-            over: () => {
-                STATE.isPlaying = false;
-                cancelAnimationFrame(game.raf);
-                els.finalScore.textContent = Math.floor(STATE.score);
-                ui.showScreen('over');
-            },
-
-            updateLives: () => {
-                els.lives.innerHTML = '';
-                for(let i=0; i<3; i++) {
-                    const h = document.createElement('span');
-                    h.className = `heart ${i < STATE.lives ? '' : 'lost'}`;
-                    h.textContent = '❤️';
-                    els.lives.appendChild(h);
-                }
-            },
-
-            spawn: () => {
-                const type = Math.random() > 0.8 ? 'fly' : (Math.random() > 0.9 ? 'coin' : 'obs');
-                const el = document.createElement('div');
-                let obj = { el, x: 110, type, scored: false };
-
-                if (type === 'obs') {
-                    el.className = 'obstacle';
-                    el.textContent = ['🌵','🪨','🪵','🍄'][Math.floor(Math.random()*4)];
-                    el.style.bottom = '12vh';
-                } else if (type === 'fly') {
-                    el.className = 'enemy';
-                    el.textContent = '🦅';
-                } else {
-                    el.className = 'powerup';
-                    el.textContent = '🌽';
-                    el.style.bottom = '15vh';
-                }
-                
-                el.style.left = '110vw';
-                els.container.appendChild(el);
-                game.entities.push(obj);
-            },
-
-            loop: (now) => {
-                if (!STATE.isPlaying || STATE.isPaused) return;
-                
-                // Delta Time calculation for smooth movement regardless of framerate
-                const dt = (now - STATE.lastTime) / 16.67; 
-                STATE.lastTime = now;
-                const delta = isNaN(dt) ? 1 : Math.min(dt, 2); // Cap delta to prevent huge jumps
-
-                // Physics
-                game.velocity -= CONFIG.gravity * delta;
-                game.roosterY += game.velocity * delta;
-                
-                if (game.roosterY <= 0) {
-                    game.roosterY = 0;
-                    game.velocity = 0;
-                    if(!els.rooster.classList.contains('running')) els.rooster.classList.add('running');
-                }
-                els.rooster.style.bottom = `calc(12vh + ${game.roosterY}vh)`;
-                els.rooster.style.transform = `scaleX(-1) rotate(${game.velocity * -5}deg)`;
-
-                // Spawning
-                STATE.frame += delta;
-                if (STATE.frame > (CONFIG.obsInterval / STATE.speed)) {
-                    game.spawn();
-                    STATE.frame = 0;
-                }
-
-                // Entities
-                const moveSpeed = CONFIG.speedBase * STATE.speed * delta;
-                
-                for (let i = game.entities.length - 1; i >= 0; i--) {
-                    let ent = game.entities[i];
-                    ent.x -= moveSpeed;
-                    ent.el.style.left = ent.x + 'vw';
-
-                    // Collision Logic
-                    if (ent.x < 20 && ent.x > 10) { // Near rooster x range (15vw)
-                        // Simple box collision approximation
-                        let collision = false;
-                        if (ent.type === 'obs' && game.roosterY < 5) collision = true;
-                        if (ent.type === 'fly' && game.roosterY > 10) collision = true;
-                        
-                        if (collision) {
-                            game.hit();
-                            ent.el.remove();
-                            game.entities.splice(i, 1);
-                            continue;
-                        } else if (ent.type === 'coin') {
-                            // Collect coin logic here if needed
-                        }
-                    }
-
-                    // Score
-                    if (!ent.scored && ent.x < 10) {
-                        STATE.score += 10;
-                        ent.scored = true;
-                        els.score.textContent = Math.floor(STATE.score);
-                        
-                        // Speed up
-                        if(STATE.score % 100 === 0) STATE.speed = Math.min(CONFIG.speedMax, STATE.speed + 0.1);
-                    }
-
-                    // Cleanup
-                    if (ent.x < -10) {
-                        ent.el.remove();
-                        game.entities.splice(i, 1);
-                    }
-                }
-
-                game.raf = requestAnimationFrame(game.loop);
+        function applyTheme() {
+            const container = document.getElementById('gameContainer');
+            container.className = '';
+            if (currentTheme !== 'default') {
+                container.classList.add('theme-' + currentTheme);
             }
-        };
+        }
 
-        // --- MICROPHONE LOGIC ---
-        const mic = {
-            stream: null,
-            analyser: null,
-            data: null,
-            start: async () => {
-                try {
-                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                    const audioCtx = audio.ctx;
-                    const src = audioCtx.createMediaStreamSource(stream);
-                    mic.analyser = audioCtx.createAnalyser();
-                    mic.analyser.fftSize = 256;
-                    src.connect(mic.analyser);
-                    mic.data = new Uint8Array(mic.analyser.frequencyBinCount);
-                    mic.listen();
-                } catch(e) {
-                    console.error("Mic error", e);
-                    alert("Microfono non rilevato.");
+        function saveSettings() {
+            localStorage.setItem('gameLang', currentLang);
+            localStorage.setItem('gameTheme', currentTheme);
+            localStorage.setItem('gameChar', currentChar);
+        }
+
+        // Applica impostazioni salvate
+        applyTranslations();
+        applyTheme();
+        
+        console.log('🎮 Rooster Runner - Multi-language Edition');
+        
+        document.addEventListener('gesturestart', e => e.preventDefault());
+        document.addEventListener('gesturechange', e => e.preventDefault());
+        document.addEventListener('gestureend', e => e.preventDefault());
+        document.addEventListener('dblclick', e => e.preventDefault());
+        
+        // ========== ELEMENTI DOM ==========
+        const rooster = document.getElementById('rooster');
+        const gameContainer = document.getElementById('gameContainer');
+        const scoreElement = document.getElementById('score');
+        const speedValueElement = document.getElementById('speedValue');
+        const startScreen = document.getElementById('startScreen');
+        const gameOverScreen = document.getElementById('gameOverScreen');
+        const pauseOverlay = document.getElementById('pauseOverlay');
+        const settingsMenu = document.getElementById('settingsMenu');
+        const startBtn = document.getElementById('startBtn');
+        const testBtn = document.getElementById('testBtn');
+        const restartBtn = document.getElementById('restartBtn');
+        const settingsBtn = document.getElementById('settingsBtn');
+        const pauseBtn = document.getElementById('pauseBtn');
+        const voiceIndicator = document.getElementById('voiceIndicator');
+        const finalScoreElement = document.getElementById('finalScore');
+        const highScoreElement = document.getElementById('highScore');
+        const statusElement = document.getElementById('status');
+        const grassContainer = document.getElementById('grassContainer');
+        const powerupNotif = document.getElementById('powerupNotif');
+        const nearMissNotif = document.getElementById('nearMissNotif');
+        const whiteFlash = document.getElementById('whiteFlash');
+        const fullscreenBtn = document.getElementById('fullscreenBtn');
+        const hearts = [
+            document.getElementById('heart1'),
+            document.getElementById('heart2'),
+            document.getElementById('heart3')
+        ];
+
+        // ========== PULSANTE PAUSA ==========
+        pauseBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            togglePause();
+        });
+
+        pauseBtn.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            togglePause();
+        }, { passive: false });
+
+        // ========== IMPOSTAZIONI ==========
+        settingsBtn.addEventListener('click', () => {
+            // Se il gioco è attivo, metti in pausa prima di aprire le impostazioni
+            if (gameActive && !gamePaused) {
+                togglePause();
+            }
+            settingsMenu.classList.remove('hidden');
+            updateSettingsUI();
+        });
+
+        document.querySelector('.close-settings').addEventListener('click', () => {
+            settingsMenu.classList.add('hidden');
+        });
+
+        // Lingua
+        document.querySelectorAll('#languageOptions .option-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                currentLang = btn.getAttribute('data-lang');
+                saveSettings();
+                applyTranslations();
+                updateSettingsUI();
+            });
+        });
+
+        // Tema
+        document.querySelectorAll('#themeOptions .option-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                currentTheme = btn.getAttribute('data-theme');
+                saveSettings();
+                applyTheme();
+                updateSettingsUI();
+            });
+        });
+
+        // Personaggio
+        document.querySelectorAll('#characterOptions .option-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                currentChar = btn.getAttribute('data-char');
+                saveSettings();
+                applyTranslations();
+                updateSettingsUI();
+            });
+        });
+
+        function updateSettingsUI() {
+            document.querySelectorAll('#languageOptions .option-btn').forEach(btn => {
+                btn.classList.toggle('selected', btn.getAttribute('data-lang') === currentLang);
+            });
+            document.querySelectorAll('#themeOptions .option-btn').forEach(btn => {
+                btn.classList.toggle('selected', btn.getAttribute('data-theme') === currentTheme);
+            });
+            document.querySelectorAll('#characterOptions .option-btn').forEach(btn => {
+                btn.classList.toggle('selected', btn.getAttribute('data-char') === currentChar);
+            });
+        }
+
+        // ========== COORDINATE LOGICHE ==========
+        const ROOSTER_X = 15;
+        const ROOSTER_SIZE = 8;
+        const OBSTACLE_SIZE = 6;
+        
+        // ========== VARIABILI DI GIOCO ==========
+        let score = 0;
+        let highScore = parseInt(localStorage.getItem('roosterHighScore')) || 0;
+        let lives = 3;
+        let gameActive = false;
+        let gamePaused = false;
+        let obstacles = [];
+        let flyingEnemies = [];
+        let powerups = [];
+        let gameLoopId = null;
+        let obstacleIntervalId = null;
+        let flyingEnemyIntervalId = null;
+        let powerupIntervalId = null;
+        let dustIntervalId = null;
+        let speedMultiplier = 1;
+        let invincible = false;
+        let powerupInvincible = false;
+        let usingVoice = false;
+        let lastJumpTime = 0;
+        let isNight = false;
+        let wakeLock = null;
+        let lastTime = 0;
+        
+        // ========== FISICA ==========
+        let roosterY = 0;
+        let velocityY = 0;
+        const GRAVITY = 0.8;
+        const JUMP_FORCE = 16;
+        const GROUND_LEVEL = 0;
+        
+        // ========== AUDIO ==========
+        let audioContext = null;
+        let analyser = null;
+        let microphone = null;
+        let dataArray = null;
+        let isListening = false;
+        let voiceCheckId = null;
+        let voiceThreshold = 30;
+        
+        // ========== COSTANTI ==========
+        const BASE_OBSTACLE_SPEED = 0.5;
+        const BASE_OBSTACLE_INTERVAL = 1800;
+        const FLYING_ENEMY_INTERVAL = 5000;
+        const POWERUP_SPAWN_INTERVAL = 12000;
+        const POWERUP_INVINCIBILITY_DURATION = 5000;
+        const INVINCIBLE_TIME = 1500;
+        const MAX_SPEED_MULTIPLIER = 2.5;
+        const DIFFICULTY_INCREASE_RATE = 500;
+        const JUMP_COOLDOWN = 280;
+        const NEAR_MISS_DISTANCE = 5;
+        
+        // ========== FULLSCREEN ==========
+        fullscreenBtn.addEventListener('click', () => {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    console.log('Fullscreen error:', err);
+                });
+            } else {
+                document.exitFullscreen();
+            }
+        });
+
+        // ========== WAKE LOCK ==========
+        async function requestWakeLock() {
+            try {
+                if ('wakeLock' in navigator) {
+                    wakeLock = await navigator.wakeLock.request('screen');
                 }
-            },
-            listen: () => {
-                if (!STATE.isPlaying || STATE.isPaused) {
-                    requestAnimationFrame(mic.listen);
+            } catch (err) {}
+        }
+
+        // ========== INIZIALIZZA ERBA ==========
+        function initGrass() {
+            grassContainer.innerHTML = '';
+            const grassCount = Math.ceil(window.innerWidth / (window.innerWidth * 0.1));
+            for (let i = 0; i < grassCount + 5; i++) {
+                const grass = document.createElement('div');
+                grass.classList.add('grass');
+                grass.textContent = '🌿';
+                grass.style.left = (i * 10) + 'vw';
+                grass.style.animationDelay = (i * 0.1) + 's';
+                grassContainer.appendChild(grass);
+            }
+        }
+
+        // ========== SUONI ==========
+        function initAudioContext() {
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioContext.state === 'suspended') {
+                audioContext.resume();
+            }
+        }
+
+        function playSound(type) {
+            try {
+                initAudioContext();
+                
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                switch(type) {
+                    case 'jump':
+                        oscillator.frequency.setValueAtTime(220, audioContext.currentTime);
+                        oscillator.frequency.exponentialRampToValueAtTime(660, audioContext.currentTime + 0.14);
+                        gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.14);
+                        oscillator.start();
+                        oscillator.stop(audioContext.currentTime + 0.14);
+                        break;
+                        
+                    case 'hit':
+                        oscillator.type = 'sawtooth';
+                        oscillator.frequency.setValueAtTime(400, audioContext.currentTime);
+                        oscillator.frequency.exponentialRampToValueAtTime(50, audioContext.currentTime + 0.28);
+                        gainNode.gain.setValueAtTime(0.4, audioContext.currentTime);
+                        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.28);
+                        oscillator.start();
+                        oscillator.stop(audioContext.currentTime + 0.28);
+                        break;
+                        
+                    case 'score':
+                        oscillator.frequency.setValueAtTime(880, audioContext.currentTime);
+                        gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+                        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.08);
+                        oscillator.start();
+                        oscillator.stop(audioContext.currentTime + 0.08);
+                        break;
+                        
+                    case 'nearMiss':
+                        oscillator.frequency.setValueAtTime(660, audioContext.currentTime);
+                        oscillator.frequency.exponentialRampToValueAtTime(880, audioContext.currentTime + 0.15);
+                        gainNode.gain.setValueAtTime(0.25, audioContext.currentTime);
+                        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.15);
+                        oscillator.start();
+                        oscillator.stop(audioContext.currentTime + 0.15);
+                        break;
+                        
+                    case 'powerup':
+                        oscillator.frequency.setValueAtTime(440, audioContext.currentTime);
+                        oscillator.frequency.exponentialRampToValueAtTime(880, audioContext.currentTime + 0.1);
+                        oscillator.frequency.exponentialRampToValueAtTime(1320, audioContext.currentTime + 0.2);
+                        gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.25);
+                        oscillator.start();
+                        oscillator.stop(audioContext.currentTime + 0.25);
+                        break;
+                        
+                    case 'gameOver':
+                        oscillator.frequency.setValueAtTime(440, audioContext.currentTime);
+                        oscillator.frequency.exponentialRampToValueAtTime(110, audioContext.currentTime + 0.48);
+                        gainNode.gain.setValueAtTime(0.35, audioContext.currentTime);
+                        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.48);
+                        oscillator.start();
+                        oscillator.stop(audioContext.currentTime + 0.48);
+                        break;
+                }
+            } catch (error) {}
+        }
+
+        // ========== INIZIALIZZA AUDIO MICROFONO ==========
+        async function initAudio() {
+            initAudioContext();
+            statusElement.textContent = '🎤...';
+            
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ 
+                    audio: {
+                        echoCancellation: false,
+                        noiseSuppression: false,
+                        autoGainControl: false
+                    } 
+                });
+                
+                analyser = audioContext.createAnalyser();
+                analyser.fftSize = 512;
+                analyser.smoothingTimeConstant = 0.3;
+                
+                microphone = audioContext.createMediaStreamSource(stream);
+                microphone.connect(analyser);
+                
+                dataArray = new Uint8Array(analyser.frequencyBinCount);
+                
+                isListening = true;
+                usingVoice = true;
+                voiceIndicator.classList.add('listening');
+                statusElement.textContent = '✅';
+                
+                monitorVoice();
+                startGame();
+            } catch (error) {
+                statusElement.textContent = '❌';
+                usingVoice = false;
+            }
+        }
+
+        // ========== MONITORA VOCE ==========
+        function monitorVoice() {
+            if (!analyser || !isListening) return;
+
+            analyser.getByteFrequencyData(dataArray);
+            
+            let sum = 0;
+            const relevantRange = Math.floor(dataArray.length * 0.3);
+            for (let i = 0; i < relevantRange; i++) {
+                sum += dataArray[i];
+            }
+            const average = sum / relevantRange;
+
+            const now = Date.now();
+            if (average > voiceThreshold && 
+                gameActive && 
+                !gamePaused &&
+                roosterY === GROUND_LEVEL && 
+                (now - lastJumpTime) > JUMP_COOLDOWN) {
+                jump();
+            }
+
+            voiceCheckId = requestAnimationFrame(monitorVoice);
+        }
+
+        // ========== PARTICELLE ==========
+        function createParticles() {
+            const particles = ['✨', '⭐', '💫'];
+            
+            for (let i = 0; i < 3; i++) {
+                setTimeout(() => {
+                    const particle = document.createElement('div');
+                    particle.classList.add('particle');
+                    particle.textContent = particles[i % particles.length];
+                    
+                    particle.style.left = ROOSTER_X + 'vw';
+                    particle.style.bottom = (15 + roosterY) + 'vh';
+                    
+                    gameContainer.appendChild(particle);
+                    
+                    setTimeout(() => particle.remove(), 1100);
+                }, i * 75);
+            }
+        }
+
+        // ========== ESPLOSIONE DI PIUME ==========
+        function createFeatherExplosion() {
+            for (let i = 0; i < 15; i++) {
+                const feather = document.createElement('div');
+                feather.classList.add('feather');
+                feather.textContent = '🪶';
+                
+                feather.style.left = ROOSTER_X + 'vw';
+                feather.style.bottom = (15 + Math.random() * 5) + 'vh';
+                
+                const velocityX = (Math.random() - 0.5) * 15;
+                const velocityY = Math.random() * 15 + 5;
+                const rotationSpeed = (Math.random() - 0.5) * 20;
+                
+                gameContainer.appendChild(feather);
+
+                let posX = 0;
+                let posY = 0;
+                let currentVelY = velocityY;
+                let rotation = 0;
+                let opacity = 1;
+
+                const animateFeather = () => {
+                    posX += velocityX * 0.3;
+                    posY += currentVelY * 0.3;
+                    rotation += rotationSpeed;
+                    currentVelY -= 0.5;
+                    opacity -= 0.015;
+
+                    feather.style.transform = `translate(${posX}vw, ${-posY}vh) rotate(${rotation}deg)`;
+                    feather.style.opacity = opacity;
+
+                    if (opacity > 0) {
+                        requestAnimationFrame(animateFeather);
+                    } else {
+                        feather.remove();
+                    }
+                };
+                requestAnimationFrame(animateFeather);
+            }
+        }
+
+        // ========== DUST TRAIL ==========
+        function createDustTrail() {
+            if (!gameActive || gamePaused || roosterY > 0) return;
+            
+            const dust = document.createElement('div');
+            dust.classList.add('dust');
+            dust.textContent = '💨';
+            dust.style.left = (ROOSTER_X - 2) + 'vw';
+            dust.style.bottom = '15vh';
+            
+            gameContainer.appendChild(dust);
+            
+            setTimeout(() => dust.remove(), 800);
+        }
+
+        // ========== SALTO ==========
+        function jump() {
+            if (roosterY > GROUND_LEVEL || !gameActive || gamePaused) return;
+            
+            const now = Date.now();
+            if ((now - lastJumpTime) < JUMP_COOLDOWN) return;
+            
+            lastJumpTime = now;
+            velocityY = JUMP_FORCE;
+            
+            voiceIndicator.classList.add('active');
+            rooster.classList.remove('running');
+            createParticles();
+            playSound('jump');
+        }
+
+        // ========== FISICA CON DELTA TIME ==========
+        function updatePhysics(deltaTime) {
+            if (!gameActive || gamePaused) return;
+
+            const dt = Math.min(deltaTime / 16.67, 2);
+            
+            velocityY -= GRAVITY * dt;
+            roosterY += velocityY * dt;
+
+            if (roosterY <= GROUND_LEVEL) {
+                roosterY = GROUND_LEVEL;
+                velocityY = 0;
+                rooster.classList.add('running');
+                rooster.style.transform = 'scaleX(-1) rotate(0deg)';
+                
+                setTimeout(() => {
+                    voiceIndicator.classList.remove('active');
+                }, 100);
+            } else {
+                rooster.classList.remove('running');
+                const rotation = velocityY > 0 ? -10 : Math.min(velocityY * -2, 15);
+                rooster.style.transform = `scaleX(-1) rotate(${rotation}deg)`;
+            }
+
+            rooster.style.bottom = `calc(15vh + ${roosterY}vh)`;
+        }
+
+        // ========== CREA OSTACOLO ==========
+        function createObstacle() {
+            if (!gameActive || gamePaused) return;
+
+            const obstacle = document.createElement('div');
+            obstacle.classList.add('obstacle');
+            
+            const types = ['🌵', '🌲', '🪨', '🔥', '⚡', '💥', '🧱', '📦'];
+            obstacle.textContent = types[Math.floor(Math.random() * types.length)];
+            
+            const obj = {
+                element: obstacle,
+                x: 110,
+                scored: false,
+                hit: false
+            };
+            
+            obstacle.style.left = '110vw';
+            
+            gameContainer.appendChild(obstacle);
+            obstacles.push(obj);
+        }
+
+        // ========== CREA NEMICO VOLANTE ==========
+        function createFlyingEnemy() {
+            if (!gameActive || gamePaused) return;
+
+            const enemy = document.createElement('div');
+            enemy.classList.add('flying-enemy');
+            enemy.textContent = ['🦅', '🦉', '🦇'][Math.floor(Math.random() * 3)];
+            
+            const obj = {
+                element: enemy,
+                x: 110,
+                scored: false,
+                hit: false
+            };
+            
+            enemy.style.left = '110vw';
+            
+            gameContainer.appendChild(enemy);
+            flyingEnemies.push(obj);
+        }
+
+        // ========== CREA POWER-UP ==========
+        function createPowerup() {
+            if (!gameActive || gamePaused) return;
+
+            const powerup = document.createElement('div');
+            powerup.classList.add('powerup');
+            powerup.textContent = '🌽';
+            
+            const obj = {
+                element: powerup,
+                x: 110,
+                collected: false
+            };
+            
+            powerup.style.left = '110vw';
+            
+            gameContainer.appendChild(powerup);
+            powerups.push(obj);
+        }
+
+        // ========== FLASH BIANCO ==========
+        function triggerWhiteFlash() {
+            whiteFlash.classList.remove('active');
+            void whiteFlash.offsetWidth;
+            whiteFlash.classList.add('active');
+        }
+
+        // ========== NOTIFICHE ==========
+        function showPowerupNotif(message) {
+            powerupNotif.textContent = message;
+            powerupNotif.classList.remove('show');
+            void powerupNotif.offsetWidth;
+            powerupNotif.classList.add('show');
+            
+            setTimeout(() => {
+                powerupNotif.classList.remove('show');
+            }, 2000);
+        }
+
+        function showNearMissNotif() {
+            nearMissNotif.textContent = '🔥 PERFETTO!';
+            nearMissNotif.classList.remove('show');
+            void nearMissNotif.offsetWidth;
+            nearMissNotif.classList.add('show');
+            
+            setTimeout(() => {
+                nearMissNotif.classList.remove('show');
+            }, 1000);
+        }
+
+        // ========== COLLEZIONA POWER-UP ==========
+        function collectPowerup(powerup) {
+            if (powerup.collected) return;
+            
+            powerup.collected = true;
+            powerup.element.remove();
+            
+            playSound('powerup');
+            triggerWhiteFlash();
+            
+            if (lives < 3) {
+                lives++;
+                hearts[lives - 1].classList.remove('lost');
+                showPowerupNotif('❤️ +1!');
+            } else {
+                powerupInvincible = true;
+                rooster.classList.add('invincible');
+                showPowerupNotif('⭐ INVINCIBILE!');
+                
+                setTimeout(() => {
+                    powerupInvincible = false;
+                    if (gameActive) {
+                        rooster.classList.remove('invincible');
+                    }
+                }, POWERUP_INVINCIBILITY_DURATION);
+            }
+        }
+
+        // ========== PERDI VITA ==========
+        function loseLife() {
+            if (invincible || powerupInvincible || !gameActive) return;
+            
+            invincible = true;
+            lives--;
+            
+            if (lives >= 0 && lives < 3) {
+                hearts[lives].classList.add('lost');
+            }
+            
+            playSound('hit');
+            rooster.classList.add('damage');
+            createFeatherExplosion();
+            
+            const body = document.body;
+            body.classList.add('shake-effect');
+            setTimeout(() => body.classList.remove('shake-effect'), 500);
+            
+            setTimeout(() => rooster.classList.remove('damage'), 550);
+            
+            if (lives <= 0) {
+                invincible = false;
+                endGame();
+                return;
+            }
+            
+            let blinkCount = 0;
+            const blinkInterval = setInterval(() => {
+                if (!gameActive) {
+                    clearInterval(blinkInterval);
+                    rooster.style.opacity = '1';
+                    invincible = false;
                     return;
                 }
-                mic.analyser.getByteFrequencyData(mic.data);
-                let sum = 0;
-                for(let i=0; i < mic.data.length; i++) sum += mic.data[i];
-                let avg = sum / mic.data.length;
                 
-                if (avg > CONFIG.micThreshold) {
-                    els.voiceInd.classList.add('active');
-                    game.jump();
-                } else {
-                    els.voiceInd.classList.remove('active');
+                rooster.style.opacity = (blinkCount % 2 === 0) ? '0.3' : '1';
+                blinkCount++;
+                
+                if (blinkCount >= 10) {
+                    clearInterval(blinkInterval);
+                    rooster.style.opacity = '1';
+                    invincible = false;
                 }
-                requestAnimationFrame(mic.listen);
-            }
-        };
+            }, 150);
+        }
 
-        // --- UI MANAGER ---
-        const ui = {
-            showScreen: (name) => {
-                Object.values(els.screens).forEach(s => s.classList.add('hidden'));
-                if (name && els.screens[name]) els.screens[name].classList.remove('hidden');
+        // ========== GAME LOOP ==========
+        function gameLoop(timestamp) {
+            if (!gameActive || gamePaused) return;
+
+            const deltaTime = lastTime === 0 ? 16.67 : timestamp - lastTime;
+            lastTime = timestamp;
+
+            updatePhysics(deltaTime);
+
+            speedMultiplier = Math.min(1 + (Math.floor(score / DIFFICULTY_INCREASE_RATE) * 0.15), MAX_SPEED_MULTIPLIER);
+            speedValueElement.textContent = speedMultiplier.toFixed(1) + 'x';
+
+            const dt = Math.min(deltaTime / 16.67, 2);
+            const moveSpeed = BASE_OBSTACLE_SPEED * speedMultiplier * dt;
+
+            // OSTACOLI
+            for (let i = obstacles.length - 1; i >= 0; i--) {
+                const obstacle = obstacles[i];
                 
-                // Disable pause btn on start/over screens
-                $('btnPause').classList.toggle('disabled', name === 'start' || name === 'over');
-            },
-            
-            openSettings: () => {
-                // If playing, force pause first
-                if (STATE.isPlaying && !STATE.isPaused) {
-                    game.pause(); 
-                    // Hide pause screen temporarily to show settings cleanly, 
-                    // or keep it below. Let's keep it below.
-                }
-                els.screens.settings.classList.add('active');
-            },
+                obstacle.x -= moveSpeed;
+                obstacle.element.style.left = obstacle.x + 'vw';
 
-            closeSettings: () => {
-                els.screens.settings.classList.remove('active');
-                // If we were paused, remain paused.
-                // If we were at start menu, remain there.
-            },
-
-            countdown: (cb) => {
-                let count = 3;
-                els.countdown.style.display = 'block';
-                els.countdown.textContent = count;
-                
-                let int = setInterval(() => {
-                    count--;
-                    if(count > 0) {
-                        els.countdown.textContent = count;
-                    } else {
-                        clearInterval(int);
-                        els.countdown.textContent = "GO!";
-                        setTimeout(() => {
-                            els.countdown.style.display = 'none';
-                            cb();
-                        }, 500);
+                // COLLISIONE
+                if (!invincible && !powerupInvincible && !obstacle.hit) {
+                    const distance = Math.abs(obstacle.x - ROOSTER_X);
+                    const collisionThreshold = (OBSTACLE_SIZE + ROOSTER_SIZE) / 2;
+                    
+                    if (distance < collisionThreshold && roosterY < 8) {
+                        obstacle.hit = true;
+                        obstacle.element.style.filter = 'brightness(2)';
+                        loseLife();
                     }
-                }, 600);
-            }
-        };
-
-        // --- INITIALIZATION ---
-        window.onload = () => {
-            settings.load();
-            
-            // Grass Gen
-            for(let i=0; i<15; i++) {
-                let g = document.createElement('div');
-                g.className = 'grass';
-                g.textContent = '🌿';
-                g.style.left = (i*8) + 'vw';
-                g.style.animationDelay = (i*0.1)+'s';
-                els.grass.appendChild(g);
-            }
-
-            // Event Listeners
-            $('btnStartMic').onclick = () => game.start(true);
-            $('btnStartTap').onclick = () => game.start(false);
-            $('btnPause').onclick = () => game.pause();
-            $('btnResume').onclick = () => game.pause();
-            
-            // Global Input
-            document.addEventListener('keydown', (e) => {
-                if (e.code === 'Space' || e.code === 'ArrowUp') {
-                    if(!STATE.isPlaying && !els.screens.start.classList.contains('hidden')) game.start(false);
-                    else game.jump();
                 }
-                if (e.code === 'Escape' || e.code === 'KeyP') game.pause();
-            });
 
-            els.container.addEventListener('touchstart', (e) => {
-                if(e.target.tagName !== 'BUTTON') game.jump();
-            }, {passive: false});
-            els.container.addEventListener('mousedown', (e) => {
-                if(e.target.tagName !== 'BUTTON') game.jump();
-            });
-        };
+                // NEAR MISS
+                if (!obstacle.scored && !obstacle.hit &&
+                    obstacle.x <= ROOSTER_X + NEAR_MISS_DISTANCE && 
+                    obstacle.x >= ROOSTER_X - 1) {
+                    
+                    if (roosterY > 15) {
+                        obstacle.scored = true;
+                        score += 20;
+                        scoreElement.textContent = score;
+                        playSound('nearMiss');
+                        showNearMissNotif();
+                    }
+                }
 
+                // PUNTEGGIO
+                if (!obstacle.scored && !obstacle.hit && obstacle.x < ROOSTER_X - 8) {
+                    obstacle.scored = true;
+                    
+                    const points = 10 + Math.floor(speedMultiplier * 5);
+                    score += points;
+                    scoreElement.textContent = score;
+                    playSound('score');
+                }
+
+                // RIMUOVI
+                if (obstacle.x < -10) {
+                    obstacle.element.remove();
+                    obstacles.splice(i, 1);
+                }
+            }
+
+            // NEMICI VOLANTI
+            for (let i = flyingEnemies.length - 1; i >= 0; i--) {
+                const enemy = flyingEnemies[i];
+                
+                enemy.x -= moveSpeed * 0.9;
+                enemy.element.style.left = enemy.x + 'vw';
+
+                if (!invincible && !powerupInvincible && !enemy.hit) {
+                    const distance = Math.abs(enemy.x - ROOSTER_X);
+                    const collisionThreshold = (OBSTACLE_SIZE + ROOSTER_SIZE) / 2;
+                    
+                    if (distance < collisionThreshold && roosterY > 18) {
+                        enemy.hit = true;
+                        enemy.element.style.filter = 'brightness(2)';
+                        loseLife();
+                    }
+                }
+
+                if (!enemy.scored && !enemy.hit &&
+                    enemy.x <= ROOSTER_X + NEAR_MISS_DISTANCE && 
+                    enemy.x >= ROOSTER_X - 1) {
+                    
+                    if (roosterY < 5) {
+                        enemy.scored = true;
+                        score += 20;
+                        scoreElement.textContent = score;
+                        playSound('nearMiss');
+                        showNearMissNotif();
+                    }
+                }
+
+                if (!enemy.scored && !enemy.hit && enemy.x < ROOSTER_X - 8) {
+                    enemy.scored = true;
+                    
+                    const points = 15 + Math.floor(speedMultiplier * 5);
+                    score += points;
+                    scoreElement.textContent = score;
+                    playSound('score');
+                }
+
+                if (enemy.x < -10) {
+                    enemy.element.remove();
+                    flyingEnemies.splice(i, 1);
+                }
+            }
+
+            // POWER-UPS
+            for (let i = powerups.length - 1; i >= 0; i--) {
+                const powerup = powerups[i];
+                
+                powerup.x -= moveSpeed;
+                powerup.element.style.left = powerup.x + 'vw';
+
+                if (!powerup.collected) {
+                    const distance = Math.abs(powerup.x - ROOSTER_X);
+                    const collisionThreshold = (ROOSTER_SIZE + 7) / 2;
+                    
+                    if (distance < collisionThreshold) {
+                        collectPowerup(powerup);
+                        powerups.splice(i, 1);
+                        continue;
+                    }
+                }
+
+                if (powerup.x < -10) {
+                    powerup.element.remove();
+                    powerups.splice(i, 1);
+                }
+            }
+
+            gameLoopId = requestAnimationFrame(gameLoop);
+        }
+
+        // ========== PAUSA ==========
+        function togglePause() {
+            if (!gameActive) return;
+            
+            gamePaused = !gamePaused;
+            
+            if (gamePaused) {
+                pauseOverlay.classList.remove('hidden');
+                pauseBtn.textContent = '▶️';
+                if (gameLoopId) cancelAnimationFrame(gameLoopId);
+                if (dustIntervalId) clearInterval(dustIntervalId);
+                rooster.classList.remove('running');
+            } else {
+                pauseOverlay.classList.add('hidden');
+                pauseBtn.textContent = '⏸️';
+                lastTime = performance.now();
+                gameLoopId = requestAnimationFrame(gameLoop);
+                if (roosterY === GROUND_LEVEL) rooster.classList.add('running');
+                dustIntervalId = setInterval(createDustTrail, 200);
+            }
+        }
+
+        // ========== INIZIA GIOCO ==========
+        function startGame() {
+            if (gameActive) return;
+            
+            initAudioContext();
+            requestWakeLock();
+            
+            gameActive = true;
+            gamePaused = false;
+            score = 0;
+            lives = 3;
+            speedMultiplier = 1;
+            invincible = false;
+            powerupInvincible = false;
+            lastJumpTime = 0;
+            isNight = false;
+            roosterY = 0;
+            velocityY = 0;
+            lastTime = 0;
+            scoreElement.textContent = score;
+            
+            // Abilita il pulsante pausa
+            pauseBtn.classList.remove('disabled');
+            pauseBtn.textContent = '⏸️';
+            
+            hearts.forEach(heart => heart.classList.remove('lost'));
+            
+            obstacles.forEach(obs => obs.element.remove());
+            obstacles = [];
+            flyingEnemies.forEach(e => e.element.remove());
+            flyingEnemies = [];
+            powerups.forEach(pw => pw.element.remove());
+            powerups = [];
+            
+            if (gameLoopId) cancelAnimationFrame(gameLoopId);
+            if (obstacleIntervalId) clearInterval(obstacleIntervalId);
+            if (flyingEnemyIntervalId) clearInterval(flyingEnemyIntervalId);
+            if (powerupIntervalId) clearInterval(powerupIntervalId);
+            if (dustIntervalId) clearInterval(dustIntervalId);
+            
+            rooster.style.bottom = '15vh';
+            rooster.style.opacity = '1';
+            rooster.style.transform = 'scaleX(-1) rotate(0deg)';
+            rooster.classList.remove('invincible');
+            rooster.classList.add('running');
+            
+            startScreen.classList.add('hidden');
+            gameOverScreen.classList.add('hidden');
+            pauseOverlay.classList.add('hidden');
+
+            lastTime = performance.now();
+            gameLoopId = requestAnimationFrame(gameLoop);
+            
+            setTimeout(() => {
+                if (gameActive) {
+                    createObstacle();
+                    
+                    obstacleIntervalId = setInterval(() => {
+                        if (gameActive && !gamePaused) createObstacle();
+                    }, BASE_OBSTACLE_INTERVAL);
+                    
+                    flyingEnemyIntervalId = setInterval(() => {
+                        if (gameActive && !gamePaused && score > 100) createFlyingEnemy();
+                    }, FLYING_ENEMY_INTERVAL);
+                    
+                    powerupIntervalId = setInterval(() => {
+                        if (gameActive && !gamePaused) createPowerup();
+                    }, POWERUP_SPAWN_INTERVAL);
+                    
+                    dustIntervalId = setInterval(createDustTrail, 200);
+                }
+            }, 1500);
+        }
+
+        // ========== FINE GIOCO ==========
+        function endGame() {
+            gameActive = false;
+            gamePaused = false;
+            rooster.classList.remove('running');
+            rooster.classList.remove('invincible');
+            
+            // Disabilita il pulsante pausa
+            pauseBtn.classList.add('disabled');
+            pauseBtn.textContent = '⏸️';
+            
+            playSound('gameOver');
+            
+            if (gameLoopId) cancelAnimationFrame(gameLoopId);
+            if (obstacleIntervalId) clearInterval(obstacleIntervalId);
+            if (flyingEnemyIntervalId) clearInterval(flyingEnemyIntervalId);
+            if (powerupIntervalId) clearInterval(powerupIntervalId);
+            if (dustIntervalId) clearInterval(dustIntervalId);
+            
+            if (wakeLock !== null) {
+                wakeLock.release().then(() => {
+                    wakeLock = null;
+                });
+            }
+            
+            if (score > highScore) {
+                highScore = score;
+                localStorage.setItem('roosterHighScore', highScore.toString());
+                highScoreElement.textContent = '🏆 ' + (currentLang === 'it' ? 'NUOVO RECORD!' : currentLang === 'en' ? 'NEW RECORD!' : currentLang === 'zh' ? '新记录！' : 'NOVO RECORDE!') + ' 🏆';
+                highScoreElement.style.color = '#ffd43b';
+            } else {
+                highScoreElement.textContent = '🏆 ' + (currentLang === 'it' ? 'Record:' : currentLang === 'en' ? 'Record:' : currentLang === 'zh' ? '记录:' : 'Recorde:') + ' ' + highScore;
+            }
+            
+            finalScoreElement.textContent = score.toString();
+            gameOverScreen.classList.remove('hidden');
+        }
+
+        // ========== EVENT LISTENERS ==========
+        
+        startBtn.addEventListener('touchstart', async (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            initAudioContext();
+            startBtn.style.transform = 'scale(0.95)';
+            await initAudio();
+        }, { passive: false });
+
+        startBtn.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            startBtn.style.transform = 'scale(1)';
+        }, { passive: false });
+
+        testBtn.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            initAudioContext();
+            testBtn.style.transform = 'scale(0.95)';
+            statusElement.textContent = '✅';
+            usingVoice = false;
+            setTimeout(() => startGame(), 200);
+        }, { passive: false });
+
+        testBtn.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            testBtn.style.transform = 'scale(1)';
+        }, { passive: false });
+
+        restartBtn.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            initAudioContext();
+            restartBtn.style.transform = 'scale(0.95)';
+            if (usingVoice && isListening) {
+                monitorVoice();
+            }
+            setTimeout(() => startGame(), 200);
+        }, { passive: false });
+
+        restartBtn.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            restartBtn.style.transform = 'scale(1)';
+        }, { passive: false });
+
+        startBtn.addEventListener('click', async (e) => {
+            e.preventDefault();
+            initAudioContext();
+            await initAudio();
+        });
+
+        testBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            initAudioContext();
+            statusElement.textContent = '✅';
+            usingVoice = false;
+            startGame();
+        });
+
+        restartBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            initAudioContext();
+            if (usingVoice && isListening) {
+                monitorVoice();
+            }
+            startGame();
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space' && gameActive && !gamePaused) {
+                e.preventDefault();
+                jump();
+            } else if (e.code === 'KeyP' || e.code === 'Escape') {
+                e.preventDefault();
+                togglePause();
+            }
+        });
+
+        gameContainer.addEventListener('touchstart', (e) => {
+            if (gameActive && !gamePaused) {
+                const target = e.target;
+                if (target === gameContainer || target.classList.contains('obstacle') || 
+                    target === rooster || target.id === 'ground') {
+                    e.preventDefault();
+                    jump();
+                }
+            }
+        }, { passive: false });
+
+        gameContainer.addEventListener('click', (e) => {
+            if (gameActive && !gamePaused) {
+                const target = e.target;
+                if (target !== startBtn && target !== testBtn && target !== restartBtn && 
+                    target !== fullscreenBtn && target !== settingsBtn && target !== pauseBtn) {
+                    jump();
+                }
+            }
+        });
+
+        // INIZIALIZZA
+        window.addEventListener('load', () => {
+            initGrass();
+            if (highScore > 0) {
+                statusElement.textContent = `🏆 ${highScore}`;
+            }
+        });
+
+        window.addEventListener('resize', () => {
+            if (!gameActive) {
+                initGrass();
+            }
+        });
     </script>
 </body>
 </html>
