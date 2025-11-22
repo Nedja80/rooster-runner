@@ -7,7 +7,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#1e3c72">
-    <title>🐓 Rooster Runner PRO</title>
+    <title>🐓 Rooster Runner FINAL</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Poppins:wght@400;600;700;800&display=swap');
         
@@ -32,7 +32,6 @@
             overscroll-behavior: none;
         }
 
-        /* VIGNETTATURA - EFFETTO PROFESSIONALE */
         body::after {
             content: "";
             position: absolute;
@@ -72,7 +71,6 @@
             transition: background 3s ease;
         }
 
-        /* FLASH BIANCO per Power-up */
         #whiteFlash {
             position: absolute;
             top: 0;
@@ -95,7 +93,6 @@
             100% { opacity: 0; }
         }
 
-        /* SCREEN SHAKE */
         @keyframes shake {
             0% { transform: translate(1px, 1px) rotate(0deg); }
             10% { transform: translate(-1px, -2px) rotate(-1deg); }
@@ -115,7 +112,6 @@
             animation-iteration-count: 1;
         }
 
-        /* SOLE/LUNA */
         .sun {
             position: absolute;
             top: 5vh;
@@ -135,7 +131,6 @@
             50% { box-shadow: 0 0 5vmin rgba(255, 215, 0, 1); }
         }
 
-        /* NUVOLE */
         .cloud {
             position: absolute;
             font-size: 5vmin;
@@ -177,7 +172,6 @@
             to { transform: translateX(-150vw); }
         }
 
-        /* MONTAGNE - PARALLASSE */
         .mountain {
             position: absolute;
             bottom: 30vh;
@@ -214,26 +208,6 @@
             to { transform: translateX(-50vw); }
         }
 
-        /* FOREGROUND - PARALLASSE VELOCE */
-        .foreground-container {
-            position: absolute;
-            bottom: 15vh;
-            width: 100%;
-            height: 15vh;
-            overflow: hidden;
-            z-index: 60;
-            pointer-events: none;
-        }
-
-        .foreground-item {
-            position: absolute;
-            bottom: 0;
-            font-size: 8vmin;
-            opacity: 0.6;
-            filter: blur(1px);
-        }
-
-        /* TERRENO */
         #ground {
             position: absolute;
             bottom: 0;
@@ -249,7 +223,6 @@
             z-index: 20;
         }
 
-        /* ERBA */
         .grass-container {
             position: absolute;
             bottom: 14.5vh;
@@ -271,7 +244,6 @@
             to { transform: translateX(-10vmin); }
         }
 
-        /* GALLO - CON ROTAZIONE IN SALTO */
         #rooster {
             position: absolute;
             bottom: 15vh;
@@ -280,7 +252,7 @@
             z-index: 50;
             filter: drop-shadow(0.5vmin 0.8vmin 1.2vmin rgba(0,0,0,0.5));
             transform: scaleX(-1);
-            will-change: transform, bottom;
+            will-change: transform;
             transition: transform 0.1s ease-out;
         }
 
@@ -294,7 +266,7 @@
             100% { transform: scaleX(-1) translateY(0); }
         }
 
-        /* OSTACOLI */
+        /* OSTACOLI - USANO LEFT PER CHIAREZZA */
         .obstacle {
             position: absolute;
             bottom: 15vh;
@@ -304,7 +276,21 @@
             will-change: transform;
         }
 
-        /* POWER-UP */
+        .flying-enemy {
+            position: absolute;
+            bottom: 40vh;
+            font-size: 8vmin;
+            filter: drop-shadow(0.3vmin 0.5vmin 0.8vmin rgba(0,0,0,0.4));
+            z-index: 40;
+            will-change: transform;
+            animation: flyingBob 1.5s ease-in-out infinite;
+        }
+
+        @keyframes flyingBob {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-2vh); }
+        }
+
         .powerup {
             position: absolute;
             bottom: 25vh;
@@ -320,7 +306,6 @@
             50% { transform: translateY(-2vh) rotate(15deg); }
         }
 
-        /* EFFETTO INVINCIBILITÀ */
         #rooster.invincible {
             animation: invinciblePulse 0.3s infinite;
         }
@@ -334,7 +319,28 @@
             }
         }
 
-        /* HUD */
+        .feather {
+            position: absolute;
+            font-size: 4vmin;
+            pointer-events: none;
+            z-index: 100;
+            will-change: transform, opacity;
+        }
+
+        .dust {
+            position: absolute;
+            font-size: 3vmin;
+            pointer-events: none;
+            z-index: 45;
+            opacity: 0.6;
+            animation: dustFade 0.8s ease-out forwards;
+        }
+
+        @keyframes dustFade {
+            0% { opacity: 0.6; transform: scale(0.5); }
+            100% { opacity: 0; transform: scale(1.5); }
+        }
+
         #hud {
             position: absolute;
             top: 0;
@@ -373,6 +379,7 @@
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            background-clip: text;
             font-family: 'Press Start 2P', cursive;
         }
 
@@ -399,7 +406,6 @@
             transform: scale(0.7);
         }
 
-        /* INDICATORE VELOCITÀ */
         #speedIndicator {
             position: absolute;
             top: 12vh;
@@ -426,10 +432,10 @@
             background: linear-gradient(135deg, #f77062 0%, #fe5196 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            background-clip: text;
             font-family: 'Press Start 2P', cursive;
         }
 
-        /* INDICATORE VOCALE */
         #voiceIndicator {
             position: absolute;
             bottom: 4vh;
@@ -473,7 +479,28 @@
             100% { transform: scale(1.75); opacity: 0; }
         }
 
-        /* SCHERMATE */
+        #fullscreenBtn {
+            position: absolute;
+            top: 12vh;
+            right: 3vw;
+            width: 8vmin;
+            height: 8vmin;
+            border-radius: 1.5vh;
+            background: linear-gradient(135deg, rgba(255,255,255,0.94) 0%, rgba(240,240,255,0.94) 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 4vmin;
+            box-shadow: 0 1vh 2.5vh rgba(0,0,0,0.3);
+            z-index: 100;
+            cursor: pointer;
+            border: 0.2vh solid rgba(255,255,255,0.5);
+        }
+
+        #fullscreenBtn:active {
+            transform: scale(0.9);
+        }
+
         .screen {
             position: absolute;
             top: 0;
@@ -504,6 +531,7 @@
             background: linear-gradient(45deg, #fff, #ffd700, #fff);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            background-clip: text;
             animation: titleShine 3s ease-in-out infinite;
             background-size: 200% auto;
         }
@@ -630,7 +658,6 @@
             display: none !important;
         }
 
-        /* EFFETTO DANNO */
         @keyframes damageEffect {
             0%, 100% { filter: drop-shadow(0.5vmin 0.8vmin 1.2vmin rgba(0,0,0,0.5)); }
             25%, 75% { filter: drop-shadow(0 0 2.5vmin rgba(255,0,0,1)) brightness(1.5); }
@@ -640,7 +667,6 @@
             animation: damageEffect 0.55s ease-in-out;
         }
 
-        /* PARTICELLE */
         .particle {
             position: absolute;
             font-size: 3vmin;
@@ -660,7 +686,6 @@
             }
         }
 
-        /* PAUSA */
         #pauseOverlay {
             position: absolute;
             top: 0;
@@ -682,7 +707,6 @@
             margin-bottom: 4vh;
         }
 
-        /* NOTIFICA POWER-UP */
         #powerupNotif {
             position: absolute;
             top: 20vh;
@@ -712,15 +736,58 @@
             70% { transform: translateX(-50%) scale(1) rotate(0deg); opacity: 1; }
             100% { transform: translateX(-50%) scale(0) rotate(10deg); opacity: 0; }
         }
+
+        #nearMissNotif {
+            position: absolute;
+            top: 30vh;
+            left: 50%;
+            transform: translateX(-50%) scale(0);
+            background: linear-gradient(135deg, #ff6b6b, #ee5a6f);
+            color: white;
+            padding: 1.5vh 3vw;
+            border-radius: 1.5vh;
+            font-size: 4vmin;
+            font-weight: 900;
+            z-index: 150;
+            box-shadow: 0 1vh 3vh rgba(255, 107, 107, 0.6);
+            text-align: center;
+            pointer-events: none;
+            font-family: 'Press Start 2P', cursive;
+        }
+
+        #nearMissNotif.show {
+            animation: nearMissShow 1s ease-out forwards;
+        }
+
+        @keyframes nearMissShow {
+            0% { transform: translateX(-50%) scale(0); opacity: 0; }
+            15% { transform: translateX(-50%) scale(1.3); opacity: 1; }
+            30% { transform: translateX(-50%) scale(1); }
+            70% { transform: translateX(-50%) scale(1); opacity: 1; }
+            100% { transform: translateX(-50%) scale(0); opacity: 0; }
+        }
+
+        /* DEBUG INFO */
+        #debugInfo {
+            position: absolute;
+            bottom: 25vh;
+            left: 3vw;
+            background: rgba(0,0,0,0.7);
+            color: lime;
+            padding: 1vh;
+            border-radius: 1vh;
+            font-size: 1.5vmin;
+            font-family: monospace;
+            z-index: 150;
+            display: none;
+        }
     </style>
 </head>
 <body>
     <div id="gameWrapper">
         <div id="gameContainer">
-            <!-- Flash Bianco -->
             <div id="whiteFlash"></div>
             
-            <!-- Sfondo -->
             <div class="sun"></div>
             <div class="cloud cloud1">☁️</div>
             <div class="cloud cloud2">☁️</div>
@@ -729,7 +796,6 @@
             <div class="mountain mountain2">⛰️</div>
             <div class="mountain mountain3">🏔️</div>
             
-            <!-- HUD -->
             <div id="hud">
                 <div id="scorePanel">
                     <h3>Punteggio</h3>
@@ -742,62 +808,53 @@
                 </div>
             </div>
             
-            <!-- Indicatore Velocità -->
             <div id="speedIndicator">
                 <div>Velocità</div>
                 <div id="speedValue">1.0x</div>
             </div>
             
-            <!-- Indicatore Vocale -->
+            <div id="fullscreenBtn" title="Schermo intero">⛶</div>
+            
             <div id="voiceIndicator">🎤</div>
             
-            <!-- Notifica Power-up -->
             <div id="powerupNotif"></div>
+            <div id="nearMissNotif"></div>
             
-            <!-- GALLO -->
+            <div id="debugInfo"></div>
+            
             <div id="rooster" class="running">🐓</div>
             
-            <!-- Foreground Parallax -->
-            <div class="foreground-container" id="foregroundContainer"></div>
-            
-            <!-- Erba -->
             <div class="grass-container" id="grassContainer"></div>
-            
-            <!-- Terreno -->
             <div id="ground"></div>
 
-            <!-- Schermata Pausa -->
             <div id="pauseOverlay" class="hidden">
                 <h2>⏸️ PAUSA</h2>
                 <p class="subtitle">Premi P o ESC per continuare</p>
             </div>
 
-            <!-- Schermata Iniziale -->
             <div id="startScreen" class="screen">
                 <h1>
                     <span class="rooster-emoji">🐓</span><br>
                     ROOSTER<br>RUNNER
                 </h1>
-                <p class="subtitle">PRO EDITION - Fisica Realistica!</p>
+                <p class="subtitle">FINAL EDITION - Tutto Funzionante!</p>
                 <div id="instructions">
                     <p><strong>🎤 VOCE:</strong> Fai rumore per saltare!</p>
                     <p><strong>⌨️ TASTIERA:</strong> Premi SPAZIO, P per pausa</p>
                     <p><strong>📱 TOUCH:</strong> Tocca per saltare</p>
-                    <p><strong>❤️❤️❤️ 3 VITE:</strong> Ogni collisione = -1 vita</p>
-                    <p><strong>🌽 MAIS D'ORO:</strong> Recupera una vita persa!</p>
-                    <p><strong>🎯 OBIETTIVO:</strong> Evita ostacoli, guadagna punti!</p>
-                    <p><strong>⚡ DIFFICOLTÀ:</strong> Diventa sempre più veloce!</p>
-                    <p><strong>🌙 SORPRESA:</strong> Guarda cosa succede a 500 punti!</p>
-                    <p><strong>✨ NEW:</strong> Fisica gravitazionale realistica!</p>
+                    <p><strong>❤️ 3 VITE:</strong> Ogni collisione = -1 vita</p>
+                    <p><strong>🌽 MAIS:</strong> Recupera una vita!</p>
+                    <p><strong>🦅 NEMICI VOLANTI:</strong> Passa SOTTO! (dopo 100 pt)</p>
+                    <p><strong>🔥 NEAR MISS:</strong> Salta ultimo istante = +20!</p>
+                    <p><strong>✅ FIXED:</strong> Collisioni + Punteggio funzionano!</p>
                 </div>
                 <div class="button-group">
                     <button id="startBtn">🎤 GIOCA CON MICROFONO</button>
-                    <button id="testBtn" class="secondary">⌨️ GIOCA CON TASTIERA</button>
+                    <button id="testBtn" class="secondary">⌨️ GIOCA SENZA MICROFONO</button>
                 </div>
                 <p id="status"></p>
             </div>
 
-            <!-- Schermata Game Over -->
             <div id="gameOverScreen" class="screen hidden">
                 <h1>💥 GAME OVER 💥</h1>
                 <div id="finalScore">0</div>
@@ -813,9 +870,8 @@
     <script>
         'use strict';
         
-        console.log('🎮 Rooster Runner PRO caricato');
+        console.log('🎮 Rooster Runner FINAL caricato');
         
-        // Previeni comportamenti indesiderati
         document.addEventListener('gesturestart', e => e.preventDefault());
         document.addEventListener('gesturechange', e => e.preventDefault());
         document.addEventListener('gestureend', e => e.preventDefault());
@@ -837,15 +893,27 @@
         const highScoreElement = document.getElementById('highScore');
         const statusElement = document.getElementById('status');
         const grassContainer = document.getElementById('grassContainer');
-        const foregroundContainer = document.getElementById('foregroundContainer');
         const powerupNotif = document.getElementById('powerupNotif');
+        const nearMissNotif = document.getElementById('nearMissNotif');
         const whiteFlash = document.getElementById('whiteFlash');
+        const fullscreenBtn = document.getElementById('fullscreenBtn');
+        const debugInfo = document.getElementById('debugInfo');
         const hearts = [
             document.getElementById('heart1'),
             document.getElementById('heart2'),
             document.getElementById('heart3')
         ];
 
+        // ========== COORDINATE LOGICHE CHIARE ==========
+        // obstacle.x = posizione da SINISTRA (0 = bordo sinistro, 100 = bordo destro)
+        // Il gallo è a 15vw da sinistra
+        // Gli ostacoli partono a 110vw (fuori schermo a destra)
+        // Si muovono verso 0 (escono a sinistra)
+        
+        const ROOSTER_X = 15; // vw da sinistra
+        const ROOSTER_SIZE = 8; // vw
+        const OBSTACLE_SIZE = 6; // vw
+        
         // ========== VARIABILI DI GIOCO ==========
         let score = 0;
         let highScore = parseInt(localStorage.getItem('roosterHighScore')) || 0;
@@ -853,11 +921,13 @@
         let gameActive = false;
         let gamePaused = false;
         let obstacles = [];
+        let flyingEnemies = [];
         let powerups = [];
-        let foregroundItems = [];
         let gameLoopId = null;
         let obstacleIntervalId = null;
+        let flyingEnemyIntervalId = null;
         let powerupIntervalId = null;
+        let dustIntervalId = null;
         let speedMultiplier = 1;
         let invincible = false;
         let powerupInvincible = false;
@@ -865,13 +935,14 @@
         let lastJumpTime = 0;
         let isNight = false;
         let wakeLock = null;
+        let lastTime = 0;
         
-        // ========== FISICA REALISTICA ==========
-        let roosterY = 0; // Posizione Y (0 è terra, in vh)
-        let velocityY = 0; // Velocità verticale
-        const GRAVITY = 0.8; // Forza che spinge giù (più alto = cade più velocemente)
-        const JUMP_FORCE = 16; // Forza del salto iniziale (più alto = salta più in alto)
-        const GROUND_LEVEL = 0; // Livello del terreno
+        // ========== FISICA ==========
+        let roosterY = 0;
+        let velocityY = 0;
+        const GRAVITY = 0.8;
+        const JUMP_FORCE = 16;
+        const GROUND_LEVEL = 0;
         
         // ========== AUDIO ==========
         let audioContext = null;
@@ -880,68 +951,55 @@
         let dataArray = null;
         let isListening = false;
         let voiceCheckId = null;
-
+        let voiceThreshold = 30;
+        
         // ========== COSTANTI ==========
-        const BASE_OBSTACLE_SPEED = 0.5;
-        const BASE_OBSTACLE_INTERVAL = 1650;
+        const BASE_OBSTACLE_SPEED = 0.5; // vw per frame a 60fps
+        const BASE_OBSTACLE_INTERVAL = 1800;
+        const FLYING_ENEMY_INTERVAL = 5000;
         const POWERUP_SPAWN_INTERVAL = 12000;
         const POWERUP_INVINCIBILITY_DURATION = 5000;
-        const VOICE_THRESHOLD = 30;
         const INVINCIBLE_TIME = 1500;
-        const MAX_SPEED_MULTIPLIER = 3.3;
+        const MAX_SPEED_MULTIPLIER = 2.5;
         const DIFFICULTY_INCREASE_RATE = 500;
         const JUMP_COOLDOWN = 280;
+        const NEAR_MISS_DISTANCE = 5; // vw
+        const DEBUG_MODE = false; // Metti true per vedere coordinate
+        
+        // ========== FULLSCREEN ==========
+        fullscreenBtn.addEventListener('click', () => {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    console.log('Fullscreen error:', err);
+                });
+            } else {
+                document.exitFullscreen();
+            }
+        });
 
-        function vhToPx(vh) {
-            return (vh * window.innerHeight) / 100;
-        }
-
-        function vwToPx(vw) {
-            return (vw * window.innerWidth) / 100;
-        }
-
-        // ========== WAKE LOCK API ==========
+        // ========== WAKE LOCK ==========
         async function requestWakeLock() {
             try {
                 if ('wakeLock' in navigator) {
                     wakeLock = await navigator.wakeLock.request('screen');
                     console.log('💡 Schermo mantenuto attivo');
-                    
-                    wakeLock.addEventListener('release', () => {
-                        console.log('💡 Wake Lock rilasciato');
-                    });
                 }
             } catch (err) {
-                console.log('⚠️ Wake Lock non supportato o fallito:', err);
+                console.log('⚠️ Wake Lock non supportato');
             }
         }
 
         // ========== INIZIALIZZA ERBA ==========
         function initGrass() {
             grassContainer.innerHTML = '';
-            const grassCount = Math.ceil(window.innerWidth / vwToPx(10));
+            const grassCount = Math.ceil(window.innerWidth / (window.innerWidth * 0.1));
             for (let i = 0; i < grassCount + 5; i++) {
                 const grass = document.createElement('div');
                 grass.classList.add('grass');
                 grass.textContent = '🌿';
-                grass.style.left = (i * vwToPx(10)) + 'px';
+                grass.style.left = (i * 10) + 'vw';
                 grass.style.animationDelay = (i * 0.1) + 's';
                 grassContainer.appendChild(grass);
-            }
-        }
-
-        // ========== INIZIALIZZA FOREGROUND (PARALLASSE VELOCE) ==========
-        function initForeground() {
-            foregroundContainer.innerHTML = '';
-            const items = ['🌾', '🪵', '🍄'];
-            
-            for (let i = 0; i < 5; i++) {
-                const item = document.createElement('div');
-                item.classList.add('foreground-item');
-                item.textContent = items[Math.floor(Math.random() * items.length)];
-                item.style.right = (Math.random() * 200 - 100) + 'vw';
-                foregroundContainer.appendChild(item);
-                foregroundItems.push(item);
             }
         }
 
@@ -971,12 +1029,9 @@
         function initAudioContext() {
             if (!audioContext) {
                 audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                console.log('🔊 AudioContext creato');
             }
             if (audioContext.state === 'suspended') {
-                audioContext.resume().then(() => {
-                    console.log('🔊 AudioContext resumed');
-                });
+                audioContext.resume();
             }
         }
 
@@ -1018,6 +1073,15 @@
                         oscillator.stop(audioContext.currentTime + 0.08);
                         break;
                         
+                    case 'nearMiss':
+                        oscillator.frequency.setValueAtTime(660, audioContext.currentTime);
+                        oscillator.frequency.exponentialRampToValueAtTime(880, audioContext.currentTime + 0.15);
+                        gainNode.gain.setValueAtTime(0.25, audioContext.currentTime);
+                        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.15);
+                        oscillator.start();
+                        oscillator.stop(audioContext.currentTime + 0.15);
+                        break;
+                        
                     case 'powerup':
                         oscillator.frequency.setValueAtTime(440, audioContext.currentTime);
                         oscillator.frequency.exponentialRampToValueAtTime(880, audioContext.currentTime + 0.1);
@@ -1044,11 +1108,10 @@
 
         // ========== INIZIALIZZA AUDIO MICROFONO ==========
         async function initAudio() {
+            initAudioContext();
+            statusElement.textContent = '🎤 Attivazione...';
+            
             try {
-                initAudioContext();
-                statusElement.textContent = '🎤 Attivazione...';
-                console.log('🎤 Richiesta microfono...');
-                
                 const stream = await navigator.mediaDevices.getUserMedia({ 
                     audio: {
                         echoCancellation: false,
@@ -1070,15 +1133,13 @@
                 usingVoice = true;
                 voiceIndicator.classList.add('listening');
                 statusElement.textContent = '✅ Microfono Attivo!';
-                console.log('✅ Microfono attivo');
                 
                 monitorVoice();
-                return true;
+                startGame();
             } catch (error) {
                 console.log('❌ Microfono negato:', error);
-                statusElement.textContent = '❌ Usa touch!';
+                statusElement.textContent = '❌ Usa touch/tastiera!';
                 usingVoice = false;
-                return false;
             }
         }
 
@@ -1096,7 +1157,7 @@
             const average = sum / relevantRange;
 
             const now = Date.now();
-            if (average > VOICE_THRESHOLD && 
+            if (average > voiceThreshold && 
                 gameActive && 
                 !gamePaused &&
                 roosterY === GROUND_LEVEL && 
@@ -1107,7 +1168,7 @@
             voiceCheckId = requestAnimationFrame(monitorVoice);
         }
 
-        // ========== CREA PARTICELLE ==========
+        // ========== PARTICELLE ==========
         function createParticles() {
             const particles = ['✨', '⭐', '💫'];
             
@@ -1117,8 +1178,7 @@
                     particle.classList.add('particle');
                     particle.textContent = particles[i % particles.length];
                     
-                    const roosterRect = rooster.getBoundingClientRect();
-                    particle.style.left = (roosterRect.left + roosterRect.width / 2) + 'px';
+                    particle.style.left = ROOSTER_X + 'vw';
                     particle.style.bottom = (15 + roosterY) + 'vh';
                     
                     gameContainer.appendChild(particle);
@@ -1128,7 +1188,64 @@
             }
         }
 
-        // ========== SALTO CON FISICA REALISTICA ==========
+        // ========== ESPLOSIONE DI PIUME ==========
+        function createFeatherExplosion() {
+            for (let i = 0; i < 15; i++) {
+                const feather = document.createElement('div');
+                feather.classList.add('feather');
+                feather.textContent = '🪶';
+                
+                feather.style.left = ROOSTER_X + 'vw';
+                feather.style.bottom = (15 + Math.random() * 5) + 'vh';
+                
+                const velocityX = (Math.random() - 0.5) * 15;
+                const velocityY = Math.random() * 15 + 5;
+                const rotationSpeed = (Math.random() - 0.5) * 20;
+                
+                gameContainer.appendChild(feather);
+
+                let posX = 0;
+                let posY = 0;
+                let currentVelY = velocityY;
+                let rotation = 0;
+                let opacity = 1;
+
+                const animateFeather = () => {
+                    posX += velocityX * 0.3;
+                    posY += currentVelY * 0.3;
+                    rotation += rotationSpeed;
+                    currentVelY -= 0.5;
+                    opacity -= 0.015;
+
+                    feather.style.transform = `translate(${posX}vw, ${-posY}vh) rotate(${rotation}deg)`;
+                    feather.style.opacity = opacity;
+
+                    if (opacity > 0) {
+                        requestAnimationFrame(animateFeather);
+                    } else {
+                        feather.remove();
+                    }
+                };
+                requestAnimationFrame(animateFeather);
+            }
+        }
+
+        // ========== DUST TRAIL ==========
+        function createDustTrail() {
+            if (!gameActive || gamePaused || roosterY > 0) return;
+            
+            const dust = document.createElement('div');
+            dust.classList.add('dust');
+            dust.textContent = '💨';
+            dust.style.left = (ROOSTER_X - 2) + 'vw';
+            dust.style.bottom = '15vh';
+            
+            gameContainer.appendChild(dust);
+            
+            setTimeout(() => dust.remove(), 800);
+        }
+
+        // ========== SALTO ==========
         function jump() {
             if (roosterY > GROUND_LEVEL || !gameActive || gamePaused) return;
             
@@ -1136,7 +1253,6 @@
             if ((now - lastJumpTime) < JUMP_COOLDOWN) return;
             
             lastJumpTime = now;
-            
             velocityY = JUMP_FORCE;
             
             voiceIndicator.classList.add('active');
@@ -1144,38 +1260,33 @@
             createParticles();
             playSound('jump');
             
-            console.log('🦘 Salto! Velocità:', velocityY);
+            console.log('🦘 Salto!');
         }
 
-        // ========== AGGIORNA FISICA ==========
-        function updatePhysics() {
+        // ========== FISICA CON DELTA TIME ==========
+        function updatePhysics(deltaTime) {
             if (!gameActive || gamePaused) return;
 
-            // Applica velocità
-            roosterY += velocityY;
+            const dt = Math.min(deltaTime / 16.67, 2);
             
-            // Applica gravità
-            velocityY -= GRAVITY;
+            velocityY -= GRAVITY * dt;
+            roosterY += velocityY * dt;
 
-            // Controllo pavimento
             if (roosterY <= GROUND_LEVEL) {
                 roosterY = GROUND_LEVEL;
                 velocityY = 0;
                 rooster.classList.add('running');
-                
-                // Reset rotazione quando atterra
                 rooster.style.transform = 'scaleX(-1) rotate(0deg)';
+                
+                setTimeout(() => {
+                    voiceIndicator.classList.remove('active');
+                }, 100);
             } else {
                 rooster.classList.remove('running');
-                
-                // ROTAZIONE DINAMICA IN SALTO
-                // Quando sale: ruota indietro (-10deg)
-                // Quando scende: ruota in avanti (+10deg)
                 const rotation = velocityY > 0 ? -10 : Math.min(velocityY * -2, 15);
                 rooster.style.transform = `scaleX(-1) rotate(${rotation}deg)`;
             }
 
-            // Aggiorna posizione visuale
             rooster.style.bottom = `calc(15vh + ${roosterY}vh)`;
         }
 
@@ -1188,14 +1299,43 @@
             
             const types = ['🌵', '🌲', '🪨', '🔥', '⚡', '💥', '🧱', '📦'];
             obstacle.textContent = types[Math.floor(Math.random() * types.length)];
-            obstacle.style.right = '-10vw';
             
-            obstacle.scored = false;
-            obstacle.hit = false;
-            obstacle.passedRooster = false;
+            const obj = {
+                element: obstacle,
+                x: 110, // Parte da destra fuori schermo
+                scored: false,
+                hit: false
+            };
+            
+            obstacle.style.left = '110vw';
             
             gameContainer.appendChild(obstacle);
-            obstacles.push(obstacle);
+            obstacles.push(obj);
+            
+            console.log('🌵 Ostacolo creato a x=110');
+        }
+
+        // ========== CREA NEMICO VOLANTE ==========
+        function createFlyingEnemy() {
+            if (!gameActive || gamePaused) return;
+
+            const enemy = document.createElement('div');
+            enemy.classList.add('flying-enemy');
+            enemy.textContent = ['🦅', '🦉', '🦇'][Math.floor(Math.random() * 3)];
+            
+            const obj = {
+                element: enemy,
+                x: 110,
+                scored: false,
+                hit: false
+            };
+            
+            enemy.style.left = '110vw';
+            
+            gameContainer.appendChild(enemy);
+            flyingEnemies.push(obj);
+            
+            console.log('🦅 Nemico volante creato');
         }
 
         // ========== CREA POWER-UP ==========
@@ -1205,14 +1345,17 @@
             const powerup = document.createElement('div');
             powerup.classList.add('powerup');
             powerup.textContent = '🌽';
-            powerup.style.right = '-10vw';
             
-            powerup.collected = false;
+            const obj = {
+                element: powerup,
+                x: 110,
+                collected: false
+            };
+            
+            powerup.style.left = '110vw';
             
             gameContainer.appendChild(powerup);
-            powerups.push(powerup);
-            
-            console.log('🌽 Power-up spawned!');
+            powerups.push(obj);
         }
 
         // ========== FLASH BIANCO ==========
@@ -1222,7 +1365,7 @@
             whiteFlash.classList.add('active');
         }
 
-        // ========== MOSTRA NOTIFICA POWER-UP ==========
+        // ========== NOTIFICHE ==========
         function showPowerupNotif(message) {
             powerupNotif.textContent = message;
             powerupNotif.classList.remove('show');
@@ -1234,12 +1377,23 @@
             }, 2000);
         }
 
+        function showNearMissNotif() {
+            nearMissNotif.textContent = '🔥 PERFETTO!';
+            nearMissNotif.classList.remove('show');
+            void nearMissNotif.offsetWidth;
+            nearMissNotif.classList.add('show');
+            
+            setTimeout(() => {
+                nearMissNotif.classList.remove('show');
+            }, 1000);
+        }
+
         // ========== COLLEZIONA POWER-UP ==========
         function collectPowerup(powerup) {
             if (powerup.collected) return;
             
             powerup.collected = true;
-            powerup.remove();
+            powerup.element.remove();
             
             playSound('powerup');
             triggerWhiteFlash();
@@ -1250,48 +1404,38 @@
                 showPowerupNotif('❤️ +1 VITA!');
                 console.log('❤️ Vita recuperata!');
             } else {
-                activatePowerupInvincibility();
+                powerupInvincible = true;
+                rooster.classList.add('invincible');
                 showPowerupNotif('⭐ INVINCIBILE!');
-                console.log('⭐ Invincibilità attivata!');
+                console.log('⭐ Invincibilità!');
+                
+                setTimeout(() => {
+                    powerupInvincible = false;
+                    if (gameActive) {
+                        rooster.classList.remove('invincible');
+                    }
+                }, POWERUP_INVINCIBILITY_DURATION);
             }
             
-            // Particelle dorate
             for (let i = 0; i < 8; i++) {
                 setTimeout(() => {
                     const particle = document.createElement('div');
                     particle.classList.add('particle');
                     particle.textContent = ['✨', '⭐', '🌟', '💫'][Math.floor(Math.random() * 4)];
                     particle.style.fontSize = '4vmin';
-                    
-                    const powerupRect = powerup.getBoundingClientRect();
-                    particle.style.left = (powerupRect.left + Math.random() * 50 - 25) + 'px';
-                    particle.style.bottom = (window.innerHeight - powerupRect.bottom + Math.random() * 50) + 'px';
+                    particle.style.left = powerup.x + 'vw';
+                    particle.style.bottom = '25vh';
                     
                     gameContainer.appendChild(particle);
-                    
                     setTimeout(() => particle.remove(), 1100);
                 }, i * 50);
             }
         }
 
-        // ========== ATTIVA INVINCIBILITÀ POWER-UP ==========
-        function activatePowerupInvincibility() {
-            powerupInvincible = true;
-            rooster.classList.add('invincible');
-            
-            setTimeout(() => {
-                powerupInvincible = false;
-                if (gameActive) {
-                    rooster.classList.remove('invincible');
-                }
-                console.log('⭐ Invincibilità power-up terminata');
-            }, POWERUP_INVINCIBILITY_DURATION);
-        }
-
         // ========== PERDI VITA ==========
         function loseLife() {
             if (invincible || powerupInvincible || !gameActive) {
-                console.log('❌ Danno bloccato - invincibile');
+                console.log('✅ Danno evitato - invincibile');
                 return;
             }
             
@@ -1306,13 +1450,11 @@
             
             playSound('hit');
             rooster.classList.add('damage');
+            createFeatherExplosion();
             
-            // SCREEN SHAKE!
             const body = document.body;
             body.classList.add('shake-effect');
-            setTimeout(() => {
-                body.classList.remove('shake-effect');
-            }, 500);
+            setTimeout(() => body.classList.remove('shake-effect'), 500);
             
             setTimeout(() => rooster.classList.remove('damage'), 550);
             
@@ -1343,118 +1485,156 @@
             }, 150);
         }
 
-        // ========== GAME LOOP ==========
-        function gameLoop() {
+        // ========== GAME LOOP CORRETTO ==========
+        function gameLoop(timestamp) {
             if (!gameActive || gamePaused) return;
 
-            // AGGIORNA FISICA
-            updatePhysics();
+            const deltaTime = lastTime === 0 ? 16.67 : timestamp - lastTime;
+            lastTime = timestamp;
 
-            speedMultiplier = Math.min(1 + (Math.floor(score / DIFFICULTY_INCREASE_RATE) * 0.25), MAX_SPEED_MULTIPLIER);
-            
-            if (speedValueElement) {
-                speedValueElement.textContent = speedMultiplier.toFixed(1) + 'x';
-            }
+            updatePhysics(deltaTime);
+
+            speedMultiplier = Math.min(1 + (Math.floor(score / DIFFICULTY_INCREASE_RATE) * 0.15), MAX_SPEED_MULTIPLIER);
+            speedValueElement.textContent = speedMultiplier.toFixed(1) + 'x';
 
             updateDayNightCycle();
 
-            const roosterRect = rooster.getBoundingClientRect();
+            const dt = Math.min(deltaTime / 16.67, 2);
+            const moveSpeed = BASE_OBSTACLE_SPEED * speedMultiplier * dt;
 
-            // GESTIONE FOREGROUND (PARALLASSE VELOCE)
-            foregroundItems.forEach(item => {
-                const currentRight = parseFloat(item.style.right) || 0;
-                const speed = vwToPx(BASE_OBSTACLE_SPEED * speedMultiplier * 1.5); // 1.5x più veloce
-                const newRight = currentRight + speed;
-                
-                if (newRight > window.innerWidth + vwToPx(20)) {
-                    item.style.right = '-20vw';
-                } else {
-                    item.style.right = newRight + 'px';
+            // DEBUG
+            if (DEBUG_MODE) {
+                let debugText = `Gallo: ${ROOSTER_X}vw, Y: ${roosterY.toFixed(1)}vh\n`;
+                debugText += `Ostacoli: ${obstacles.length}\n`;
+                if (obstacles.length > 0) {
+                    debugText += `Primo: x=${obstacles[0].x.toFixed(1)}vw\n`;
                 }
-            });
+                debugInfo.textContent = debugText;
+                debugInfo.style.display = 'block';
+            }
 
-            // GESTIONE OSTACOLI
+            // ===== OSTACOLI =====
             for (let i = obstacles.length - 1; i >= 0; i--) {
                 const obstacle = obstacles[i];
                 
-                const currentRight = parseFloat(obstacle.style.right) || 0;
-                const speed = vwToPx(BASE_OBSTACLE_SPEED * speedMultiplier);
-                const newRight = currentRight + speed;
-                obstacle.style.right = newRight + 'px';
-
-                const obstacleRect = obstacle.getBoundingClientRect();
+                // MUOVI VERSO SINISTRA (diminuisci x)
+                obstacle.x -= moveSpeed;
+                obstacle.element.style.left = obstacle.x + 'vw';
 
                 // COLLISIONE
-                if (gameActive && !invincible && !powerupInvincible && !obstacle.hit && 
-                    obstacleRect.right > 0 && obstacleRect.left < window.innerWidth) {
+                if (!invincible && !powerupInvincible && !obstacle.hit) {
+                    const distance = Math.abs(obstacle.x - ROOSTER_X);
+                    const collisionThreshold = (OBSTACLE_SIZE + ROOSTER_SIZE) / 2;
                     
-                    const marginH = 15;
-                    const marginV = 15;
-                    
-                    const collision = !(
-                        roosterRect.right - marginH < obstacleRect.left + marginH ||
-                        roosterRect.left + marginH > obstacleRect.right - marginH ||
-                        roosterRect.bottom - marginV < obstacleRect.top + marginV ||
-                        roosterRect.top + marginV > obstacleRect.bottom - marginV
-                    );
-                    
-                    if (collision) {
-                        console.log('💥 COLLISIONE!');
+                    // Colpisce se vicino E a terra
+                    if (distance < collisionThreshold && roosterY < 8) {
+                        console.log(`💥 COLLISIONE! Dist=${distance.toFixed(1)}, Y=${roosterY.toFixed(1)}`);
                         obstacle.hit = true;
-                        obstacle.style.filter = 'brightness(2)';
+                        obstacle.element.style.filter = 'brightness(2)';
                         loseLife();
                     }
                 }
 
-                // PUNTEGGIO
-                const safeDistance = vwToPx(12);
-                if (!obstacle.passedRooster && obstacleRect.right < roosterRect.left - safeDistance) {
-                    obstacle.passedRooster = true;
+                // NEAR MISS - controlla PRIMA che passa
+                if (!obstacle.scored && !obstacle.hit &&
+                    obstacle.x <= ROOSTER_X + NEAR_MISS_DISTANCE && 
+                    obstacle.x >= ROOSTER_X - 1) {
+                    
+                    if (roosterY > 15) {
+                        obstacle.scored = true; // Segna subito per evitare duplicati
+                        score += 20;
+                        scoreElement.textContent = score;
+                        playSound('nearMiss');
+                        showNearMissNotif();
+                        console.log(`🔥 NEAR MISS! +20 (dist=${Math.abs(obstacle.x - ROOSTER_X).toFixed(1)})`);
+                    }
                 }
-                
-                if (obstacle.passedRooster && !obstacle.scored && !obstacle.hit) {
+
+                // PUNTEGGIO NORMALE - quando passa completamente
+                if (!obstacle.scored && !obstacle.hit && obstacle.x < ROOSTER_X - 8) {
                     obstacle.scored = true;
                     
                     const points = 10 + Math.floor(speedMultiplier * 5);
                     score += points;
                     scoreElement.textContent = score;
                     playSound('score');
-                    console.log(`🎯 +${points} punti! Score: ${score}`);
+                    console.log(`🎯 +${points} punti! (x=${obstacle.x.toFixed(1)})`);
                 }
 
-                // RIMUOVI
-                if (newRight > window.innerWidth + vwToPx(15)) {
-                    obstacle.remove();
+                // RIMUOVI se esce a sinistra
+                if (obstacle.x < -10) {
+                    obstacle.element.remove();
                     obstacles.splice(i, 1);
+                    console.log('🗑️ Ostacolo rimosso');
                 }
             }
 
-            // GESTIONE POWER-UPS
+            // ===== NEMICI VOLANTI =====
+            for (let i = flyingEnemies.length - 1; i >= 0; i--) {
+                const enemy = flyingEnemies[i];
+                
+                enemy.x -= moveSpeed * 0.9;
+                enemy.element.style.left = enemy.x + 'vw';
+
+                // COLLISIONE - colpisce se SEI IN ALTO
+                if (!invincible && !powerupInvincible && !enemy.hit) {
+                    const distance = Math.abs(enemy.x - ROOSTER_X);
+                    const collisionThreshold = (OBSTACLE_SIZE + ROOSTER_SIZE) / 2;
+                    
+                    if (distance < collisionThreshold && roosterY > 18) {
+                        console.log(`💥 COLLISIONE VOLANTE! Dist=${distance.toFixed(1)}, Y=${roosterY.toFixed(1)}`);
+                        enemy.hit = true;
+                        enemy.element.style.filter = 'brightness(2)';
+                        loseLife();
+                    }
+                }
+
+                // NEAR MISS volanti - passa sotto!
+                if (!enemy.scored && !enemy.hit &&
+                    enemy.x <= ROOSTER_X + NEAR_MISS_DISTANCE && 
+                    enemy.x >= ROOSTER_X - 1) {
+                    
+                    if (roosterY < 5) {
+                        enemy.scored = true;
+                        score += 20;
+                        scoreElement.textContent = score;
+                        playSound('nearMiss');
+                        showNearMissNotif();
+                        console.log('🔥 NEAR MISS (volante)! +20');
+                    }
+                }
+
+                // PUNTEGGIO
+                if (!enemy.scored && !enemy.hit && enemy.x < ROOSTER_X - 8) {
+                    enemy.scored = true;
+                    
+                    const points = 15 + Math.floor(speedMultiplier * 5);
+                    score += points;
+                    scoreElement.textContent = score;
+                    playSound('score');
+                    console.log(`🦅 +${points} punti!`);
+                }
+
+                // RIMUOVI
+                if (enemy.x < -10) {
+                    enemy.element.remove();
+                    flyingEnemies.splice(i, 1);
+                }
+            }
+
+            // ===== POWER-UPS =====
             for (let i = powerups.length - 1; i >= 0; i--) {
                 const powerup = powerups[i];
                 
-                const currentRight = parseFloat(powerup.style.right) || 0;
-                const speed = vwToPx(BASE_OBSTACLE_SPEED * speedMultiplier);
-                const newRight = currentRight + speed;
-                powerup.style.right = newRight + 'px';
+                powerup.x -= moveSpeed;
+                powerup.element.style.left = powerup.x + 'vw';
 
-                const powerupRect = powerup.getBoundingClientRect();
-
-                // COLLISIONE POWER-UP
-                if (gameActive && !powerup.collected && 
-                    powerupRect.right > 0 && powerupRect.left < window.innerWidth) {
+                // COLLISIONE
+                if (!powerup.collected) {
+                    const distance = Math.abs(powerup.x - ROOSTER_X);
+                    const collisionThreshold = (ROOSTER_SIZE + 7) / 2;
                     
-                    const marginH = 10;
-                    const marginV = 10;
-                    
-                    const collision = !(
-                        roosterRect.right - marginH < powerupRect.left + marginH ||
-                        roosterRect.left + marginH > powerupRect.right - marginH ||
-                        roosterRect.bottom - marginV < powerupRect.top + marginV ||
-                        roosterRect.top + marginV > powerupRect.bottom - marginV
-                    );
-                    
-                    if (collision) {
+                    if (distance < collisionThreshold) {
                         collectPowerup(powerup);
                         powerups.splice(i, 1);
                         continue;
@@ -1462,8 +1642,8 @@
                 }
 
                 // RIMUOVI
-                if (newRight > window.innerWidth + vwToPx(15)) {
-                    powerup.remove();
+                if (powerup.x < -10) {
+                    powerup.element.remove();
                     powerups.splice(i, 1);
                 }
             }
@@ -1480,11 +1660,14 @@
             if (gamePaused) {
                 pauseOverlay.classList.remove('hidden');
                 if (gameLoopId) cancelAnimationFrame(gameLoopId);
+                if (dustIntervalId) clearInterval(dustIntervalId);
                 rooster.classList.remove('running');
             } else {
                 pauseOverlay.classList.add('hidden');
+                lastTime = performance.now();
                 gameLoopId = requestAnimationFrame(gameLoop);
                 if (roosterY === GROUND_LEVEL) rooster.classList.add('running');
+                dustIntervalId = setInterval(createDustTrail, 200);
             }
         }
 
@@ -1492,7 +1675,7 @@
         function startGame() {
             if (gameActive) return;
             
-            console.log('🚀 GIOCO AVVIATO - PRO EDITION');
+            console.log('🚀 GIOCO AVVIATO - FINAL EDITION');
             
             initAudioContext();
             requestWakeLock();
@@ -1508,18 +1691,23 @@
             isNight = false;
             roosterY = 0;
             velocityY = 0;
+            lastTime = 0;
             scoreElement.textContent = score;
             
             hearts.forEach(heart => heart.classList.remove('lost'));
             
-            obstacles.forEach(obs => obs.remove());
+            obstacles.forEach(obs => obs.element.remove());
             obstacles = [];
-            powerups.forEach(pw => pw.remove());
+            flyingEnemies.forEach(e => e.element.remove());
+            flyingEnemies = [];
+            powerups.forEach(pw => pw.element.remove());
             powerups = [];
             
             if (gameLoopId) cancelAnimationFrame(gameLoopId);
             if (obstacleIntervalId) clearInterval(obstacleIntervalId);
+            if (flyingEnemyIntervalId) clearInterval(flyingEnemyIntervalId);
             if (powerupIntervalId) clearInterval(powerupIntervalId);
+            if (dustIntervalId) clearInterval(dustIntervalId);
             
             rooster.style.bottom = '15vh';
             rooster.style.opacity = '1';
@@ -1527,7 +1715,6 @@
             rooster.classList.remove('invincible');
             rooster.classList.add('running');
             
-            // Reset ciclo giorno/notte
             gameContainer.style.background = "linear-gradient(to bottom, #87CEEB 0%, #B0E0E6 25%, #E0F6FF 45%, #90EE90 45%, #228B22 100%)";
             document.querySelector('.sun').style.background = "radial-gradient(circle, #FFD700 0%, #FFA500 100%)";
             document.querySelector('.sun').style.boxShadow = "0 0 3vmin rgba(255, 215, 0, 0.7)";
@@ -1537,6 +1724,7 @@
             gameOverScreen.classList.add('hidden');
             pauseOverlay.classList.add('hidden');
 
+            lastTime = performance.now();
             gameLoopId = requestAnimationFrame(gameLoop);
             
             setTimeout(() => {
@@ -1547,9 +1735,15 @@
                         if (gameActive && !gamePaused) createObstacle();
                     }, BASE_OBSTACLE_INTERVAL);
                     
+                    flyingEnemyIntervalId = setInterval(() => {
+                        if (gameActive && !gamePaused && score > 100) createFlyingEnemy();
+                    }, FLYING_ENEMY_INTERVAL);
+                    
                     powerupIntervalId = setInterval(() => {
                         if (gameActive && !gamePaused) createPowerup();
                     }, POWERUP_SPAWN_INTERVAL);
+                    
+                    dustIntervalId = setInterval(createDustTrail, 200);
                 }
             }, 1500);
         }
@@ -1567,7 +1761,9 @@
             
             if (gameLoopId) cancelAnimationFrame(gameLoopId);
             if (obstacleIntervalId) clearInterval(obstacleIntervalId);
+            if (flyingEnemyIntervalId) clearInterval(flyingEnemyIntervalId);
             if (powerupIntervalId) clearInterval(powerupIntervalId);
+            if (dustIntervalId) clearInterval(dustIntervalId);
             
             if (wakeLock !== null) {
                 wakeLock.release().then(() => {
@@ -1577,14 +1773,14 @@
             
             if (score > highScore) {
                 highScore = score;
-                localStorage.setItem('roosterHighScore', highScore);
+                localStorage.setItem('roosterHighScore', highScore.toString());
                 highScoreElement.textContent = '🏆 NUOVO RECORD! 🏆';
                 highScoreElement.style.color = '#ffd43b';
             } else {
                 highScoreElement.textContent = '🏆 Record: ' + highScore;
             }
             
-            finalScoreElement.textContent = score;
+            finalScoreElement.textContent = score.toString();
             gameOverScreen.classList.remove('hidden');
         }
 
@@ -1596,7 +1792,6 @@
             initAudioContext();
             startBtn.style.transform = 'scale(0.95)';
             await initAudio();
-            setTimeout(() => startGame(), 200);
         }, { passive: false });
 
         startBtn.addEventListener('touchend', (e) => {
@@ -1639,7 +1834,6 @@
             e.preventDefault();
             initAudioContext();
             await initAudio();
-            setTimeout(() => startGame(), 200);
         });
 
         testBtn.addEventListener('click', (e) => {
@@ -1683,7 +1877,7 @@
         gameContainer.addEventListener('click', (e) => {
             if (gameActive && !gamePaused) {
                 const target = e.target;
-                if (target !== startBtn && target !== testBtn && target !== restartBtn) {
+                if (target !== startBtn && target !== testBtn && target !== restartBtn && target !== fullscreenBtn) {
                     jump();
                 }
             }
@@ -1691,9 +1885,8 @@
 
         // INIZIALIZZA
         window.addEventListener('load', () => {
-            console.log('✅ Pagina caricata - PRO EDITION');
+            console.log('✅ FINAL EDITION caricata');
             initGrass();
-            initForeground();
             if (highScore > 0) {
                 statusElement.textContent = `🏆 Record: ${highScore}`;
             }
@@ -1702,7 +1895,6 @@
         window.addEventListener('resize', () => {
             if (!gameActive) {
                 initGrass();
-                initForeground();
             }
         });
     </script>
