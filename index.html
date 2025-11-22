@@ -7,7 +7,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#1e3c72">
-    <title>🐓 Rooster Runner</title>
+    <title>🐓 Rooster Runner Enhanced</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Poppins:wght@400;600;700;800&display=swap');
         
@@ -56,9 +56,30 @@
                 #228B22 100%
             );
             overflow: hidden;
+            transition: background 3s ease;
         }
 
-        /* SOLE */
+        /* SCREEN SHAKE */
+        @keyframes shake {
+            0% { transform: translate(1px, 1px) rotate(0deg); }
+            10% { transform: translate(-1px, -2px) rotate(-1deg); }
+            20% { transform: translate(-3px, 0px) rotate(1deg); }
+            30% { transform: translate(3px, 2px) rotate(0deg); }
+            40% { transform: translate(1px, -1px) rotate(1deg); }
+            50% { transform: translate(-1px, 2px) rotate(-1deg); }
+            60% { transform: translate(-3px, 1px) rotate(0deg); }
+            70% { transform: translate(3px, 1px) rotate(-1deg); }
+            80% { transform: translate(-1px, -1px) rotate(1deg); }
+            90% { transform: translate(1px, 2px) rotate(0deg); }
+            100% { transform: translate(1px, -2px) rotate(-1deg); }
+        }
+
+        .shake-effect {
+            animation: shake 0.5s;
+            animation-iteration-count: 1;
+        }
+
+        /* SOLE/LUNA */
         .sun {
             position: absolute;
             top: 5vh;
@@ -70,6 +91,7 @@
             box-shadow: 0 0 3vmin rgba(255, 215, 0, 0.7);
             animation: sunGlow 3s ease-in-out infinite;
             z-index: 5;
+            transition: all 3s ease;
         }
 
         @keyframes sunGlow {
@@ -83,6 +105,7 @@
             font-size: 5vmin;
             opacity: 0.75;
             z-index: 10;
+            transition: opacity 3s ease;
         }
 
         .cloud1 {
@@ -118,7 +141,7 @@
             to { transform: translateX(-150vw); }
         }
 
-        /* MONTAGNE */
+        /* MONTAGNE - PARALLASSE MIGLIORATO */
         .mountain {
             position: absolute;
             bottom: 30vh;
@@ -127,9 +150,33 @@
             z-index: 5;
         }
 
-        .mountain1 { left: 8%; }
-        .mountain2 { left: 40%; }
-        .mountain3 { right: 12%; }
+        .mountain1 { 
+            left: 8%; 
+            animation: mountainMove1 80s linear infinite;
+        }
+        .mountain2 { 
+            left: 40%; 
+            animation: mountainMove2 90s linear infinite;
+        }
+        .mountain3 { 
+            right: 12%; 
+            animation: mountainMove3 85s linear infinite;
+        }
+
+        @keyframes mountainMove1 {
+            from { transform: translateX(0); }
+            to { transform: translateX(-50vw); }
+        }
+
+        @keyframes mountainMove2 {
+            from { transform: translateX(0); }
+            to { transform: translateX(-50vw); }
+        }
+
+        @keyframes mountainMove3 {
+            from { transform: translateX(0); }
+            to { transform: translateX(-50vw); }
+        }
 
         /* TERRENO */
         #ground {
@@ -190,7 +237,7 @@
             100% { transform: scaleX(-1) translateY(0); }
         }
 
-        /* OSTACOLI - STESSA ALTEZZA DEL GALLO! */
+        /* OSTACOLI */
         .obstacle {
             position: absolute;
             bottom: 15vh;
@@ -198,6 +245,38 @@
             filter: drop-shadow(0.3vmin 0.5vmin 0.8vmin rgba(0,0,0,0.4));
             z-index: 40;
             will-change: transform;
+        }
+
+        /* POWER-UP (MAIS D'ORO) */
+        .powerup {
+            position: absolute;
+            bottom: 25vh;
+            font-size: 9vmin;
+            z-index: 40;
+            will-change: transform;
+            animation: powerupFloat 1.5s ease-in-out infinite;
+            filter: drop-shadow(0 0 1.5vmin rgba(255, 215, 0, 0.8));
+        }
+
+        @keyframes powerupFloat {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-2vh) rotate(15deg); }
+        }
+
+        /* EFFETTO INVINCIBILITÀ */
+        #rooster.invincible {
+            animation: invinciblePulse 0.3s infinite;
+        }
+
+        @keyframes invinciblePulse {
+            0%, 100% { 
+                filter: drop-shadow(0 0 2vmin gold) brightness(1.3);
+                transform: scaleX(-1);
+            }
+            50% { 
+                filter: drop-shadow(0 0 3vmin orange) brightness(1.5);
+                transform: scaleX(-1) scale(1.1);
+            }
         }
 
         /* HUD */
@@ -547,6 +626,37 @@
             font-family: 'Press Start 2P', cursive;
             margin-bottom: 4vh;
         }
+
+        /* NOTIFICA POWER-UP */
+        #powerupNotif {
+            position: absolute;
+            top: 20vh;
+            left: 50%;
+            transform: translateX(-50%) scale(0);
+            background: linear-gradient(135deg, gold, orange);
+            color: white;
+            padding: 2vh 4vw;
+            border-radius: 2vh;
+            font-size: 3vmin;
+            font-weight: 900;
+            z-index: 150;
+            box-shadow: 0 1vh 3vh rgba(255, 215, 0, 0.6);
+            text-align: center;
+            pointer-events: none;
+            font-family: 'Press Start 2P', cursive;
+        }
+
+        #powerupNotif.show {
+            animation: powerupNotifShow 2s ease-out forwards;
+        }
+
+        @keyframes powerupNotifShow {
+            0% { transform: translateX(-50%) scale(0) rotate(-10deg); opacity: 0; }
+            15% { transform: translateX(-50%) scale(1.2) rotate(5deg); opacity: 1; }
+            30% { transform: translateX(-50%) scale(1) rotate(0deg); }
+            70% { transform: translateX(-50%) scale(1) rotate(0deg); opacity: 1; }
+            100% { transform: translateX(-50%) scale(0) rotate(10deg); opacity: 0; }
+        }
     </style>
 </head>
 <body>
@@ -583,6 +693,9 @@
             <!-- Indicatore Vocale -->
             <div id="voiceIndicator">🎤</div>
             
+            <!-- Notifica Power-up -->
+            <div id="powerupNotif"></div>
+            
             <!-- GALLO -->
             <div id="rooster" class="running">🐓</div>
             
@@ -604,14 +717,16 @@
                     <span class="rooster-emoji">🐓</span><br>
                     ROOSTER<br>RUNNER
                 </h1>
-                <p class="subtitle">Il Gallo più Veloce del Mondo!</p>
+                <p class="subtitle">Il Gallo più Veloce del Mondo! - ENHANCED EDITION</p>
                 <div id="instructions">
                     <p><strong>🎤 VOCE:</strong> Fai rumore per saltare!</p>
                     <p><strong>⌨️ TASTIERA:</strong> Premi SPAZIO, P per pausa</p>
                     <p><strong>📱 TOUCH:</strong> Tocca per saltare</p>
                     <p><strong>❤️❤️❤️ 3 VITE:</strong> Ogni collisione = -1 vita</p>
+                    <p><strong>🌽 MAIS D'ORO:</strong> Recupera una vita persa!</p>
                     <p><strong>🎯 OBIETTIVO:</strong> Evita ostacoli, guadagna punti!</p>
                     <p><strong>⚡ DIFFICOLTÀ:</strong> Diventa sempre più veloce!</p>
+                    <p><strong>🌙 SORPRESA:</strong> Guarda cosa succede a 500 punti!</p>
                 </div>
                 <div class="button-group">
                     <button id="startBtn">🎤 GIOCA CON MICROFONO</button>
@@ -636,7 +751,7 @@
     <script>
         'use strict';
         
-        console.log('🎮 Rooster Runner caricato');
+        console.log('🎮 Rooster Runner Enhanced caricato');
         
         // Previeni comportamenti indesiderati
         document.addEventListener('gesturestart', e => e.preventDefault());
@@ -660,6 +775,7 @@
         const highScoreElement = document.getElementById('highScore');
         const statusElement = document.getElementById('status');
         const grassContainer = document.getElementById('grassContainer');
+        const powerupNotif = document.getElementById('powerupNotif');
         const hearts = [
             document.getElementById('heart1'),
             document.getElementById('heart2'),
@@ -674,12 +790,17 @@
         let gameActive = false;
         let gamePaused = false;
         let obstacles = [];
+        let powerups = [];
         let gameLoopId = null;
         let obstacleIntervalId = null;
+        let powerupIntervalId = null;
         let speedMultiplier = 1;
         let invincible = false;
+        let powerupInvincible = false;
         let usingVoice = false;
         let lastJumpTime = 0;
+        let isNight = false;
+        let wakeLock = null;
         
         // ========== AUDIO ==========
         let audioContext = null;
@@ -694,6 +815,8 @@
         const JUMP_DURATION = 680;
         const BASE_OBSTACLE_SPEED = 0.5;
         const BASE_OBSTACLE_INTERVAL = 1650;
+        const POWERUP_SPAWN_INTERVAL = 12000;
+        const POWERUP_INVINCIBILITY_DURATION = 5000;
         const VOICE_THRESHOLD = 30;
         const INVINCIBLE_TIME = 1500;
         const MAX_SPEED_MULTIPLIER = 3.3;
@@ -706,6 +829,22 @@
 
         function vwToPx(vw) {
             return (vw * window.innerWidth) / 100;
+        }
+
+        // ========== WAKE LOCK API ==========
+        async function requestWakeLock() {
+            try {
+                if ('wakeLock' in navigator) {
+                    wakeLock = await navigator.wakeLock.request('screen');
+                    console.log('💡 Schermo mantenuto attivo');
+                    
+                    wakeLock.addEventListener('release', () => {
+                        console.log('💡 Wake Lock rilasciato');
+                    });
+                }
+            } catch (err) {
+                console.log('⚠️ Wake Lock non supportato o fallito:', err);
+            }
         }
 
         // ========== INIZIALIZZA ERBA ==========
@@ -722,13 +861,37 @@
             }
         }
 
-        // ========== SUONI - ATTIVAZIONE GARANTITA ==========
+        // ========== CICLO GIORNO/NOTTE ==========
+        function updateDayNightCycle() {
+            const sun = document.querySelector('.sun');
+            const clouds = document.querySelectorAll('.cloud');
+            
+            // Ogni 500 punti cambia fase
+            if (Math.floor(score / 500) % 2 === 1 && !isNight) {
+                // Diventa NOTTE
+                isNight = true;
+                gameContainer.style.background = "linear-gradient(to bottom, #0f2027, #203a43, #2c5364 45%, #1a4d2e 45%, #0f2f1f 100%)";
+                sun.style.background = "radial-gradient(circle, #fff 0%, #ddd 100%)";
+                sun.style.boxShadow = "0 0 3vmin rgba(255, 255, 255, 0.8)";
+                clouds.forEach(c => c.style.opacity = "0.3");
+                console.log('🌙 È notte!');
+            } else if (Math.floor(score / 500) % 2 === 0 && isNight) {
+                // Torna GIORNO
+                isNight = false;
+                gameContainer.style.background = "linear-gradient(to bottom, #87CEEB 0%, #B0E0E6 25%, #E0F6FF 45%, #90EE90 45%, #228B22 100%)";
+                sun.style.background = "radial-gradient(circle, #FFD700 0%, #FFA500 100%)";
+                sun.style.boxShadow = "0 0 3vmin rgba(255, 215, 0, 0.7)";
+                clouds.forEach(c => c.style.opacity = "0.75");
+                console.log('☀️ È giorno!');
+            }
+        }
+
+        // ========== SUONI ==========
         function initAudioContext() {
             if (!audioContext) {
                 audioContext = new (window.AudioContext || window.webkitAudioContext)();
                 console.log('🔊 AudioContext creato');
             }
-            // Resume se sospeso (importante per iOS/Safari)
             if (audioContext.state === 'suspended') {
                 audioContext.resume().then(() => {
                     console.log('🔊 AudioContext resumed');
@@ -754,7 +917,6 @@
                         gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.14);
                         oscillator.start();
                         oscillator.stop(audioContext.currentTime + 0.14);
-                        console.log('🔊 Jump sound');
                         break;
                         
                     case 'hit':
@@ -765,7 +927,6 @@
                         gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.28);
                         oscillator.start();
                         oscillator.stop(audioContext.currentTime + 0.28);
-                        console.log('🔊 Hit sound');
                         break;
                         
                     case 'score':
@@ -774,7 +935,16 @@
                         gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.08);
                         oscillator.start();
                         oscillator.stop(audioContext.currentTime + 0.08);
-                        console.log('🔊 Score sound');
+                        break;
+                        
+                    case 'powerup':
+                        oscillator.frequency.setValueAtTime(440, audioContext.currentTime);
+                        oscillator.frequency.exponentialRampToValueAtTime(880, audioContext.currentTime + 0.1);
+                        oscillator.frequency.exponentialRampToValueAtTime(1320, audioContext.currentTime + 0.2);
+                        gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.25);
+                        oscillator.start();
+                        oscillator.stop(audioContext.currentTime + 0.25);
                         break;
                         
                     case 'gameOver':
@@ -784,7 +954,6 @@
                         gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.48);
                         oscillator.start();
                         oscillator.stop(audioContext.currentTime + 0.48);
-                        console.log('🔊 GameOver sound');
                         break;
                 }
             } catch (error) {
@@ -950,9 +1119,93 @@
             obstacles.push(obstacle);
         }
 
+        // ========== CREA POWER-UP ==========
+        function createPowerup() {
+            if (!gameActive || gamePaused) return;
+
+            const powerup = document.createElement('div');
+            powerup.classList.add('powerup');
+            powerup.textContent = '🌽';
+            powerup.style.right = '-10vw';
+            
+            powerup.collected = false;
+            
+            gameContainer.appendChild(powerup);
+            powerups.push(powerup);
+            
+            console.log('🌽 Power-up spawned!');
+        }
+
+        // ========== MOSTRA NOTIFICA POWER-UP ==========
+        function showPowerupNotif(message) {
+            powerupNotif.textContent = message;
+            powerupNotif.classList.remove('show');
+            void powerupNotif.offsetWidth;
+            powerupNotif.classList.add('show');
+            
+            setTimeout(() => {
+                powerupNotif.classList.remove('show');
+            }, 2000);
+        }
+
+        // ========== COLLEZIONA POWER-UP ==========
+        function collectPowerup(powerup) {
+            if (powerup.collected) return;
+            
+            powerup.collected = true;
+            powerup.remove();
+            
+            playSound('powerup');
+            
+            // Recupera una vita se hai perso vite
+            if (lives < 3) {
+                lives++;
+                hearts[lives - 1].classList.remove('lost');
+                showPowerupNotif('❤️ +1 VITA!');
+                console.log('❤️ Vita recuperata!');
+            } else {
+                // Altrimenti dai invincibilità temporanea
+                activatePowerupInvincibility();
+                showPowerupNotif('⭐ INVINCIBILE!');
+                console.log('⭐ Invincibilità attivata!');
+            }
+            
+            // Crea particelle dorate
+            for (let i = 0; i < 8; i++) {
+                setTimeout(() => {
+                    const particle = document.createElement('div');
+                    particle.classList.add('particle');
+                    particle.textContent = ['✨', '⭐', '🌟', '💫'][Math.floor(Math.random() * 4)];
+                    particle.style.fontSize = '4vmin';
+                    
+                    const powerupRect = powerup.getBoundingClientRect();
+                    particle.style.left = (powerupRect.left + Math.random() * 50 - 25) + 'px';
+                    particle.style.bottom = (window.innerHeight - powerupRect.bottom + Math.random() * 50) + 'px';
+                    
+                    gameContainer.appendChild(particle);
+                    
+                    setTimeout(() => particle.remove(), 1100);
+                }, i * 50);
+            }
+        }
+
+        // ========== ATTIVA INVINCIBILITÀ POWER-UP ==========
+        function activatePowerupInvincibility() {
+            powerupInvincible = true;
+            rooster.classList.add('invincible');
+            
+            setTimeout(() => {
+                powerupInvincible = false;
+                if (gameActive) {
+                    rooster.classList.remove('invincible');
+                }
+                console.log('⭐ Invincibilità power-up terminata');
+            }, POWERUP_INVINCIBILITY_DURATION);
+        }
+
         // ========== PERDI VITA ==========
         function loseLife() {
-            if (invincible || !gameActive) {
+            if (invincible || powerupInvincible || !gameActive) {
                 console.log('❌ Danno bloccato - invincibile');
                 return;
             }
@@ -968,6 +1221,14 @@
             
             playSound('hit');
             rooster.classList.add('damage');
+            
+            // SCREEN SHAKE!
+            const body = document.body;
+            body.classList.add('shake-effect');
+            setTimeout(() => {
+                body.classList.remove('shake-effect');
+            }, 500);
+            
             setTimeout(() => rooster.classList.remove('damage'), 550);
             
             if (lives <= 0) {
@@ -1007,8 +1268,12 @@
                 speedValueElement.textContent = speedMultiplier.toFixed(1) + 'x';
             }
 
+            // Aggiorna ciclo giorno/notte
+            updateDayNightCycle();
+
             const roosterRect = rooster.getBoundingClientRect();
 
+            // GESTIONE OSTACOLI
             for (let i = obstacles.length - 1; i >= 0; i--) {
                 const obstacle = obstacles[i];
                 
@@ -1019,13 +1284,12 @@
 
                 const obstacleRect = obstacle.getBoundingClientRect();
 
-                // ===== COLLISIONE RIGOROSA - HITBOX STRETTE =====
-                if (gameActive && !invincible && !obstacle.hit && 
+                // COLLISIONE
+                if (gameActive && !invincible && !powerupInvincible && !obstacle.hit && 
                     obstacleRect.right > 0 && obstacleRect.left < window.innerWidth) {
                     
-                    // Margini STRETTI = collisioni PRECISE!
-                    const marginH = 15; // Margine orizzontale ridotto
-                    const marginV = 15; // Margine verticale ridotto
+                    const marginH = 15;
+                    const marginV = 15;
                     
                     const collision = !(
                         roosterRect.right - marginH < obstacleRect.left + marginH ||
@@ -1035,7 +1299,7 @@
                     );
                     
                     if (collision) {
-                        console.log('💥 COLLISIONE! Devi saltare!');
+                        console.log('💥 COLLISIONE!');
                         obstacle.hit = true;
                         obstacle.style.filter = 'brightness(2)';
                         loseLife();
@@ -1055,13 +1319,52 @@
                     score += points;
                     scoreElement.textContent = score;
                     playSound('score');
-                    console.log(`🎯 +${points} punti!`);
+                    console.log(`🎯 +${points} punti! Score: ${score}`);
                 }
 
                 // RIMUOVI
                 if (newRight > window.innerWidth + vwToPx(15)) {
                     obstacle.remove();
                     obstacles.splice(i, 1);
+                }
+            }
+
+            // GESTIONE POWER-UPS
+            for (let i = powerups.length - 1; i >= 0; i--) {
+                const powerup = powerups[i];
+                
+                const currentRight = parseFloat(powerup.style.right) || 0;
+                const speed = vwToPx(BASE_OBSTACLE_SPEED * speedMultiplier);
+                const newRight = currentRight + speed;
+                powerup.style.right = newRight + 'px';
+
+                const powerupRect = powerup.getBoundingClientRect();
+
+                // COLLISIONE POWER-UP
+                if (gameActive && !powerup.collected && 
+                    powerupRect.right > 0 && powerupRect.left < window.innerWidth) {
+                    
+                    const marginH = 10;
+                    const marginV = 10;
+                    
+                    const collision = !(
+                        roosterRect.right - marginH < powerupRect.left + marginH ||
+                        roosterRect.left + marginH > powerupRect.right - marginH ||
+                        roosterRect.bottom - marginV < powerupRect.top + marginV ||
+                        roosterRect.top + marginV > powerupRect.bottom - marginV
+                    );
+                    
+                    if (collision) {
+                        collectPowerup(powerup);
+                        powerups.splice(i, 1);
+                        continue;
+                    }
+                }
+
+                // RIMUOVI
+                if (newRight > window.innerWidth + vwToPx(15)) {
+                    powerup.remove();
+                    powerups.splice(i, 1);
                 }
             }
 
@@ -1091,8 +1394,8 @@
             
             console.log('🚀 GIOCO AVVIATO');
             
-            // ATTIVA AUDIO CONTEXT
             initAudioContext();
+            requestWakeLock();
             
             gameActive = true;
             gamePaused = false;
@@ -1100,21 +1403,33 @@
             lives = 3;
             speedMultiplier = 1;
             invincible = false;
+            powerupInvincible = false;
             lastJumpTime = 0;
+            isNight = false;
             scoreElement.textContent = score;
             
             hearts.forEach(heart => heart.classList.remove('lost'));
             
             obstacles.forEach(obs => obs.remove());
             obstacles = [];
+            powerups.forEach(pw => pw.remove());
+            powerups = [];
             
             if (gameLoopId) cancelAnimationFrame(gameLoopId);
             if (obstacleIntervalId) clearInterval(obstacleIntervalId);
+            if (powerupIntervalId) clearInterval(powerupIntervalId);
             
             rooster.style.bottom = vhToPx(15) + 'px';
             rooster.style.opacity = '1';
             rooster.style.transform = 'scaleX(-1)';
+            rooster.classList.remove('invincible');
             rooster.classList.add('running');
+            
+            // Reset ciclo giorno/notte
+            gameContainer.style.background = "linear-gradient(to bottom, #87CEEB 0%, #B0E0E6 25%, #E0F6FF 45%, #90EE90 45%, #228B22 100%)";
+            document.querySelector('.sun').style.background = "radial-gradient(circle, #FFD700 0%, #FFA500 100%)";
+            document.querySelector('.sun').style.boxShadow = "0 0 3vmin rgba(255, 215, 0, 0.7)";
+            document.querySelectorAll('.cloud').forEach(c => c.style.opacity = "0.75");
             
             startScreen.classList.add('hidden');
             gameOverScreen.classList.add('hidden');
@@ -1129,6 +1444,10 @@
                     obstacleIntervalId = setInterval(() => {
                         if (gameActive && !gamePaused) createObstacle();
                     }, BASE_OBSTACLE_INTERVAL);
+                    
+                    powerupIntervalId = setInterval(() => {
+                        if (gameActive && !gamePaused) createPowerup();
+                    }, POWERUP_SPAWN_INTERVAL);
                 }
             }, 1500);
         }
@@ -1140,11 +1459,20 @@
             gameActive = false;
             gamePaused = false;
             rooster.classList.remove('running');
+            rooster.classList.remove('invincible');
             
             playSound('gameOver');
             
             if (gameLoopId) cancelAnimationFrame(gameLoopId);
             if (obstacleIntervalId) clearInterval(obstacleIntervalId);
+            if (powerupIntervalId) clearInterval(powerupIntervalId);
+            
+            // Rilascia wake lock
+            if (wakeLock !== null) {
+                wakeLock.release().then(() => {
+                    wakeLock = null;
+                });
+            }
             
             if (score > highScore) {
                 highScore = score;
@@ -1166,7 +1494,7 @@
             e.preventDefault();
             e.stopPropagation();
             console.log('👆 START touched');
-            initAudioContext(); // Attiva audio
+            initAudioContext();
             startBtn.style.transform = 'scale(0.95)';
             await initAudio();
             setTimeout(() => startGame(), 200);
@@ -1181,7 +1509,7 @@
             e.preventDefault();
             e.stopPropagation();
             console.log('👆 TEST touched');
-            initAudioContext(); // Attiva audio
+            initAudioContext();
             testBtn.style.transform = 'scale(0.95)';
             statusElement.textContent = '✅ Tocca per saltare!';
             usingVoice = false;
@@ -1197,7 +1525,7 @@
             e.preventDefault();
             e.stopPropagation();
             console.log('👆 RESTART touched');
-            initAudioContext(); // Attiva audio
+            initAudioContext();
             restartBtn.style.transform = 'scale(0.95)';
             if (usingVoice && isListening) {
                 monitorVoice();
