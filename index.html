@@ -7,7 +7,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#1e3c72">
-    <title>🐓 Rooster Runner Enhanced</title>
+    <title>🐓 Rooster Runner PRO</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Poppins:wght@400;600;700;800&display=swap');
         
@@ -30,6 +30,19 @@
             background: #000;
             touch-action: manipulation;
             overscroll-behavior: none;
+        }
+
+        /* VIGNETTATURA - EFFETTO PROFESSIONALE */
+        body::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            box-shadow: inset 0 0 150px rgba(0,0,0,0.7);
+            pointer-events: none;
+            z-index: 999;
         }
 
         #gameWrapper {
@@ -57,6 +70,29 @@
             );
             overflow: hidden;
             transition: background 3s ease;
+        }
+
+        /* FLASH BIANCO per Power-up */
+        #whiteFlash {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: white;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 120;
+        }
+
+        #whiteFlash.active {
+            animation: flashEffect 0.3s ease-out;
+        }
+
+        @keyframes flashEffect {
+            0% { opacity: 0; }
+            50% { opacity: 0.9; }
+            100% { opacity: 0; }
         }
 
         /* SCREEN SHAKE */
@@ -141,7 +177,7 @@
             to { transform: translateX(-150vw); }
         }
 
-        /* MONTAGNE - PARALLASSE MIGLIORATO */
+        /* MONTAGNE - PARALLASSE */
         .mountain {
             position: absolute;
             bottom: 30vh;
@@ -176,6 +212,25 @@
         @keyframes mountainMove3 {
             from { transform: translateX(0); }
             to { transform: translateX(-50vw); }
+        }
+
+        /* FOREGROUND - PARALLASSE VELOCE */
+        .foreground-container {
+            position: absolute;
+            bottom: 15vh;
+            width: 100%;
+            height: 15vh;
+            overflow: hidden;
+            z-index: 60;
+            pointer-events: none;
+        }
+
+        .foreground-item {
+            position: absolute;
+            bottom: 0;
+            font-size: 8vmin;
+            opacity: 0.6;
+            filter: blur(1px);
         }
 
         /* TERRENO */
@@ -216,7 +271,7 @@
             to { transform: translateX(-10vmin); }
         }
 
-        /* GALLO */
+        /* GALLO - CON ROTAZIONE IN SALTO */
         #rooster {
             position: absolute;
             bottom: 15vh;
@@ -225,6 +280,8 @@
             z-index: 50;
             filter: drop-shadow(0.5vmin 0.8vmin 1.2vmin rgba(0,0,0,0.5));
             transform: scaleX(-1);
+            will-change: transform, bottom;
+            transition: transform 0.1s ease-out;
         }
 
         #rooster.running {
@@ -247,7 +304,7 @@
             will-change: transform;
         }
 
-        /* POWER-UP (MAIS D'ORO) */
+        /* POWER-UP */
         .powerup {
             position: absolute;
             bottom: 25vh;
@@ -271,11 +328,9 @@
         @keyframes invinciblePulse {
             0%, 100% { 
                 filter: drop-shadow(0 0 2vmin gold) brightness(1.3);
-                transform: scaleX(-1);
             }
             50% { 
                 filter: drop-shadow(0 0 3vmin orange) brightness(1.5);
-                transform: scaleX(-1) scale(1.1);
             }
         }
 
@@ -662,6 +717,9 @@
 <body>
     <div id="gameWrapper">
         <div id="gameContainer">
+            <!-- Flash Bianco -->
+            <div id="whiteFlash"></div>
+            
             <!-- Sfondo -->
             <div class="sun"></div>
             <div class="cloud cloud1">☁️</div>
@@ -699,6 +757,9 @@
             <!-- GALLO -->
             <div id="rooster" class="running">🐓</div>
             
+            <!-- Foreground Parallax -->
+            <div class="foreground-container" id="foregroundContainer"></div>
+            
             <!-- Erba -->
             <div class="grass-container" id="grassContainer"></div>
             
@@ -717,7 +778,7 @@
                     <span class="rooster-emoji">🐓</span><br>
                     ROOSTER<br>RUNNER
                 </h1>
-                <p class="subtitle">Il Gallo più Veloce del Mondo! - ENHANCED EDITION</p>
+                <p class="subtitle">PRO EDITION - Fisica Realistica!</p>
                 <div id="instructions">
                     <p><strong>🎤 VOCE:</strong> Fai rumore per saltare!</p>
                     <p><strong>⌨️ TASTIERA:</strong> Premi SPAZIO, P per pausa</p>
@@ -727,6 +788,7 @@
                     <p><strong>🎯 OBIETTIVO:</strong> Evita ostacoli, guadagna punti!</p>
                     <p><strong>⚡ DIFFICOLTÀ:</strong> Diventa sempre più veloce!</p>
                     <p><strong>🌙 SORPRESA:</strong> Guarda cosa succede a 500 punti!</p>
+                    <p><strong>✨ NEW:</strong> Fisica gravitazionale realistica!</p>
                 </div>
                 <div class="button-group">
                     <button id="startBtn">🎤 GIOCA CON MICROFONO</button>
@@ -751,7 +813,7 @@
     <script>
         'use strict';
         
-        console.log('🎮 Rooster Runner Enhanced caricato');
+        console.log('🎮 Rooster Runner PRO caricato');
         
         // Previeni comportamenti indesiderati
         document.addEventListener('gesturestart', e => e.preventDefault());
@@ -775,7 +837,9 @@
         const highScoreElement = document.getElementById('highScore');
         const statusElement = document.getElementById('status');
         const grassContainer = document.getElementById('grassContainer');
+        const foregroundContainer = document.getElementById('foregroundContainer');
         const powerupNotif = document.getElementById('powerupNotif');
+        const whiteFlash = document.getElementById('whiteFlash');
         const hearts = [
             document.getElementById('heart1'),
             document.getElementById('heart2'),
@@ -786,11 +850,11 @@
         let score = 0;
         let highScore = parseInt(localStorage.getItem('roosterHighScore')) || 0;
         let lives = 3;
-        let isJumping = false;
         let gameActive = false;
         let gamePaused = false;
         let obstacles = [];
         let powerups = [];
+        let foregroundItems = [];
         let gameLoopId = null;
         let obstacleIntervalId = null;
         let powerupIntervalId = null;
@@ -802,6 +866,13 @@
         let isNight = false;
         let wakeLock = null;
         
+        // ========== FISICA REALISTICA ==========
+        let roosterY = 0; // Posizione Y (0 è terra, in vh)
+        let velocityY = 0; // Velocità verticale
+        const GRAVITY = 0.8; // Forza che spinge giù (più alto = cade più velocemente)
+        const JUMP_FORCE = 16; // Forza del salto iniziale (più alto = salta più in alto)
+        const GROUND_LEVEL = 0; // Livello del terreno
+        
         // ========== AUDIO ==========
         let audioContext = null;
         let analyser = null;
@@ -811,8 +882,6 @@
         let voiceCheckId = null;
 
         // ========== COSTANTI ==========
-        const JUMP_HEIGHT_VH = 35;
-        const JUMP_DURATION = 680;
         const BASE_OBSTACLE_SPEED = 0.5;
         const BASE_OBSTACLE_INTERVAL = 1650;
         const POWERUP_SPAWN_INTERVAL = 12000;
@@ -861,14 +930,27 @@
             }
         }
 
+        // ========== INIZIALIZZA FOREGROUND (PARALLASSE VELOCE) ==========
+        function initForeground() {
+            foregroundContainer.innerHTML = '';
+            const items = ['🌾', '🪵', '🍄'];
+            
+            for (let i = 0; i < 5; i++) {
+                const item = document.createElement('div');
+                item.classList.add('foreground-item');
+                item.textContent = items[Math.floor(Math.random() * items.length)];
+                item.style.right = (Math.random() * 200 - 100) + 'vw';
+                foregroundContainer.appendChild(item);
+                foregroundItems.push(item);
+            }
+        }
+
         // ========== CICLO GIORNO/NOTTE ==========
         function updateDayNightCycle() {
             const sun = document.querySelector('.sun');
             const clouds = document.querySelectorAll('.cloud');
             
-            // Ogni 500 punti cambia fase
             if (Math.floor(score / 500) % 2 === 1 && !isNight) {
-                // Diventa NOTTE
                 isNight = true;
                 gameContainer.style.background = "linear-gradient(to bottom, #0f2027, #203a43, #2c5364 45%, #1a4d2e 45%, #0f2f1f 100%)";
                 sun.style.background = "radial-gradient(circle, #fff 0%, #ddd 100%)";
@@ -876,7 +958,6 @@
                 clouds.forEach(c => c.style.opacity = "0.3");
                 console.log('🌙 È notte!');
             } else if (Math.floor(score / 500) % 2 === 0 && isNight) {
-                // Torna GIORNO
                 isNight = false;
                 gameContainer.style.background = "linear-gradient(to bottom, #87CEEB 0%, #B0E0E6 25%, #E0F6FF 45%, #90EE90 45%, #228B22 100%)";
                 sun.style.background = "radial-gradient(circle, #FFD700 0%, #FFA500 100%)";
@@ -1018,7 +1099,7 @@
             if (average > VOICE_THRESHOLD && 
                 gameActive && 
                 !gamePaused &&
-                !isJumping && 
+                roosterY === GROUND_LEVEL && 
                 (now - lastJumpTime) > JUMP_COOLDOWN) {
                 jump();
             }
@@ -1038,7 +1119,7 @@
                     
                     const roosterRect = rooster.getBoundingClientRect();
                     particle.style.left = (roosterRect.left + roosterRect.width / 2) + 'px';
-                    particle.style.bottom = vhToPx(15) + 'px';
+                    particle.style.bottom = (15 + roosterY) + 'vh';
                     
                     gameContainer.appendChild(particle);
                     
@@ -1047,57 +1128,55 @@
             }
         }
 
-        // ========== SALTO ==========
+        // ========== SALTO CON FISICA REALISTICA ==========
         function jump() {
-            if (isJumping || !gameActive || gamePaused) return;
+            if (roosterY > GROUND_LEVEL || !gameActive || gamePaused) return;
             
             const now = Date.now();
             if ((now - lastJumpTime) < JUMP_COOLDOWN) return;
             
             lastJumpTime = now;
-            isJumping = true;
+            
+            velocityY = JUMP_FORCE;
             
             voiceIndicator.classList.add('active');
             rooster.classList.remove('running');
             createParticles();
             playSound('jump');
             
-            const startBottom = vhToPx(15);
-            const jumpHeight = vhToPx(JUMP_HEIGHT_VH);
-            const jumpStart = Date.now();
+            console.log('🦘 Salto! Velocità:', velocityY);
+        }
 
-            function animateJump() {
-                if (!gameActive || gamePaused) {
-                    rooster.style.bottom = startBottom + 'px';
-                    rooster.style.transform = 'scaleX(-1)';
-                    isJumping = false;
-                    rooster.classList.add('running');
-                    voiceIndicator.classList.remove('active');
-                    return;
-                }
+        // ========== AGGIORNA FISICA ==========
+        function updatePhysics() {
+            if (!gameActive || gamePaused) return;
 
-                const elapsed = Date.now() - jumpStart;
-                const progress = Math.min(elapsed / JUMP_DURATION, 1);
+            // Applica velocità
+            roosterY += velocityY;
+            
+            // Applica gravità
+            velocityY -= GRAVITY;
 
-                if (progress < 1) {
-                    const jumpProgress = Math.sin(progress * Math.PI);
-                    const currentBottom = startBottom + (jumpHeight * jumpProgress);
-                    
-                    rooster.style.bottom = currentBottom + 'px';
-                    
-                    requestAnimationFrame(animateJump);
-                } else {
-                    rooster.style.bottom = startBottom + 'px';
-                    rooster.style.transform = 'scaleX(-1)';
-                    isJumping = false;
-                    if (gameActive && !gamePaused) {
-                        rooster.classList.add('running');
-                    }
-                    voiceIndicator.classList.remove('active');
-                }
+            // Controllo pavimento
+            if (roosterY <= GROUND_LEVEL) {
+                roosterY = GROUND_LEVEL;
+                velocityY = 0;
+                rooster.classList.add('running');
+                
+                // Reset rotazione quando atterra
+                rooster.style.transform = 'scaleX(-1) rotate(0deg)';
+            } else {
+                rooster.classList.remove('running');
+                
+                // ROTAZIONE DINAMICA IN SALTO
+                // Quando sale: ruota indietro (-10deg)
+                // Quando scende: ruota in avanti (+10deg)
+                const rotation = velocityY > 0 ? -10 : Math.min(velocityY * -2, 15);
+                rooster.style.transform = `scaleX(-1) rotate(${rotation}deg)`;
             }
 
-            animateJump();
+            // Aggiorna posizione visuale
+            rooster.style.bottom = `calc(15vh + ${roosterY}vh)`;
         }
 
         // ========== CREA OSTACOLO ==========
@@ -1136,6 +1215,13 @@
             console.log('🌽 Power-up spawned!');
         }
 
+        // ========== FLASH BIANCO ==========
+        function triggerWhiteFlash() {
+            whiteFlash.classList.remove('active');
+            void whiteFlash.offsetWidth;
+            whiteFlash.classList.add('active');
+        }
+
         // ========== MOSTRA NOTIFICA POWER-UP ==========
         function showPowerupNotif(message) {
             powerupNotif.textContent = message;
@@ -1156,21 +1242,20 @@
             powerup.remove();
             
             playSound('powerup');
+            triggerWhiteFlash();
             
-            // Recupera una vita se hai perso vite
             if (lives < 3) {
                 lives++;
                 hearts[lives - 1].classList.remove('lost');
                 showPowerupNotif('❤️ +1 VITA!');
                 console.log('❤️ Vita recuperata!');
             } else {
-                // Altrimenti dai invincibilità temporanea
                 activatePowerupInvincibility();
                 showPowerupNotif('⭐ INVINCIBILE!');
                 console.log('⭐ Invincibilità attivata!');
             }
             
-            // Crea particelle dorate
+            // Particelle dorate
             for (let i = 0; i < 8; i++) {
                 setTimeout(() => {
                     const particle = document.createElement('div');
@@ -1262,16 +1347,31 @@
         function gameLoop() {
             if (!gameActive || gamePaused) return;
 
+            // AGGIORNA FISICA
+            updatePhysics();
+
             speedMultiplier = Math.min(1 + (Math.floor(score / DIFFICULTY_INCREASE_RATE) * 0.25), MAX_SPEED_MULTIPLIER);
             
             if (speedValueElement) {
                 speedValueElement.textContent = speedMultiplier.toFixed(1) + 'x';
             }
 
-            // Aggiorna ciclo giorno/notte
             updateDayNightCycle();
 
             const roosterRect = rooster.getBoundingClientRect();
+
+            // GESTIONE FOREGROUND (PARALLASSE VELOCE)
+            foregroundItems.forEach(item => {
+                const currentRight = parseFloat(item.style.right) || 0;
+                const speed = vwToPx(BASE_OBSTACLE_SPEED * speedMultiplier * 1.5); // 1.5x più veloce
+                const newRight = currentRight + speed;
+                
+                if (newRight > window.innerWidth + vwToPx(20)) {
+                    item.style.right = '-20vw';
+                } else {
+                    item.style.right = newRight + 'px';
+                }
+            });
 
             // GESTIONE OSTACOLI
             for (let i = obstacles.length - 1; i >= 0; i--) {
@@ -1384,7 +1484,7 @@
             } else {
                 pauseOverlay.classList.add('hidden');
                 gameLoopId = requestAnimationFrame(gameLoop);
-                if (!isJumping) rooster.classList.add('running');
+                if (roosterY === GROUND_LEVEL) rooster.classList.add('running');
             }
         }
 
@@ -1392,7 +1492,7 @@
         function startGame() {
             if (gameActive) return;
             
-            console.log('🚀 GIOCO AVVIATO');
+            console.log('🚀 GIOCO AVVIATO - PRO EDITION');
             
             initAudioContext();
             requestWakeLock();
@@ -1406,6 +1506,8 @@
             powerupInvincible = false;
             lastJumpTime = 0;
             isNight = false;
+            roosterY = 0;
+            velocityY = 0;
             scoreElement.textContent = score;
             
             hearts.forEach(heart => heart.classList.remove('lost'));
@@ -1419,9 +1521,9 @@
             if (obstacleIntervalId) clearInterval(obstacleIntervalId);
             if (powerupIntervalId) clearInterval(powerupIntervalId);
             
-            rooster.style.bottom = vhToPx(15) + 'px';
+            rooster.style.bottom = '15vh';
             rooster.style.opacity = '1';
-            rooster.style.transform = 'scaleX(-1)';
+            rooster.style.transform = 'scaleX(-1) rotate(0deg)';
             rooster.classList.remove('invincible');
             rooster.classList.add('running');
             
@@ -1467,7 +1569,6 @@
             if (obstacleIntervalId) clearInterval(obstacleIntervalId);
             if (powerupIntervalId) clearInterval(powerupIntervalId);
             
-            // Rilascia wake lock
             if (wakeLock !== null) {
                 wakeLock.release().then(() => {
                     wakeLock = null;
@@ -1489,11 +1590,9 @@
 
         // ========== EVENT LISTENERS ==========
         
-        // TOUCH per i pulsanti
         startBtn.addEventListener('touchstart', async (e) => {
             e.preventDefault();
             e.stopPropagation();
-            console.log('👆 START touched');
             initAudioContext();
             startBtn.style.transform = 'scale(0.95)';
             await initAudio();
@@ -1508,7 +1607,6 @@
         testBtn.addEventListener('touchstart', (e) => {
             e.preventDefault();
             e.stopPropagation();
-            console.log('👆 TEST touched');
             initAudioContext();
             testBtn.style.transform = 'scale(0.95)';
             statusElement.textContent = '✅ Tocca per saltare!';
@@ -1524,7 +1622,6 @@
         restartBtn.addEventListener('touchstart', (e) => {
             e.preventDefault();
             e.stopPropagation();
-            console.log('👆 RESTART touched');
             initAudioContext();
             restartBtn.style.transform = 'scale(0.95)';
             if (usingVoice && isListening) {
@@ -1538,10 +1635,8 @@
             restartBtn.style.transform = 'scale(1)';
         }, { passive: false });
 
-        // CLICK per desktop
         startBtn.addEventListener('click', async (e) => {
             e.preventDefault();
-            console.log('🖱️ START clicked');
             initAudioContext();
             await initAudio();
             setTimeout(() => startGame(), 200);
@@ -1549,7 +1644,6 @@
 
         testBtn.addEventListener('click', (e) => {
             e.preventDefault();
-            console.log('🖱️ TEST clicked');
             initAudioContext();
             statusElement.textContent = '✅ Usa spazio o click!';
             usingVoice = false;
@@ -1558,7 +1652,6 @@
 
         restartBtn.addEventListener('click', (e) => {
             e.preventDefault();
-            console.log('🖱️ RESTART clicked');
             initAudioContext();
             if (usingVoice && isListening) {
                 monitorVoice();
@@ -1566,7 +1659,6 @@
             startGame();
         });
 
-        // TASTIERA
         document.addEventListener('keydown', (e) => {
             if (e.code === 'Space' && gameActive && !gamePaused) {
                 e.preventDefault();
@@ -1577,7 +1669,6 @@
             }
         });
 
-        // TOUCH sul game container
         gameContainer.addEventListener('touchstart', (e) => {
             if (gameActive && !gamePaused) {
                 const target = e.target;
@@ -1589,7 +1680,6 @@
             }
         }, { passive: false });
 
-        // CLICK sul game container
         gameContainer.addEventListener('click', (e) => {
             if (gameActive && !gamePaused) {
                 const target = e.target;
@@ -1601,15 +1691,19 @@
 
         // INIZIALIZZA
         window.addEventListener('load', () => {
-            console.log('✅ Pagina caricata');
+            console.log('✅ Pagina caricata - PRO EDITION');
             initGrass();
+            initForeground();
             if (highScore > 0) {
                 statusElement.textContent = `🏆 Record: ${highScore}`;
             }
         });
 
         window.addEventListener('resize', () => {
-            if (!gameActive) initGrass();
+            if (!gameActive) {
+                initGrass();
+                initForeground();
+            }
         });
     </script>
 </body>
